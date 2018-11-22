@@ -41,6 +41,7 @@ public class WithdrawalTransferCreatedEventHandler implements WithdrawalEventHan
     @Override
     public void handle(Change change, SinkEvent event) {
         try {
+            log.info("Trying to handle WithdrawalTransferCreated, eventId={}, withdrawalId={}", event.getId(), event.getSource());
             WithdrawalEvent withdrawalEvent = withdrawalDao.getLastWithdrawalEvent(event.getSource());
             if (withdrawalEvent == null) {
                 throw new NotFoundException(String.format("WithdrawalEvent with withdrawalId='%s' not found", event.getSource()));
@@ -48,6 +49,7 @@ public class WithdrawalTransferCreatedEventHandler implements WithdrawalEventHan
             List<FinalCashFlowPosting> postings = change.getTransfer().getCreated().getCashflow().getPostings();
             withdrawalEvent.setFee(CashFlowUtil.getFistfulFee(postings));
             withdrawalDao.saveWithdrawalEvent(withdrawalEvent);
+            log.info("WithdrawalTransferCreated has been saved, eventId={}, withdrawalId={}", event.getId(), event.getSource());
         } catch (DaoException ex) {
             throw new StorageException(ex);
         }

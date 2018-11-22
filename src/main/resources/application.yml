@@ -12,6 +12,9 @@ spring:
       maximum-pool-size: 3
 flyway:
   schemas: mst
+db:
+  skip:
+    validation: true
 retry-policy:
   maxAttempts: 10
 identity:
@@ -20,17 +23,18 @@ identity:
     delay: 10000
     retryDelay: 1000
     maxPoolSize: 1
+    querySize: 100
 wallet:
   polling:
     url: http://wapi:8022/v1/eventsink/wallet
     delay: 10000
     retryDelay: 1000
     maxPoolSize: 1
+    querySize: 100
 withdrawal:
   polling:
     url: http://wapi:8022/v1/eventsink/withdrawal
     delay: 10000
     retryDelay: 1000
     maxPoolSize: 1
-    lastEventId: 4780
-
+    querySize: 100

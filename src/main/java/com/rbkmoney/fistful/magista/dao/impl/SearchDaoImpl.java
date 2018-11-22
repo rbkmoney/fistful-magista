@@ -64,8 +64,10 @@ public class SearchDaoImpl extends AbstractGenericDao implements SearchDao {
                         ).as(walletEvent)
                 ).on(
                         appendConditions(DSL.trueCondition(), Operator.AND, new ConditionParameterSource()
-                                .addValue(WALLET_DATA.PARTY_ID, UUID.fromString(parameters.getPartyId()), EQUALS)
-                                .addValue(walletEvent.IDENTITY_ID, parameters.getIdentityId(), EQUALS)
+                                .addValue(WALLET_DATA.PARTY_ID, Optional.ofNullable(parameters.getPartyId())
+                                        .map(UUID::fromString)
+                                        .orElse(null), EQUALS)
+                                .addValue(WALLET_DATA.IDENTITY_ID, parameters.getIdentityId(), EQUALS)
                                 .addValue(walletEvent.CURRENCY_CODE, parameters.getCurrencyCode(), EQUALS)
                                 .addValue(WALLET_DATA.ID, fromId.orElse(null), LESS))
                 )
@@ -108,8 +110,8 @@ public class SearchDaoImpl extends AbstractGenericDao implements SearchDao {
                                                 .addValue(WITHDRAWAL_DATA.WALLET_ID, parameters.getWalletId(), EQUALS)
                                                 .addValue(WITHDRAWAL_DATA.IDENTITY_ID, parameters.getIdentityId(), EQUALS)
                                                 .addValue(WITHDRAWAL_DATA.DESTINATION_ID, parameters.getDestinationId(), EQUALS)
-                                                .addValue(WITHDRAWAL_DATA.AMOUNT, parameters.getAmountFrom(), LESS)
-                                                .addValue(WITHDRAWAL_DATA.AMOUNT, parameters.getAmountTo(), GREATER)
+                                                .addValue(WITHDRAWAL_DATA.AMOUNT, parameters.getAmountFrom(), GREATER)
+                                                .addValue(WITHDRAWAL_DATA.AMOUNT, parameters.getAmountTo(), LESS)
                                                 .addValue(WITHDRAWAL_DATA.CURRENCY_CODE, parameters.getCurrencyCode(), EQUALS)
                                                 .addValue(withdrawalEvent.WITHDRAWAL_STATUS, TypeUtil.toEnumField(parameters.getStatus(), WithdrawalStatus.class), EQUALS)
                                                 .addValue(WITHDRAWAL_DATA.ID, fromId.orElse(null), LESS)),

@@ -8,12 +8,15 @@ import com.rbkmoney.fistful.magista.domain.tables.records.WithdrawalDataRecord;
 import com.rbkmoney.fistful.magista.domain.tables.records.WithdrawalEventRecord;
 import com.rbkmoney.fistful.magista.exception.DaoException;
 import org.jooq.Query;
+import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
+
+import java.util.Optional;
 
 import static com.rbkmoney.fistful.magista.domain.tables.WithdrawalData.WITHDRAWAL_DATA;
 import static com.rbkmoney.fistful.magista.domain.tables.WithdrawalEvent.WITHDRAWAL_EVENT;
@@ -79,5 +82,11 @@ public class WithdrawalDaoImpl extends AbstractGenericDao implements WithdrawalD
         KeyHolder keyHolder = new GeneratedKeyHolder();
         executeOne(query, keyHolder);
         return keyHolder.getKey().longValue();
+    }
+
+    @Override
+    public Optional<Long> getLastEventId() throws DaoException {
+        Query query = getDslContext().select(DSL.max(WITHDRAWAL_EVENT.EVENT_ID)).from(WITHDRAWAL_EVENT);
+        return Optional.ofNullable(fetchOne(query, Long.class));
     }
 }

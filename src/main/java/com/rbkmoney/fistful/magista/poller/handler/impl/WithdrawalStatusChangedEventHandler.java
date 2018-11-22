@@ -37,6 +37,7 @@ public class WithdrawalStatusChangedEventHandler implements WithdrawalEventHandl
     @Override
     public void handle(Change change, SinkEvent event) {
         try {
+            log.info("Trying to handle WithdrawalStatusChanged, eventId={}, withdrawalId={}", event.getId(), event.getSource());
             WithdrawalEvent withdrawalEvent = withdrawalDao.getLastWithdrawalEvent(event.getSource());
             if (withdrawalEvent == null) {
                 throw new NotFoundException(String.format("WithdrawalEvent with withdrawalId='%s' not found", event.getSource()));
@@ -51,6 +52,7 @@ public class WithdrawalStatusChangedEventHandler implements WithdrawalEventHandl
             withdrawalEvent.setWithdrawalStatus(TBaseUtil.unionFieldToEnum(change.getStatusChanged(), WithdrawalStatus.class));
 
             withdrawalDao.saveWithdrawalEvent(withdrawalEvent);
+            log.info("WithdrawalStatusChanged has been saved, eventId={}, withdrawalId={}", event.getId(), event.getSource());
         } catch (DaoException ex) {
             throw new StorageException(ex);
         }

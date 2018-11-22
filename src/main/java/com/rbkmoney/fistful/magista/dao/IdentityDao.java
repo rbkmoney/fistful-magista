@@ -4,6 +4,8 @@ import com.rbkmoney.fistful.magista.domain.tables.pojos.IdentityData;
 import com.rbkmoney.fistful.magista.domain.tables.pojos.IdentityEvent;
 import com.rbkmoney.fistful.magista.exception.DaoException;
 
+import java.util.Optional;
+
 public interface IdentityDao extends GenericDao {
 
     IdentityData getIdentityData(String identityId) throws DaoException;
@@ -13,5 +15,7 @@ public interface IdentityDao extends GenericDao {
     IdentityEvent getLastIdentityEvent(String identityId) throws DaoException;
 
     long saveIdentityEvent(IdentityEvent identityEvent) throws DaoException;
+
+    Optional<Long> getLastEventId() throws DaoException;
 
 }

@@ -38,6 +38,7 @@ public class IdentityChallengeCreatedEventHandler implements IdentityEventHandle
 
     @Override
     public void handle(Change change, SinkEvent event) {
+        log.info("Trying to handle IdentityChallengeCreated, eventId={}, identityId={}", event.getId(), event.getSource());
         ChallengeChange challengeChange = change.getIdentityChallenge();
         ChallengeData challengeData = new ChallengeData();
         challengeData.setIdentityId(event.getSource());
@@ -61,6 +62,7 @@ public class IdentityChallengeCreatedEventHandler implements IdentityEventHandle
         } catch (DaoException ex) {
             throw new StorageException(ex);
         }
+        log.info("IdentityChallengeCreated has been saved, eventId={}, identityId={}", event.getId(), event.getSource());
     }
 
 }

@@ -35,6 +35,7 @@ public class WalletCreatedEventHandler implements WalletEventHandler {
 
     @Override
     public void handle(Change change, SinkEvent event) {
+        log.info("Trying to handle WalletCreated, eventId={}, walletId={}", event.getId(), event.getSource());
         Wallet wallet = change.getCreated();
         WalletData walletData = new WalletData();
         walletData.setWalletId(event.getSource());
@@ -54,6 +55,7 @@ public class WalletCreatedEventHandler implements WalletEventHandler {
         } catch (DaoException ex) {
             throw new StorageException(ex);
         }
+        log.info("WalletCreated has been saved, eventId={}, walletId={}", event.getId(), event.getSource());
     }
 
 }

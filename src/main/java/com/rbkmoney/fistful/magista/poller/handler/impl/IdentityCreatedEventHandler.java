@@ -40,6 +40,7 @@ public class IdentityCreatedEventHandler implements IdentityEventHandler {
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public void handle(Change change, SinkEvent event) {
+        log.info("Trying to handle IdentityCreated, eventId={}, identityId={}", event.getId(), event.getSource());
         Identity identity = change.getCreated();
         IdentityData identityData = new IdentityData();
         identityData.setIdentityId(event.getSource());
@@ -61,6 +62,7 @@ public class IdentityCreatedEventHandler implements IdentityEventHandler {
         } catch (DaoException ex) {
             throw new StorageException(ex);
         }
+        log.info("IdentityCreated has been saved, eventId={}, identityId={}", event.getId(), event.getSource());
     }
 
 }

@@ -8,6 +8,7 @@ import com.rbkmoney.fistful.magista.domain.tables.records.IdentityDataRecord;
 import com.rbkmoney.fistful.magista.domain.tables.records.IdentityEventRecord;
 import com.rbkmoney.fistful.magista.exception.DaoException;
 import org.jooq.Query;
+import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -15,8 +16,11 @@ import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
 
+import java.util.Optional;
+
 import static com.rbkmoney.fistful.magista.domain.tables.IdentityData.IDENTITY_DATA;
 import static com.rbkmoney.fistful.magista.domain.tables.IdentityEvent.IDENTITY_EVENT;
+import static com.rbkmoney.fistful.magista.domain.tables.ChallengeEvent.CHALLENGE_EVENT;
 
 @Component
 public class IdentityDaoImpl extends AbstractGenericDao implements IdentityDao {
@@ -81,4 +85,12 @@ public class IdentityDaoImpl extends AbstractGenericDao implements IdentityDao {
         return keyHolder.getKey().longValue();
     }
 
+    @Override
+    public Optional<Long> getLastEventId() throws DaoException {
+        Query query = getDslContext().select(DSL.max(DSL.field("event_id"))).from(
+                getDslContext().select(DSL.max(IDENTITY_EVENT.EVENT_ID).as("event_id")).from(IDENTITY_EVENT)
+                        .unionAll(getDslContext().select(DSL.max(CHALLENGE_EVENT.EVENT_ID).as("event_id")).from(CHALLENGE_EVENT))
+        );
+        return Optional.ofNullable(fetchOne(query, Long.class));
+    }
 }

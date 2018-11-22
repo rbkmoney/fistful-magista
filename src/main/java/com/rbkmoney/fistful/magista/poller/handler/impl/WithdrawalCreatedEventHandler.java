@@ -42,6 +42,7 @@ public class WithdrawalCreatedEventHandler implements WithdrawalEventHandler {
     @Override
     public void handle(Change change, SinkEvent event) {
         try {
+            log.info("Trying to handle WithdrawalCreated, eventId={}, withdrawalId={}", event.getId(), event.getSource());
             Withdrawal withdrawal = change.getCreated();
             WalletData walletData = walletDao.getWalletData(withdrawal.getSource());
             if (walletData == null) {
@@ -68,6 +69,7 @@ public class WithdrawalCreatedEventHandler implements WithdrawalEventHandler {
 
             withdrawalDao.saveWithdrawalData(withdrawalData);
             withdrawalDao.saveWithdrawalEvent(withdrawalEvent);
+            log.info("WithdrawalCreated has been saved, eventId={}, withdrawalId={}", event.getId(), event.getSource());
         } catch (DaoException ex) {
             throw new StorageException(ex);
         }

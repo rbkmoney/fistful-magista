@@ -6,6 +6,7 @@ import com.rbkmoney.fistful.magista.dao.IdentityDao;
 import com.rbkmoney.fistful.magista.domain.enums.IdentityEventType;
 import com.rbkmoney.fistful.magista.domain.tables.pojos.IdentityEvent;
 import com.rbkmoney.fistful.magista.exception.DaoException;
+import com.rbkmoney.fistful.magista.exception.NotFoundException;
 import com.rbkmoney.fistful.magista.exception.StorageException;
 import com.rbkmoney.fistful.magista.poller.handler.IdentityEventHandler;
 import com.rbkmoney.geck.common.util.TypeUtil;
@@ -34,8 +35,11 @@ public class IdentityLevelChangedEventHandler implements IdentityEventHandler {
     @Override
     public void handle(Change change, SinkEvent event) {
         try {
+            log.info("Trying to handle IdentityLevelChanged, eventId={}, identityId={}", event.getId(), event.getSource());
             IdentityEvent identityEvent = identityDao.getLastIdentityEvent(event.getSource());
-
+            if (identityEvent == null) {
+                throw new NotFoundException(String.format("IdentityEvent with id='%s' not found", event.getSource()));
+            }
             identityEvent.setId(null);
             identityEvent.setEventId(event.getId());
             identityEvent.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
@@ -45,6 +49,7 @@ public class IdentityLevelChangedEventHandler implements IdentityEventHandler {
             identityEvent.setIdentityLevelId(change.getLevelChanged());
 
             identityDao.saveIdentityEvent(identityEvent);
+            log.info("IdentityLevelChanged has been saved, eventId={}, identityId={}", event.getId(), event.getSource());
         } catch (DaoException ex) {
             throw new StorageException(ex);
         }
