@@ -40,6 +40,7 @@ public class IdentityCreatedEventHandler implements IdentityEventHandler {
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public void handle(Change change, SinkEvent event) {
+        log.info("Trying to handle IdentityCreated, eventId={}, identityId={}", event.getId(), event.getSource());
         Identity identity = change.getCreated();
         IdentityData identityData = new IdentityData();
         identityData.setIdentityId(event.getSource());
@@ -49,11 +50,11 @@ public class IdentityCreatedEventHandler implements IdentityEventHandler {
         identityData.setIdentityClassId(identity.getCls());
 
         IdentityEvent identityEvent = new IdentityEvent();
-        identityEvent.setEventId(event.getPayload().getId());
+        identityEvent.setEventId(event.getId());
         identityEvent.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
         identityEvent.setEventOccuredAt(TypeUtil.stringToLocalDateTime(event.getPayload().getOccuredAt()));
         identityEvent.setEventType(IdentityEventType.IDENTITY_CREATED);
-        identityEvent.setSequenceId(event.getSequence());
+        identityEvent.setSequenceId(event.getPayload().getSequence());
         identityEvent.setIdentityId(event.getSource());
         try {
             identityDao.saveIdentityData(identityData);
@@ -61,6 +62,7 @@ public class IdentityCreatedEventHandler implements IdentityEventHandler {
         } catch (DaoException ex) {
             throw new StorageException(ex);
         }
+        log.info("IdentityCreated has been saved, eventId={}, identityId={}", event.getId(), event.getSource());
     }
 
 }

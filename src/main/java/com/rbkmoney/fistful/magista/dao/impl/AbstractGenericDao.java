@@ -1,11 +1,15 @@
 package com.rbkmoney.fistful.magista.dao.impl;
 
 import com.rbkmoney.fistful.magista.dao.GenericDao;
+import com.rbkmoney.fistful.magista.dao.impl.field.CollectionConditionField;
+import com.rbkmoney.fistful.magista.dao.impl.field.ConditionField;
+import com.rbkmoney.fistful.magista.dao.impl.field.ConditionParameterSource;
 import com.rbkmoney.fistful.magista.exception.DaoException;
 import org.jooq.*;
 import org.jooq.conf.ParamType;
 import org.jooq.impl.DSL;
 import org.jooq.impl.DefaultConfiguration;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.core.NestedRuntimeException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.JdbcUpdateAffectedIncorrectNumberOfRowsException;
@@ -19,7 +23,9 @@ import java.sql.Types;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
+@DependsOn("dbInitializer")
 public abstract class AbstractGenericDao extends NamedParameterJdbcDaoSupport implements GenericDao {
 
     private final DSLContext dslContext;
@@ -214,6 +220,41 @@ public abstract class AbstractGenericDao extends NamedParameterJdbcDaoSupport im
         } catch (NestedRuntimeException ex) {
             throw new DaoException(ex);
         }
+    }
+
+    protected Condition appendConditions(Condition condition, Operator operator, ConditionParameterSource conditionParameterSource) {
+        for (ConditionField field : conditionParameterSource.getConditionFields()) {
+            if (field.getValue() != null) {
+                condition = DSL.condition(operator, condition, buildCondition(field));
+            }
+        }
+        return condition;
+    }
+
+    private Condition buildCondition(ConditionField field) {
+        if (field.getComparator() == Comparator.IN) {
+            if (field instanceof CollectionConditionField) {
+                return field.getField().in(((CollectionConditionField) field).getValue());
+            }
+        }
+        return field.getField().compare(
+                field.getComparator(),
+                field.getValue()
+        );
+    }
+
+    protected Condition appendDateTimeRangeConditions(Condition condition,
+                                                      Field<LocalDateTime> field,
+                                                      Optional<LocalDateTime> fromTime,
+                                                      Optional<LocalDateTime> toTime) {
+        if (fromTime.isPresent()) {
+            condition = condition.and(field.ge(fromTime.get()));
+        }
+
+        if (toTime.isPresent()) {
+            condition = condition.and(field.lt(toTime.get()));
+        }
+        return condition;
     }
 
     public SqlParameterSource toSqlParameterSource(Map<String, Param<?>> params) {

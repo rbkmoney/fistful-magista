@@ -7,12 +7,14 @@
     <parent>
         <groupId>com.rbkmoney</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.0.1.RELEASE</version>
+        <version>1.5.10.RELEASE</version>
+        <relativePath/>
     </parent>
 
     <groupId>com.rbkmoney.fistful-magista</groupId>
     <artifactId>fistful-magista</artifactId>
     <version>1.0.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
 
     <properties>
         <project.maintainer>Pavel Popov &lt;p.popov@rbkmoney.com&gt;</project.maintainer>
@@ -20,7 +22,7 @@
         <exposed.ports>${server.port}</exposed.ports>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <dockerfile.base.service.tag>22c57470c4fc47161894f036b7cf9d70f42b75f5</dockerfile.base.service.tag>
-        <fistful-proto.version>1.4-728a362</fistful-proto.version>
+        <fistful-proto.version>1.11-7e65dc6</fistful-proto.version>
         <shared.resources.version>0.3.1</shared.resources.version>
         <db.name>fistful-magista</db.name>
         <db.port>5432</db.port>
@@ -35,8 +37,8 @@
         <!--RBK libs-->
         <dependency>
             <groupId>com.rbkmoney</groupId>
-            <artifactId>eventstock-client</artifactId>
-            <version>1.2.2</version>
+            <artifactId>eventstock-client-fistful</artifactId>
+            <version>1.2.4</version>
         </dependency>
         <dependency>
             <groupId>com.rbkmoney.logback</groupId>
@@ -57,6 +59,11 @@
             <groupId>com.rbkmoney</groupId>
             <artifactId>fistful-proto</artifactId>
             <version>${fistful-proto.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.rbkmoney</groupId>
+            <artifactId>magista-dsl</artifactId>
+            <version>1.0.0</version>
         </dependency>
         <!--Thirdparty libs-->
         <dependency>
@@ -113,19 +120,20 @@
         </dependency>
         <!--Test libs-->
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>postgresql</artifactId>
-            <version>1.8.0</version>
+            <version>1.8.3</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.github.benas</groupId>
+            <artifactId>random-beans</artifactId>
+            <version>3.6.0</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -146,6 +154,10 @@
                 <excludes>
                     <exclude>Dockerfile</exclude>
                 </excludes>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
             </resource>
         </resources>
         <plugins>
@@ -194,10 +206,14 @@
                     <schemas>
                         <schema>${db.schema}</schema>
                     </schemas>
-                    <locations>
-                        <location>filesystem:${project.basedir}/src/main/resources/db/migration</location>
-                    </locations>
                 </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.postgresql</groupId>
+                        <artifactId>postgresql</artifactId>
+                        <version>${postgresql.jdbc.version}</version>
+                    </dependency>
+                </dependencies>
             </plugin>
             <plugin>
                 <groupId>org.jooq</groupId>

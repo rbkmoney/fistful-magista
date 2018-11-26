@@ -1,14 +1,11 @@
 package com.rbkmoney.fistful.magista.config;
 
 import com.rbkmoney.eventstock.client.EventPublisher;
-import com.rbkmoney.eventstock.client.poll.FistfulServiceAdapter;
-import com.rbkmoney.eventstock.client.poll.PollingEventPublisherBuilder;
-import com.rbkmoney.eventstock.client.poll.ServiceAdapter;
-import com.rbkmoney.fistful.magista.poller.EventStockHandler;
-import com.rbkmoney.fistful.magista.service.impl.IdentityEventStockService;
-import com.rbkmoney.fistful.magista.service.impl.WalletEventStockService;
-import com.rbkmoney.fistful.magista.service.impl.WithdrawalEventStockService;
-import com.rbkmoney.woody.api.ClientBuilder;
+import com.rbkmoney.eventstock.client.poll.FistfulPollingEventPublisherBuilder;
+import com.rbkmoney.fistful.magista.poller.EventSinkHandler;
+import com.rbkmoney.fistful.magista.service.impl.IdentityEventService;
+import com.rbkmoney.fistful.magista.service.impl.WalletEventService;
+import com.rbkmoney.fistful.magista.service.impl.WithdrawalEventService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,67 +18,61 @@ public class EventStockPollerConfig {
 
     @Bean
     public EventPublisher walletEventPublisher(
-            WalletEventStockService walletEventStockService,
-            @Value("${pooling.wallet.url}") Resource poolingUrl,
-            @Value("${pooling.wallet.querySize}") int poolingQuerySize,
-            @Value("${pooling.wallet.pooling.maxPoolSize}") int poolingMaxPoolSize,
-            @Value("${pooling.wallet.delay}") int poolingMaxDelay
+            WalletEventService walletEventService,
+            @Value("${wallet.polling.url}") Resource pollingUrl,
+            @Value("${wallet.polling.querySize}") int pollingQuerySize,
+            @Value("${wallet.polling.maxPoolSize}") int pollingMaxPoolSize,
+            @Value("${wallet.polling.delay}") int pollingMaxDelay,
+            @Value("${wallet.polling.retryDelay}") int retryDelay
     ) throws IOException {
-        return new PollingEventPublisherBuilder() {
-            @Override
-            protected ServiceAdapter createServiceAdapter(ClientBuilder clientBuilder) {
-                return FistfulServiceAdapter.buildWalletAdapter(clientBuilder);
-            }
-        }
-                .withURI(poolingUrl.getURI())
-                .withMaxQuerySize(poolingQuerySize)
-                .withMaxPoolSize(poolingMaxPoolSize)
-                .withPollDelay(poolingMaxDelay)
-                .withEventHandler(new EventStockHandler(walletEventStockService))
+        return new FistfulPollingEventPublisherBuilder()
+                .withWalletServiceAdapter()
+                .withURI(pollingUrl.getURI())
+                .withMaxQuerySize(pollingQuerySize)
+                .withMaxPoolSize(pollingMaxPoolSize)
+                .withPollDelay(pollingMaxDelay)
+                .withEventRetryDelay(retryDelay)
+                .withEventHandler(new EventSinkHandler(walletEventService))
                 .build();
     }
 
     @Bean
     public EventPublisher identityEventPublisher(
-            IdentityEventStockService identityEventStockService,
-            @Value("${pooling.identity.url}") Resource poolingUrl,
-            @Value("${pooling.identity.querySize}") int poolingQuerySize,
-            @Value("${pooling.identity.maxPoolSize}") int poolingMaxPoolSize,
-            @Value("${pooling.identity.delay}") int poolingMaxDelay
+            IdentityEventService identityEventService,
+            @Value("${identity.polling.url}") Resource pollingUrl,
+            @Value("${identity.polling.querySize}") int pollingQuerySize,
+            @Value("${identity.polling.maxPoolSize}") int pollingMaxPoolSize,
+            @Value("${identity.polling.delay}") int pollingMaxDelay,
+            @Value("${identity.polling.retryDelay}") int retryDelay
     ) throws IOException {
-        return new PollingEventPublisherBuilder() {
-            @Override
-            protected ServiceAdapter createServiceAdapter(ClientBuilder clientBuilder) {
-                return FistfulServiceAdapter.buildIdentityAdapter(clientBuilder);
-            }
-        }
-                .withURI(poolingUrl.getURI())
-                .withMaxQuerySize(poolingQuerySize)
-                .withMaxPoolSize(poolingMaxPoolSize)
-                .withPollDelay(poolingMaxDelay)
-                .withEventHandler(new EventStockHandler(identityEventStockService))
+        return new FistfulPollingEventPublisherBuilder()
+                .withIdentityServiceAdapter()
+                .withURI(pollingUrl.getURI())
+                .withMaxQuerySize(pollingQuerySize)
+                .withMaxPoolSize(pollingMaxPoolSize)
+                .withPollDelay(pollingMaxDelay)
+                .withEventRetryDelay(retryDelay)
+                .withEventHandler(new EventSinkHandler(identityEventService))
                 .build();
     }
 
     @Bean
     public EventPublisher withdrawalEventPublisher(
-            WithdrawalEventStockService withdrawalEventStockService,
-            @Value("${pooling.withdrawal.url}") Resource poolingUrl,
-            @Value("${pooling.withdrawal.querySize}") int poolingQuerySize,
-            @Value("${pooling.withdrawal.maxPoolSize}") int poolingMaxPoolSize,
-            @Value("${pooling.withdrawal.delay}") int poolingMaxDelay
+            WithdrawalEventService withdrawalEventService,
+            @Value("${withdrawal.polling.url}") Resource pollingUrl,
+            @Value("${withdrawal.polling.querySize}") int pollingQuerySize,
+            @Value("${withdrawal.polling.maxPoolSize}") int pollingMaxPoolSize,
+            @Value("${withdrawal.polling.delay}") int pollingMaxDelay,
+            @Value("${withdrawal.polling.retryDelay}") int retryDelay
     ) throws IOException {
-        return new PollingEventPublisherBuilder() {
-            @Override
-            protected ServiceAdapter createServiceAdapter(ClientBuilder clientBuilder) {
-                return FistfulServiceAdapter.buildWithdrawalAdapter(clientBuilder);
-            }
-        }
-                .withURI(poolingUrl.getURI())
-                .withMaxQuerySize(poolingQuerySize)
-                .withMaxPoolSize(poolingMaxPoolSize)
-                .withPollDelay(poolingMaxDelay)
-                .withEventHandler(new EventStockHandler(withdrawalEventStockService))
+        return new FistfulPollingEventPublisherBuilder()
+                .withWithdrawalServiceAdapter()
+                .withURI(pollingUrl.getURI())
+                .withMaxQuerySize(pollingQuerySize)
+                .withMaxPoolSize(pollingMaxPoolSize)
+                .withPollDelay(pollingMaxDelay)
+                .withEventRetryDelay(retryDelay)
+                .withEventHandler(new EventSinkHandler(withdrawalEventService))
                 .build();
     }
 

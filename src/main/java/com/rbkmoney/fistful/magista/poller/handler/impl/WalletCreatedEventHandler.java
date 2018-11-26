@@ -35,19 +35,19 @@ public class WalletCreatedEventHandler implements WalletEventHandler {
 
     @Override
     public void handle(Change change, SinkEvent event) {
+        log.info("Trying to handle WalletCreated, eventId={}, walletId={}", event.getId(), event.getSource());
         Wallet wallet = change.getCreated();
         WalletData walletData = new WalletData();
         walletData.setWalletId(event.getSource());
         walletData.setWalletName(wallet.getName());
 
         WalletEvent walletEvent = new WalletEvent();
-        walletEvent.setEventId(event.getPayload().getId());
+        walletEvent.setEventId(event.getId());
         walletEvent.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
         walletEvent.setEventOccuredAt(TypeUtil.stringToLocalDateTime(event.getPayload().getOccuredAt()));
-        walletEvent.setEventType(WalletEventType.WALLET_CREATED.WALLET_CREATED);
-        walletEvent.setSequenceId(event.getSequence());
+        walletEvent.setEventType(WalletEventType.WALLET_CREATED);
+        walletEvent.setSequenceId(event.getPayload().getSequence());
         walletEvent.setWalletId(event.getSource());
-        walletEvent.setIdentityId(event.getSource());
 
         try {
             walletDao.saveWalletData(walletData);
@@ -55,6 +55,7 @@ public class WalletCreatedEventHandler implements WalletEventHandler {
         } catch (DaoException ex) {
             throw new StorageException(ex);
         }
+        log.info("WalletCreated has been saved, eventId={}, walletId={}", event.getId(), event.getSource());
     }
 
 }

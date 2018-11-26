@@ -9,6 +9,7 @@ import com.rbkmoney.fistful.magista.domain.enums.ChallengeResolution;
 import com.rbkmoney.fistful.magista.domain.enums.ChallengeStatus;
 import com.rbkmoney.fistful.magista.domain.tables.pojos.ChallengeEvent;
 import com.rbkmoney.fistful.magista.exception.DaoException;
+import com.rbkmoney.fistful.magista.exception.NotFoundException;
 import com.rbkmoney.fistful.magista.exception.StorageException;
 import com.rbkmoney.fistful.magista.poller.handler.IdentityEventHandler;
 import com.rbkmoney.geck.common.util.TBaseUtil;
@@ -39,14 +40,17 @@ public class IdentityChallengeStatusChangedEventHandler implements IdentityEvent
     @Override
     public void handle(Change change, SinkEvent event) {
         try {
+            log.info("Trying to handle IdentityChallengeStatusChanged, eventId={}, identityId={}", event.getId(), event.getSource());
             ChallengeEvent challengeEvent = challengeDao.getLastChallengeEvent(event.getSource(), change.getIdentityChallenge().getId());
-
+            if (challengeEvent == null) {
+                throw new NotFoundException(String.format("ChallengeEvent with id='%s' not found", event.getSource()));
+            }
             challengeEvent.setId(null);
-            challengeEvent.setEventId(event.getPayload().getId());
+            challengeEvent.setEventId(event.getId());
             challengeEvent.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
             challengeEvent.setEventOccuredAt(TypeUtil.stringToLocalDateTime(event.getPayload().getOccuredAt()));
             challengeEvent.setEventType(ChallengeEventType.CHALLENGE_STATUS_CHANGED);
-            challengeEvent.setSequenceId(event.getSequence());
+            challengeEvent.setSequenceId(event.getPayload().getSequence());
             com.rbkmoney.fistful.identity.ChallengeStatus challengeStatus = change.getIdentityChallenge().getPayload().getStatusChanged();
             challengeEvent.setChallengeStatus(TBaseUtil.unionFieldToEnum(challengeStatus, ChallengeStatus.class));
             if (challengeStatus.isSetCompleted()) {
@@ -58,6 +62,7 @@ public class IdentityChallengeStatusChangedEventHandler implements IdentityEvent
             }
 
             challengeDao.saveChallengeEvent(challengeEvent);
+            log.info("IdentityChallengeStatusChanged has been saved, eventId={}, identityId={}", event.getId(), event.getSource());
         } catch (DaoException ex) {
             throw new StorageException(ex);
         }

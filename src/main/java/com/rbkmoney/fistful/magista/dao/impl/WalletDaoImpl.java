@@ -8,12 +8,15 @@ import com.rbkmoney.fistful.magista.domain.tables.records.WalletDataRecord;
 import com.rbkmoney.fistful.magista.domain.tables.records.WalletEventRecord;
 import com.rbkmoney.fistful.magista.exception.DaoException;
 import org.jooq.Query;
+import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
+
+import java.util.Optional;
 
 import static com.rbkmoney.fistful.magista.domain.tables.WalletData.WALLET_DATA;
 import static com.rbkmoney.fistful.magista.domain.tables.WalletEvent.WALLET_EVENT;
@@ -45,8 +48,8 @@ public class WalletDaoImpl extends AbstractGenericDao implements WalletDao {
 
         Query query = getDslContext().insertInto(WALLET_DATA)
                 .set(walletDataRecord)
-                .onConflict(WALLET_DATA.WALLET_ID)
-                .doNothing()
+                .onDuplicateKeyUpdate()
+                .set(walletDataRecord)
                 .returning(WALLET_DATA.ID);
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -79,5 +82,11 @@ public class WalletDaoImpl extends AbstractGenericDao implements WalletDao {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         executeOne(query, keyHolder);
         return keyHolder.getKey().longValue();
+    }
+
+    @Override
+    public Optional<Long> getLastEventId() throws DaoException {
+        Query query = getDslContext().select(DSL.max(WALLET_EVENT.EVENT_ID)).from(WALLET_EVENT);
+        return Optional.ofNullable(fetchOne(query, Long.class));
     }
 }
