@@ -56,7 +56,7 @@ public class WalletFunctionTest extends AbstractIntegrationTest {
         walletDao.saveWalletData(secondWalletData);
         secondWalletEvent = random(WalletEvent.class);
         secondWalletEvent.setId(2L);
-        walletEvent.setEventCreatedAt(LocalDateTime.now());
+        secondWalletEvent.setEventCreatedAt(LocalDateTime.now());
         secondWalletEvent.setWalletId(secondWalletData.getWalletId());
         walletDao.saveWalletEvent(secondWalletEvent);
     }
