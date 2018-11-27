@@ -27,7 +27,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ChallengeEvent implements Serializable {
 
-    private static final long serialVersionUID = -2022279476;
+    private static final long serialVersionUID = 1291997542;
 
     private Long                id;
     private Long                eventId;
@@ -35,7 +35,6 @@ public class ChallengeEvent implements Serializable {
     private LocalDateTime       eventCreatedAt;
     private LocalDateTime       eventOccuredAt;
     private Integer             sequenceId;
-    private LocalDateTime       occuredAt;
     private String              identityId;
     private String              challengeId;
     private ChallengeStatus     challengeStatus;
@@ -51,7 +50,6 @@ public class ChallengeEvent implements Serializable {
         this.eventCreatedAt = value.eventCreatedAt;
         this.eventOccuredAt = value.eventOccuredAt;
         this.sequenceId = value.sequenceId;
-        this.occuredAt = value.occuredAt;
         this.identityId = value.identityId;
         this.challengeId = value.challengeId;
         this.challengeStatus = value.challengeStatus;
@@ -66,7 +64,6 @@ public class ChallengeEvent implements Serializable {
         LocalDateTime       eventCreatedAt,
         LocalDateTime       eventOccuredAt,
         Integer             sequenceId,
-        LocalDateTime       occuredAt,
         String              identityId,
         String              challengeId,
         ChallengeStatus     challengeStatus,
@@ -79,7 +76,6 @@ public class ChallengeEvent implements Serializable {
         this.eventCreatedAt = eventCreatedAt;
         this.eventOccuredAt = eventOccuredAt;
         this.sequenceId = sequenceId;
-        this.occuredAt = occuredAt;
         this.identityId = identityId;
         this.challengeId = challengeId;
         this.challengeStatus = challengeStatus;
@@ -133,14 +129,6 @@ public class ChallengeEvent implements Serializable {
 
     public void setSequenceId(Integer sequenceId) {
         this.sequenceId = sequenceId;
-    }
-
-    public LocalDateTime getOccuredAt() {
-        return this.occuredAt;
-    }
-
-    public void setOccuredAt(LocalDateTime occuredAt) {
-        this.occuredAt = occuredAt;
     }
 
     public String getIdentityId() {
@@ -228,12 +216,6 @@ public class ChallengeEvent implements Serializable {
         }
         else if (!sequenceId.equals(other.sequenceId))
             return false;
-        if (occuredAt == null) {
-            if (other.occuredAt != null)
-                return false;
-        }
-        else if (!occuredAt.equals(other.occuredAt))
-            return false;
         if (identityId == null) {
             if (other.identityId != null)
                 return false;
@@ -277,7 +259,6 @@ public class ChallengeEvent implements Serializable {
         result = prime * result + ((this.eventCreatedAt == null) ? 0 : this.eventCreatedAt.hashCode());
         result = prime * result + ((this.eventOccuredAt == null) ? 0 : this.eventOccuredAt.hashCode());
         result = prime * result + ((this.sequenceId == null) ? 0 : this.sequenceId.hashCode());
-        result = prime * result + ((this.occuredAt == null) ? 0 : this.occuredAt.hashCode());
         result = prime * result + ((this.identityId == null) ? 0 : this.identityId.hashCode());
         result = prime * result + ((this.challengeId == null) ? 0 : this.challengeId.hashCode());
         result = prime * result + ((this.challengeStatus == null) ? 0 : this.challengeStatus.hashCode());
@@ -296,7 +277,6 @@ public class ChallengeEvent implements Serializable {
         sb.append(", ").append(eventCreatedAt);
         sb.append(", ").append(eventOccuredAt);
         sb.append(", ").append(sequenceId);
-        sb.append(", ").append(occuredAt);
         sb.append(", ").append(identityId);
         sb.append(", ").append(challengeId);
         sb.append(", ").append(challengeStatus);

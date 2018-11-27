@@ -44,7 +44,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class WithdrawalEvent extends TableImpl<WithdrawalEventRecord> {
 
-    private static final long serialVersionUID = -2038408839;
+    private static final long serialVersionUID = 1124705600;
 
     /**
      * The reference instance of <code>mst.withdrawal_event</code>
@@ -88,11 +88,6 @@ public class WithdrawalEvent extends TableImpl<WithdrawalEventRecord> {
      * The column <code>mst.withdrawal_event.sequence_id</code>.
      */
     public final TableField<WithdrawalEventRecord, Integer> SEQUENCE_ID = createField("sequence_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
-
-    /**
-     * The column <code>mst.withdrawal_event.occured_at</code>.
-     */
-    public final TableField<WithdrawalEventRecord, LocalDateTime> OCCURED_AT = createField("occured_at", org.jooq.impl.SQLDataType.LOCALDATETIME.nullable(false), this, "");
 
     /**
      * The column <code>mst.withdrawal_event.withdrawal_id</code>.
