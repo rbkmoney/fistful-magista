@@ -26,7 +26,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class WithdrawalEvent implements Serializable {
 
-    private static final long serialVersionUID = -1130992719;
+    private static final long serialVersionUID = 248041381;
 
     private Long                id;
     private Long                eventId;
@@ -34,7 +34,6 @@ public class WithdrawalEvent implements Serializable {
     private LocalDateTime       eventCreatedAt;
     private LocalDateTime       eventOccuredAt;
     private Integer             sequenceId;
-    private LocalDateTime       occuredAt;
     private String              withdrawalId;
     private WithdrawalStatus    withdrawalStatus;
     private Long                fee;
@@ -48,7 +47,6 @@ public class WithdrawalEvent implements Serializable {
         this.eventCreatedAt = value.eventCreatedAt;
         this.eventOccuredAt = value.eventOccuredAt;
         this.sequenceId = value.sequenceId;
-        this.occuredAt = value.occuredAt;
         this.withdrawalId = value.withdrawalId;
         this.withdrawalStatus = value.withdrawalStatus;
         this.fee = value.fee;
@@ -61,7 +59,6 @@ public class WithdrawalEvent implements Serializable {
         LocalDateTime       eventCreatedAt,
         LocalDateTime       eventOccuredAt,
         Integer             sequenceId,
-        LocalDateTime       occuredAt,
         String              withdrawalId,
         WithdrawalStatus    withdrawalStatus,
         Long                fee
@@ -72,7 +69,6 @@ public class WithdrawalEvent implements Serializable {
         this.eventCreatedAt = eventCreatedAt;
         this.eventOccuredAt = eventOccuredAt;
         this.sequenceId = sequenceId;
-        this.occuredAt = occuredAt;
         this.withdrawalId = withdrawalId;
         this.withdrawalStatus = withdrawalStatus;
         this.fee = fee;
@@ -124,14 +120,6 @@ public class WithdrawalEvent implements Serializable {
 
     public void setSequenceId(Integer sequenceId) {
         this.sequenceId = sequenceId;
-    }
-
-    public LocalDateTime getOccuredAt() {
-        return this.occuredAt;
-    }
-
-    public void setOccuredAt(LocalDateTime occuredAt) {
-        this.occuredAt = occuredAt;
     }
 
     public String getWithdrawalId() {
@@ -203,12 +191,6 @@ public class WithdrawalEvent implements Serializable {
         }
         else if (!sequenceId.equals(other.sequenceId))
             return false;
-        if (occuredAt == null) {
-            if (other.occuredAt != null)
-                return false;
-        }
-        else if (!occuredAt.equals(other.occuredAt))
-            return false;
         if (withdrawalId == null) {
             if (other.withdrawalId != null)
                 return false;
@@ -240,7 +222,6 @@ public class WithdrawalEvent implements Serializable {
         result = prime * result + ((this.eventCreatedAt == null) ? 0 : this.eventCreatedAt.hashCode());
         result = prime * result + ((this.eventOccuredAt == null) ? 0 : this.eventOccuredAt.hashCode());
         result = prime * result + ((this.sequenceId == null) ? 0 : this.sequenceId.hashCode());
-        result = prime * result + ((this.occuredAt == null) ? 0 : this.occuredAt.hashCode());
         result = prime * result + ((this.withdrawalId == null) ? 0 : this.withdrawalId.hashCode());
         result = prime * result + ((this.withdrawalStatus == null) ? 0 : this.withdrawalStatus.hashCode());
         result = prime * result + ((this.fee == null) ? 0 : this.fee.hashCode());
@@ -257,7 +238,6 @@ public class WithdrawalEvent implements Serializable {
         sb.append(", ").append(eventCreatedAt);
         sb.append(", ").append(eventOccuredAt);
         sb.append(", ").append(sequenceId);
-        sb.append(", ").append(occuredAt);
         sb.append(", ").append(withdrawalId);
         sb.append(", ").append(withdrawalStatus);
         sb.append(", ").append(fee);

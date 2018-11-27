@@ -45,7 +45,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ChallengeEvent extends TableImpl<ChallengeEventRecord> {
 
-    private static final long serialVersionUID = -198675278;
+    private static final long serialVersionUID = -810961877;
 
     /**
      * The reference instance of <code>mst.challenge_event</code>
@@ -89,11 +89,6 @@ public class ChallengeEvent extends TableImpl<ChallengeEventRecord> {
      * The column <code>mst.challenge_event.sequence_id</code>.
      */
     public final TableField<ChallengeEventRecord, Integer> SEQUENCE_ID = createField("sequence_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
-
-    /**
-     * The column <code>mst.challenge_event.occured_at</code>.
-     */
-    public final TableField<ChallengeEventRecord, LocalDateTime> OCCURED_AT = createField("occured_at", org.jooq.impl.SQLDataType.LOCALDATETIME.nullable(false), this, "");
 
     /**
      * The column <code>mst.challenge_event.identity_id</code>.
