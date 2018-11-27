@@ -50,7 +50,7 @@ public class WithdrawalFunctionTest extends AbstractIntegrationTest {
         withdrawalDao.saveWithdrawalData(withdrawalData);
         withdrawalEvent = random(WithdrawalEvent.class);
         withdrawalEvent.setId(1L);
-        withdrawalEvent.setEventCreatedAt(LocalDateTime.now(ZoneOffset.UTC).minusMinutes(1));
+        withdrawalEvent.setEventCreatedAt(LocalDateTime.now().minusMinutes(1));
         withdrawalEvent.setWithdrawalId(withdrawalData.getWithdrawalId());
         withdrawalDao.saveWithdrawalEvent(withdrawalEvent);
         secondWithdrawalData = random(WithdrawalData.class);
@@ -60,7 +60,7 @@ public class WithdrawalFunctionTest extends AbstractIntegrationTest {
         withdrawalDao.saveWithdrawalData(secondWithdrawalData);
         secondWithdrawalEvent = random(WithdrawalEvent.class);
         secondWithdrawalEvent.setId(2L);
-        withdrawalEvent.setEventCreatedAt(LocalDateTime.now());
+        secondWithdrawalEvent.setEventCreatedAt(LocalDateTime.now());
         secondWithdrawalEvent.setWithdrawalId(secondWithdrawalData.getWithdrawalId());
         withdrawalDao.saveWithdrawalEvent(secondWithdrawalEvent);
     }

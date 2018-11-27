@@ -23,7 +23,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <dockerfile.base.service.tag>22c57470c4fc47161894f036b7cf9d70f42b75f5</dockerfile.base.service.tag>
         <fistful-proto.version>1.11-7e65dc6</fistful-proto.version>
-        <shared.resources.version>0.3.1</shared.resources.version>
+        <shared.resources.version>0.2.1</shared.resources.version>
         <db.name>fistful-magista</db.name>
         <db.port>5432</db.port>
         <db.url>jdbc:postgresql://localhost:${db.port}/${db.name}</db.url>
