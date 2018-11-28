@@ -71,6 +71,8 @@ public class SearchDaoImpl extends AbstractGenericDao implements SearchDao {
                                 .addValue(walletEvent.CURRENCY_CODE, parameters.getCurrencyCode(), EQUALS)
                                 .addValue(WALLET_DATA.ID, fromId.orElse(null), LESS))
                 )
+                .and(WALLET_DATA.PARTY_ID.isNotNull())
+                .and(WALLET_DATA.IDENTITY_ID.isNotNull())
                 .orderBy(walletEvent.EVENT_CREATED_AT.desc())
                 .limit(limit);
 
@@ -119,7 +121,10 @@ public class SearchDaoImpl extends AbstractGenericDao implements SearchDao {
                                 fromTime,
                                 toTime
                         )
-                ).orderBy(withdrawalEvent.EVENT_CREATED_AT.desc()).limit(limit);
+                )
+                .and(WITHDRAWAL_DATA.PARTY_ID.isNotNull())
+                .and(WITHDRAWAL_DATA.IDENTITY_ID.isNotNull())
+                .orderBy(withdrawalEvent.EVENT_CREATED_AT.desc()).limit(limit);
 
         return fetch(query, statWithdrawalMapper);
     }

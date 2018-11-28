@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class WithdrawalData extends TableImpl<WithdrawalDataRecord> {
 
-    private static final long serialVersionUID = -65823661;
+    private static final long serialVersionUID = -371306765;
 
     /**
      * The reference instance of <code>mst.withdrawal_data</code>
@@ -80,12 +80,12 @@ public class WithdrawalData extends TableImpl<WithdrawalDataRecord> {
     /**
      * The column <code>mst.withdrawal_data.wallet_id</code>.
      */
-    public final TableField<WithdrawalDataRecord, String> WALLET_ID = createField("wallet_id", org.jooq.impl.SQLDataType.VARCHAR, this, "");
+    public final TableField<WithdrawalDataRecord, String> WALLET_ID = createField("wallet_id", org.jooq.impl.SQLDataType.VARCHAR.nullable(false), this, "");
 
     /**
      * The column <code>mst.withdrawal_data.destination_id</code>.
      */
-    public final TableField<WithdrawalDataRecord, String> DESTINATION_ID = createField("destination_id", org.jooq.impl.SQLDataType.VARCHAR, this, "");
+    public final TableField<WithdrawalDataRecord, String> DESTINATION_ID = createField("destination_id", org.jooq.impl.SQLDataType.VARCHAR.nullable(false), this, "");
 
     /**
      * The column <code>mst.withdrawal_data.amount</code>.

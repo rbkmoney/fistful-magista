@@ -69,6 +69,7 @@ public class WalletAccountCreatedEventHandler implements WalletEventHandler {
             walletEvent.setCurrencyCode(account.getCurrency().getSymbolicCode());
 
             walletData.setPartyId(identityData.getPartyId());
+            walletData.setIdentityId(identityData.getIdentityId());
 
             walletDao.saveWalletData(walletData);
             walletDao.saveWalletEvent(walletEvent);
