@@ -20,6 +20,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -88,7 +89,7 @@ public class WithdrawalFunctionTest extends AbstractIntegrationTest {
                 withdrawalData.getWalletId(),
                 withdrawalData.getIdentityId(),
                 withdrawalData.getDestinationId(),
-                withdrawalEvent.getWithdrawalStatus().getLiteral(),
+                StringUtils.capitalize(withdrawalEvent.getWithdrawalStatus().getLiteral()),
                 withdrawalData.getCurrencyCode(),
                 withdrawalData.getAmount() - 1,
                 withdrawalData.getAmount() + 1,
