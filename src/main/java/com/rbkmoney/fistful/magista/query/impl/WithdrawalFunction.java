@@ -3,6 +3,7 @@ package com.rbkmoney.fistful.magista.query.impl;
 import com.rbkmoney.fistful.fistful_stat.StatResponse;
 import com.rbkmoney.fistful.fistful_stat.StatResponseData;
 import com.rbkmoney.fistful.fistful_stat.StatWithdrawal;
+import com.rbkmoney.fistful.magista.domain.enums.WithdrawalStatus;
 import com.rbkmoney.fistful.magista.exception.DaoException;
 import com.rbkmoney.geck.common.util.TypeUtil;
 import com.rbkmoney.magista.dsl.*;
@@ -83,6 +84,12 @@ public class WithdrawalFunction extends PagedBaseFunction<Map.Entry<Long, StatWi
         return subquery.isParallel();
     }
 
+    private static final Map<String, WithdrawalStatus> statusesMap = Collections.unmodifiableMap(Stream.of(
+            new AbstractMap.SimpleEntry<>("Pending", WithdrawalStatus.pending),
+            new AbstractMap.SimpleEntry<>("Succeeded", WithdrawalStatus.succeeded),
+            new AbstractMap.SimpleEntry<>("Failed", WithdrawalStatus.failed))
+            .collect(Collectors.toMap(AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue)));
+
     public static class WithdrawalParameters extends PagedBaseParameters {
 
         public WithdrawalParameters(Map<String, Object> parameters, QueryParameters derivedParameters) {
@@ -109,8 +116,8 @@ public class WithdrawalFunction extends PagedBaseFunction<Map.Entry<Long, StatWi
             return getStringParameter(WITHDRAWAL_DESTINATION_ID_PARAM, false);
         }
 
-        public String getStatus() {
-            return getStringParameter(WITHDRAWAL_STATUS_PARAM, false);
+        public WithdrawalStatus getStatus() {
+            return statusesMap.get(getStringParameter(WITHDRAWAL_STATUS_PARAM, false));
         }
 
         public Long getAmountFrom() {
@@ -141,6 +148,10 @@ public class WithdrawalFunction extends PagedBaseFunction<Map.Entry<Long, StatWi
             super.validateParameters(parameters);
             WithdrawalParameters withdrawalParameters = super.checkParamsType(parameters, WithdrawalParameters.class);
             validateTimePeriod(withdrawalParameters.getFromTime(), withdrawalParameters.getToTime());
+            String stringStatus = parameters.getStringParameter(WITHDRAWAL_STATUS_PARAM, false);
+            if (stringStatus != null && withdrawalParameters.getStatus() == null) {
+                throw new IllegalArgumentException("Unknown withdrawal status: " + stringStatus);
+            }
         }
     }
 
