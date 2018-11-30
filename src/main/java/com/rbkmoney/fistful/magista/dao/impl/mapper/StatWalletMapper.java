@@ -1,10 +1,12 @@
 package com.rbkmoney.fistful.magista.dao.impl.mapper;
 
 import com.rbkmoney.fistful.fistful_stat.StatWallet;
+import com.rbkmoney.geck.common.util.TypeUtil;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.AbstractMap;
 import java.util.Map;
 
@@ -19,6 +21,7 @@ public class StatWalletMapper implements RowMapper<Map.Entry<Long, StatWallet>> 
         statWallet.setId(rs.getString(WALLET_DATA.WALLET_ID.getName()));
         statWallet.setIdentityId(rs.getString(WALLET_EVENT.IDENTITY_ID.getName()));
         statWallet.setName(rs.getString(WALLET_DATA.WALLET_NAME.getName()));
+        statWallet.setCreatedAt(TypeUtil.temporalToString(rs.getObject(WALLET_EVENT.EVENT_CREATED_AT.getName(), LocalDateTime.class)));
         statWallet.setCurrencySymbolicCode(rs.getString(WALLET_EVENT.CURRENCY_CODE.getName()));
         return new AbstractMap.SimpleEntry<>(rs.getLong(WALLET_DATA.ID.getName()), statWallet);
     }
