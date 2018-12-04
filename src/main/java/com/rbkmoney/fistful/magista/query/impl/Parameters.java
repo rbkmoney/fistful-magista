@@ -12,6 +12,7 @@ public class Parameters {
 
     public static final String WALLET_ID_PARAM = "wallet_id";
 
+    public static final String WITHDRAWAL_ID_PARAM = "withdrawal_id";
     public static final String WITHDRAWAL_DESTINATION_ID_PARAM = "destination_id";
     public static final String WITHDRAWAL_STATUS_PARAM = "status";
     public static final String WITHDRAWAL_AMOUNT_FROM_PARAM = "amount_from";

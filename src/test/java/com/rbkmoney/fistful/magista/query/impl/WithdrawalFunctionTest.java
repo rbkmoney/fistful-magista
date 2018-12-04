@@ -76,6 +76,7 @@ public class WithdrawalFunctionTest extends AbstractIntegrationTest {
         String json = String.format("{'query': {'withdrawals': {" +
                         "'party_id': '%s', " +
                         "'wallet_id':'%s', " +
+                        "'withdrawal_id':'%s', " +
                         "'identity_id': '%s', " +
                         "'destination_id':'%s', " +
                         "'status':'%s', " +
@@ -87,6 +88,7 @@ public class WithdrawalFunctionTest extends AbstractIntegrationTest {
                         "}}}",
                 withdrawalData.getPartyId(),
                 withdrawalData.getWalletId(),
+                withdrawalData.getWithdrawalId(),
                 withdrawalData.getIdentityId(),
                 withdrawalData.getDestinationId(),
                 StringUtils.capitalize(withdrawalEvent.getWithdrawalStatus().getLiteral()),
