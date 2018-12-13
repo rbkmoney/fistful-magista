@@ -46,7 +46,10 @@ public class WithdrawalCreatedEventHandler implements WithdrawalEventHandler {
             Withdrawal withdrawal = change.getCreated();
             WalletData walletData = walletDao.getWalletData(withdrawal.getSource());
             if (walletData == null) {
-                throw new NotFoundException(String.format("WalletData with walletId='%s' not found", event.getSource()));
+                throw new NotFoundException(String.format("WalletData with walletId='%s' not found", withdrawal.getSource()));
+            }
+            if (walletData.getPartyId() == null) {
+                throw new IllegalStateException(String.format("PartyId not found for WalletData with walletId='%s'; it must be set for correct saving of WithdrawalCreated", withdrawal.getSource()));
             }
 
             WithdrawalData withdrawalData = new WithdrawalData();
