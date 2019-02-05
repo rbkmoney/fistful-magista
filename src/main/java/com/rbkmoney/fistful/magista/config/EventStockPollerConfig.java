@@ -2,7 +2,9 @@ package com.rbkmoney.fistful.magista.config;
 
 import com.rbkmoney.eventstock.client.EventPublisher;
 import com.rbkmoney.eventstock.client.poll.FistfulPollingEventPublisherBuilder;
+import com.rbkmoney.fistful.magista.config.properties.DepositProperties;
 import com.rbkmoney.fistful.magista.poller.EventSinkHandler;
+import com.rbkmoney.fistful.magista.service.impl.DepositEventService;
 import com.rbkmoney.fistful.magista.service.impl.IdentityEventService;
 import com.rbkmoney.fistful.magista.service.impl.WalletEventService;
 import com.rbkmoney.fistful.magista.service.impl.WithdrawalEventService;
@@ -15,6 +17,20 @@ import java.io.IOException;
 
 @Configuration
 public class EventStockPollerConfig {
+
+    @Bean
+    public EventPublisher depositEventPublisher(DepositEventService eventService,
+                                                DepositProperties depositProperties) throws IOException {
+        return new FistfulPollingEventPublisherBuilder()
+                .withDepositServiceAdapter()
+                .withURI(depositProperties.getUrl().getURI())
+                .withMaxQuerySize(depositProperties.getQuerySize())
+                .withMaxPoolSize(depositProperties.getMaxPoolSize())
+                .withPollDelay(depositProperties.getDelay())
+                .withEventRetryDelay(depositProperties.getRetryDelay())
+                .withEventHandler(new EventSinkHandler(eventService))
+                .build();
+    }
 
     @Bean
     public EventPublisher walletEventPublisher(

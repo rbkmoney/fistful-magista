@@ -5,6 +5,14 @@ import java.util.function.Predicate;
 
 public class CashFlowUtil {
 
+    public static long getFistfulProviderFee(List<com.rbkmoney.fistful.cashflow.FinalCashFlowPosting> postings) {
+        return getFistfulAmount(
+                postings,
+                posting -> posting.getSource().getAccountType().isSetSystem()
+                        && posting.getDestination().getAccountType().isSetProvider()
+        );
+    }
+
     public static long getFistfulFee(List<com.rbkmoney.fistful.cashflow.FinalCashFlowPosting> postings) {
         return getFistfulAmount(
                 postings,

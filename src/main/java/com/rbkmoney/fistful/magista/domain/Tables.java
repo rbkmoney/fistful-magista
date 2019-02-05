@@ -4,14 +4,7 @@
 package com.rbkmoney.fistful.magista.domain;
 
 
-import com.rbkmoney.fistful.magista.domain.tables.ChallengeData;
-import com.rbkmoney.fistful.magista.domain.tables.ChallengeEvent;
-import com.rbkmoney.fistful.magista.domain.tables.IdentityData;
-import com.rbkmoney.fistful.magista.domain.tables.IdentityEvent;
-import com.rbkmoney.fistful.magista.domain.tables.WalletData;
-import com.rbkmoney.fistful.magista.domain.tables.WalletEvent;
-import com.rbkmoney.fistful.magista.domain.tables.WithdrawalData;
-import com.rbkmoney.fistful.magista.domain.tables.WithdrawalEvent;
+import com.rbkmoney.fistful.magista.domain.tables.*;
 
 import javax.annotation.Generated;
 
@@ -38,6 +31,11 @@ public class Tables {
      * The table <code>mst.challenge_event</code>.
      */
     public static final ChallengeEvent CHALLENGE_EVENT = com.rbkmoney.fistful.magista.domain.tables.ChallengeEvent.CHALLENGE_EVENT;
+
+    /**
+     * The table <code>mst.deposit</code>.
+     */
+    public static final Deposit DEPOSIT = com.rbkmoney.fistful.magista.domain.tables.Deposit.DEPOSIT;
 
     /**
      * The table <code>mst.identity_data</code>.
