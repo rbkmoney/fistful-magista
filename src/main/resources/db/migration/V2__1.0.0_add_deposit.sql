@@ -25,6 +25,8 @@ CREATE TABLE mst.deposit (
   deposit_transfer_status mst.deposit_transfer_status,
   fee                     BIGINT,
   provider_fee            BIGINT,
+  party_id                UUID,
+  identity_id             CHARACTER VARYING,
   wtime                   TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT (now() at time zone 'utc'),
   current                 BOOLEAN                     NOT NULL DEFAULT TRUE,
   CONSTRAINT deposit_pkey PRIMARY KEY (id)
@@ -40,3 +42,7 @@ CREATE INDEX deposit_event_occured_at_idx
   on mst.deposit (event_occured_at);
 CREATE INDEX deposit_wallet_id_idx
   on mst.deposit (wallet_id);
+CREATE INDEX deposit_party_id_idx
+  on mst.deposit (party_id);
+CREATE INDEX deposit_identity_id_idx
+  on mst.deposit (identity_id);

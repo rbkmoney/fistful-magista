@@ -19,6 +19,7 @@ import javax.annotation.Generated;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 
 /**
@@ -34,7 +35,7 @@ import java.util.List;
 @SuppressWarnings({"all", "unchecked", "rawtypes"})
 public class Deposit extends TableImpl<DepositRecord> {
 
-    private static final long serialVersionUID = -503364570;
+    private static final long serialVersionUID = -267323421;
 
     /**
      * The reference instance of <code>mst.deposit</code>
@@ -125,6 +126,16 @@ public class Deposit extends TableImpl<DepositRecord> {
     public final TableField<DepositRecord, Long> PROVIDER_FEE = createField("provider_fee", org.jooq.impl.SQLDataType.BIGINT, this, "");
 
     /**
+     * The column <code>mst.deposit.party_id</code>.
+     */
+    public final TableField<DepositRecord, UUID> PARTY_ID = createField("party_id", org.jooq.impl.SQLDataType.UUID, this, "");
+
+    /**
+     * The column <code>mst.deposit.identity_id</code>.
+     */
+    public final TableField<DepositRecord, String> IDENTITY_ID = createField("identity_id", org.jooq.impl.SQLDataType.VARCHAR, this, "");
+
+    /**
      * The column <code>mst.deposit.wtime</code>.
      */
     public final TableField<DepositRecord, LocalDateTime> WTIME = createField("wtime", org.jooq.impl.SQLDataType.LOCALDATETIME.nullable(false).defaultValue(org.jooq.impl.DSL.field("timezone('utc'::text, now())", org.jooq.impl.SQLDataType.LOCALDATETIME)), this, "");
@@ -180,7 +191,7 @@ public class Deposit extends TableImpl<DepositRecord> {
      */
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.DEPOSIT_EVENT_CREATED_AT_IDX, Indexes.DEPOSIT_EVENT_ID_IDX, Indexes.DEPOSIT_EVENT_OCCURED_AT_IDX, Indexes.DEPOSIT_ID_IDX, Indexes.DEPOSIT_PKEY, Indexes.DEPOSIT_WALLET_ID_IDX);
+        return Arrays.<Index>asList(Indexes.DEPOSIT_EVENT_CREATED_AT_IDX, Indexes.DEPOSIT_EVENT_ID_IDX, Indexes.DEPOSIT_EVENT_OCCURED_AT_IDX, Indexes.DEPOSIT_ID_IDX, Indexes.DEPOSIT_IDENTITY_ID_IDX, Indexes.DEPOSIT_PARTY_ID_IDX, Indexes.DEPOSIT_PKEY, Indexes.DEPOSIT_WALLET_ID_IDX);
     }
 
     /**

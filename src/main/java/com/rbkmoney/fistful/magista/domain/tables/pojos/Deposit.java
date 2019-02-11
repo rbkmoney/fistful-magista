@@ -11,6 +11,7 @@ import com.rbkmoney.fistful.magista.domain.enums.DepositTransferStatus;
 import javax.annotation.Generated;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 
 /**
@@ -26,7 +27,7 @@ import java.time.LocalDateTime;
 @SuppressWarnings({"all", "unchecked", "rawtypes"})
 public class Deposit implements Serializable {
 
-    private static final long serialVersionUID = -1904826244;
+    private static final long serialVersionUID = 1175081131;
 
     private Long id;
     private Long eventId;
@@ -43,6 +44,8 @@ public class Deposit implements Serializable {
     private DepositTransferStatus depositTransferStatus;
     private Long fee;
     private Long providerFee;
+    private UUID partyId;
+    private String identityId;
     private LocalDateTime wtime;
     private Boolean current;
 
@@ -65,6 +68,8 @@ public class Deposit implements Serializable {
         this.depositTransferStatus = value.depositTransferStatus;
         this.fee = value.fee;
         this.providerFee = value.providerFee;
+        this.partyId = value.partyId;
+        this.identityId = value.identityId;
         this.wtime = value.wtime;
         this.current = value.current;
     }
@@ -85,6 +90,8 @@ public class Deposit implements Serializable {
             DepositTransferStatus depositTransferStatus,
             Long fee,
             Long providerFee,
+            UUID partyId,
+            String identityId,
             LocalDateTime wtime,
             Boolean current
     ) {
@@ -103,6 +110,8 @@ public class Deposit implements Serializable {
         this.depositTransferStatus = depositTransferStatus;
         this.fee = fee;
         this.providerFee = providerFee;
+        this.partyId = partyId;
+        this.identityId = identityId;
         this.wtime = wtime;
         this.current = current;
     }
@@ -227,6 +236,22 @@ public class Deposit implements Serializable {
         this.providerFee = providerFee;
     }
 
+    public UUID getPartyId() {
+        return this.partyId;
+    }
+
+    public void setPartyId(UUID partyId) {
+        this.partyId = partyId;
+    }
+
+    public String getIdentityId() {
+        return this.identityId;
+    }
+
+    public void setIdentityId(String identityId) {
+        this.identityId = identityId;
+    }
+
     public LocalDateTime getWtime() {
         return this.wtime;
     }
@@ -327,6 +352,16 @@ public class Deposit implements Serializable {
                 return false;
         } else if (!providerFee.equals(other.providerFee))
             return false;
+        if (partyId == null) {
+            if (other.partyId != null)
+                return false;
+        } else if (!partyId.equals(other.partyId))
+            return false;
+        if (identityId == null) {
+            if (other.identityId != null)
+                return false;
+        } else if (!identityId.equals(other.identityId))
+            return false;
         if (wtime == null) {
             if (other.wtime != null)
                 return false;
@@ -359,6 +394,8 @@ public class Deposit implements Serializable {
         result = prime * result + ((this.depositTransferStatus == null) ? 0 : this.depositTransferStatus.hashCode());
         result = prime * result + ((this.fee == null) ? 0 : this.fee.hashCode());
         result = prime * result + ((this.providerFee == null) ? 0 : this.providerFee.hashCode());
+        result = prime * result + ((this.partyId == null) ? 0 : this.partyId.hashCode());
+        result = prime * result + ((this.identityId == null) ? 0 : this.identityId.hashCode());
         result = prime * result + ((this.wtime == null) ? 0 : this.wtime.hashCode());
         result = prime * result + ((this.current == null) ? 0 : this.current.hashCode());
         return result;
@@ -383,6 +420,8 @@ public class Deposit implements Serializable {
         sb.append(", ").append(depositTransferStatus);
         sb.append(", ").append(fee);
         sb.append(", ").append(providerFee);
+        sb.append(", ").append(partyId);
+        sb.append(", ").append(identityId);
         sb.append(", ").append(wtime);
         sb.append(", ").append(current);
 

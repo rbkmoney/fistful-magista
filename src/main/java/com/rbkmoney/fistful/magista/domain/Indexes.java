@@ -37,6 +37,8 @@ public class Indexes {
     public static final Index DEPOSIT_EVENT_ID_IDX = Indexes0.DEPOSIT_EVENT_ID_IDX;
     public static final Index DEPOSIT_EVENT_OCCURED_AT_IDX = Indexes0.DEPOSIT_EVENT_OCCURED_AT_IDX;
     public static final Index DEPOSIT_ID_IDX = Indexes0.DEPOSIT_ID_IDX;
+    public static final Index DEPOSIT_IDENTITY_ID_IDX = Indexes0.DEPOSIT_IDENTITY_ID_IDX;
+    public static final Index DEPOSIT_PARTY_ID_IDX = Indexes0.DEPOSIT_PARTY_ID_IDX;
     public static final Index DEPOSIT_PKEY = Indexes0.DEPOSIT_PKEY;
     public static final Index DEPOSIT_WALLET_ID_IDX = Indexes0.DEPOSIT_WALLET_ID_IDX;
     public static final Index IDENTITY_DATA_PKEY = Indexes0.IDENTITY_DATA_PKEY;
@@ -65,6 +67,8 @@ public class Indexes {
         public static Index DEPOSIT_EVENT_ID_IDX = Internal.createIndex("deposit_event_id_idx", Deposit.DEPOSIT, new OrderField[]{Deposit.DEPOSIT.EVENT_ID}, false);
         public static Index DEPOSIT_EVENT_OCCURED_AT_IDX = Internal.createIndex("deposit_event_occured_at_idx", Deposit.DEPOSIT, new OrderField[]{Deposit.DEPOSIT.EVENT_OCCURED_AT}, false);
         public static Index DEPOSIT_ID_IDX = Internal.createIndex("deposit_id_idx", Deposit.DEPOSIT, new OrderField[]{Deposit.DEPOSIT.DEPOSIT_ID}, false);
+        public static Index DEPOSIT_IDENTITY_ID_IDX = Internal.createIndex("deposit_identity_id_idx", Deposit.DEPOSIT, new OrderField[]{Deposit.DEPOSIT.IDENTITY_ID}, false);
+        public static Index DEPOSIT_PARTY_ID_IDX = Internal.createIndex("deposit_party_id_idx", Deposit.DEPOSIT, new OrderField[]{Deposit.DEPOSIT.PARTY_ID}, false);
         public static Index DEPOSIT_PKEY = Internal.createIndex("deposit_pkey", Deposit.DEPOSIT, new OrderField[]{Deposit.DEPOSIT.ID}, true);
         public static Index DEPOSIT_WALLET_ID_IDX = Internal.createIndex("deposit_wallet_id_idx", Deposit.DEPOSIT, new OrderField[]{Deposit.DEPOSIT.WALLET_ID}, false);
         public static Index IDENTITY_DATA_PKEY = Internal.createIndex("identity_data_pkey", IdentityData.IDENTITY_DATA, new OrderField[] { IdentityData.IDENTITY_DATA.ID }, true);

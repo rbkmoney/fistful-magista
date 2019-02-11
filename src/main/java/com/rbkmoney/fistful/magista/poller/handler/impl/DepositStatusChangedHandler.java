@@ -33,8 +33,6 @@ public class DepositStatusChangedHandler implements DepositEventHandler {
             log.info("Start deposit status changed handling, eventId={}, depositId={}, status={}", event.getId(), event.getSource(), change.getStatusChanged());
             Deposit deposit = depositDao.get(event.getSource());
 
-            long sourceId = deposit.getId();
-
             deposit.setId(null);
             deposit.setWtime(null);
 
@@ -47,8 +45,7 @@ public class DepositStatusChangedHandler implements DepositEventHandler {
             deposit.setDepositStatus(TBaseUtil.unionFieldToEnum(change.getStatusChanged(), DepositStatus.class));
 
             depositDao.updateNotCurrent(event.getSource());
-            long id = depositDao.save(deposit);
-
+            depositDao.save(deposit);
             log.info("Deposit status have been changed, eventId={}, depositId={}, status={}", event.getId(), event.getSource(), change.getStatusChanged());
         } catch (DaoException e) {
             throw new StorageException(e);
