@@ -1,9 +1,9 @@
 package com.rbkmoney.fistful.magista.query.impl;
 
-import com.rbkmoney.fistful.fistful_stat.StatWallet;
 import com.rbkmoney.fistful.fistful_stat.StatResponse;
 import com.rbkmoney.fistful.fistful_stat.StatResponseData;
-import com.rbkmoney.geck.common.util.TypeUtil;
+import com.rbkmoney.fistful.fistful_stat.StatWallet;
+import com.rbkmoney.fistful.magista.exception.DaoException;
 import com.rbkmoney.magista.dsl.*;
 import com.rbkmoney.magista.dsl.builder.AbstractQueryBuilder;
 import com.rbkmoney.magista.dsl.builder.QueryBuilder;
@@ -11,10 +11,11 @@ import com.rbkmoney.magista.dsl.builder.QueryBuilderException;
 import com.rbkmoney.magista.dsl.parser.AbstractQueryParser;
 import com.rbkmoney.magista.dsl.parser.QueryParserException;
 import com.rbkmoney.magista.dsl.parser.QueryPart;
-import com.rbkmoney.fistful.magista.exception.DaoException;
 
-import java.time.temporal.TemporalAccessor;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -196,7 +197,7 @@ public class WalletFunction extends PagedBaseFunction<Map.Entry<Long, StatWallet
                         getFromId(),
                         parameters.getSize()
                 );
-                return new BaseQueryResult<>(() -> result.stream(), () -> result);
+                return new BaseQueryResult<>(result::stream, () -> result);
             } catch (DaoException e) {
                 throw new QueryExecutionException(e);
             }

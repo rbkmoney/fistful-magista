@@ -4,28 +4,13 @@
 package com.rbkmoney.fistful.magista.domain;
 
 
-import com.rbkmoney.fistful.magista.domain.tables.ChallengeData;
-import com.rbkmoney.fistful.magista.domain.tables.ChallengeEvent;
-import com.rbkmoney.fistful.magista.domain.tables.IdentityData;
-import com.rbkmoney.fistful.magista.domain.tables.IdentityEvent;
-import com.rbkmoney.fistful.magista.domain.tables.WalletData;
-import com.rbkmoney.fistful.magista.domain.tables.WalletEvent;
-import com.rbkmoney.fistful.magista.domain.tables.WithdrawalData;
-import com.rbkmoney.fistful.magista.domain.tables.WithdrawalEvent;
-import com.rbkmoney.fistful.magista.domain.tables.records.ChallengeDataRecord;
-import com.rbkmoney.fistful.magista.domain.tables.records.ChallengeEventRecord;
-import com.rbkmoney.fistful.magista.domain.tables.records.IdentityDataRecord;
-import com.rbkmoney.fistful.magista.domain.tables.records.IdentityEventRecord;
-import com.rbkmoney.fistful.magista.domain.tables.records.WalletDataRecord;
-import com.rbkmoney.fistful.magista.domain.tables.records.WalletEventRecord;
-import com.rbkmoney.fistful.magista.domain.tables.records.WithdrawalDataRecord;
-import com.rbkmoney.fistful.magista.domain.tables.records.WithdrawalEventRecord;
-
-import javax.annotation.Generated;
-
+import com.rbkmoney.fistful.magista.domain.tables.*;
+import com.rbkmoney.fistful.magista.domain.tables.records.*;
 import org.jooq.Identity;
 import org.jooq.UniqueKey;
 import org.jooq.impl.Internal;
+
+import javax.annotation.Generated;
 
 
 /**
@@ -48,6 +33,7 @@ public class Keys {
 
     public static final Identity<ChallengeDataRecord, Long> IDENTITY_CHALLENGE_DATA = Identities0.IDENTITY_CHALLENGE_DATA;
     public static final Identity<ChallengeEventRecord, Long> IDENTITY_CHALLENGE_EVENT = Identities0.IDENTITY_CHALLENGE_EVENT;
+    public static final Identity<DepositRecord, Long> IDENTITY_DEPOSIT = Identities0.IDENTITY_DEPOSIT;
     public static final Identity<IdentityDataRecord, Long> IDENTITY_IDENTITY_DATA = Identities0.IDENTITY_IDENTITY_DATA;
     public static final Identity<IdentityEventRecord, Long> IDENTITY_IDENTITY_EVENT = Identities0.IDENTITY_IDENTITY_EVENT;
     public static final Identity<WalletDataRecord, Long> IDENTITY_WALLET_DATA = Identities0.IDENTITY_WALLET_DATA;
@@ -63,6 +49,7 @@ public class Keys {
     public static final UniqueKey<ChallengeDataRecord> CHALLENGE_DATA_UKEY = UniqueKeys0.CHALLENGE_DATA_UKEY;
     public static final UniqueKey<ChallengeEventRecord> CHALLENGE_EVENT_PKEY = UniqueKeys0.CHALLENGE_EVENT_PKEY;
     public static final UniqueKey<ChallengeEventRecord> CHALLENGE_EVENT_UKEY = UniqueKeys0.CHALLENGE_EVENT_UKEY;
+    public static final UniqueKey<DepositRecord> DEPOSIT_PKEY = UniqueKeys0.DEPOSIT_PKEY;
     public static final UniqueKey<IdentityDataRecord> IDENTITY_DATA_PKEY = UniqueKeys0.IDENTITY_DATA_PKEY;
     public static final UniqueKey<IdentityDataRecord> IDENTITY_DATA_UKEY = UniqueKeys0.IDENTITY_DATA_UKEY;
     public static final UniqueKey<IdentityEventRecord> IDENTITY_EVENT_PKEY = UniqueKeys0.IDENTITY_EVENT_PKEY;
@@ -88,6 +75,7 @@ public class Keys {
     private static class Identities0 {
         public static Identity<ChallengeDataRecord, Long> IDENTITY_CHALLENGE_DATA = Internal.createIdentity(ChallengeData.CHALLENGE_DATA, ChallengeData.CHALLENGE_DATA.ID);
         public static Identity<ChallengeEventRecord, Long> IDENTITY_CHALLENGE_EVENT = Internal.createIdentity(ChallengeEvent.CHALLENGE_EVENT, ChallengeEvent.CHALLENGE_EVENT.ID);
+        public static Identity<DepositRecord, Long> IDENTITY_DEPOSIT = Internal.createIdentity(Deposit.DEPOSIT, Deposit.DEPOSIT.ID);
         public static Identity<IdentityDataRecord, Long> IDENTITY_IDENTITY_DATA = Internal.createIdentity(IdentityData.IDENTITY_DATA, IdentityData.IDENTITY_DATA.ID);
         public static Identity<IdentityEventRecord, Long> IDENTITY_IDENTITY_EVENT = Internal.createIdentity(IdentityEvent.IDENTITY_EVENT, IdentityEvent.IDENTITY_EVENT.ID);
         public static Identity<WalletDataRecord, Long> IDENTITY_WALLET_DATA = Internal.createIdentity(WalletData.WALLET_DATA, WalletData.WALLET_DATA.ID);
@@ -101,6 +89,7 @@ public class Keys {
         public static final UniqueKey<ChallengeDataRecord> CHALLENGE_DATA_UKEY = Internal.createUniqueKey(ChallengeData.CHALLENGE_DATA, "challenge_data_ukey", ChallengeData.CHALLENGE_DATA.IDENTITY_ID, ChallengeData.CHALLENGE_DATA.CHALLENGE_ID);
         public static final UniqueKey<ChallengeEventRecord> CHALLENGE_EVENT_PKEY = Internal.createUniqueKey(ChallengeEvent.CHALLENGE_EVENT, "challenge_event_pkey", ChallengeEvent.CHALLENGE_EVENT.ID);
         public static final UniqueKey<ChallengeEventRecord> CHALLENGE_EVENT_UKEY = Internal.createUniqueKey(ChallengeEvent.CHALLENGE_EVENT, "challenge_event_ukey", ChallengeEvent.CHALLENGE_EVENT.EVENT_ID, ChallengeEvent.CHALLENGE_EVENT.SEQUENCE_ID);
+        public static final UniqueKey<DepositRecord> DEPOSIT_PKEY = Internal.createUniqueKey(Deposit.DEPOSIT, "deposit_pkey", Deposit.DEPOSIT.ID);
         public static final UniqueKey<IdentityDataRecord> IDENTITY_DATA_PKEY = Internal.createUniqueKey(IdentityData.IDENTITY_DATA, "identity_data_pkey", IdentityData.IDENTITY_DATA.ID);
         public static final UniqueKey<IdentityDataRecord> IDENTITY_DATA_UKEY = Internal.createUniqueKey(IdentityData.IDENTITY_DATA, "identity_data_ukey", IdentityData.IDENTITY_DATA.IDENTITY_ID);
         public static final UniqueKey<IdentityEventRecord> IDENTITY_EVENT_PKEY = Internal.createUniqueKey(IdentityEvent.IDENTITY_EVENT, "identity_event_pkey", IdentityEvent.IDENTITY_EVENT.ID);

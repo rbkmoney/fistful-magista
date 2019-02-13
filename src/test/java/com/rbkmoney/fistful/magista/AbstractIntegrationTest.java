@@ -33,7 +33,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 @TestPropertySource(properties = {"fistful.polling.enabled=false"})
 @ContextConfiguration(classes = FistfulMagistaApplication.class, initializers = AbstractIntegrationTest.Initializer.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
-public class AbstractIntegrationTest {
+public abstract class AbstractIntegrationTest {
 
     protected QueryProcessorImpl queryProcessor;
 
@@ -43,27 +43,34 @@ public class AbstractIntegrationTest {
     @Value("${local.server.port}")
     protected int port;
 
-    @Before
-    public void before() throws DaoException {
-        QueryContextFactoryImpl contextFactory = new QueryContextFactoryImpl(searchDao);
-        queryProcessor = new QueryProcessorImpl(new JsonQueryParser() {
-            @Override
-            protected ObjectMapper getMapper() {
-                ObjectMapper mapper = super.getMapper();
-                mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
-                return mapper;
-            }
-        }.withQueryParser(new QueryParserImpl()), new QueryBuilderImpl(), contextFactory);
-    }
-
     @ClassRule
     public static PostgreSQLContainer postgres = (PostgreSQLContainer) new PostgreSQLContainer("postgres:9.6")
             .withStartupTimeout(Duration.ofMinutes(5));
 
+    @Before
+    public void before() throws DaoException {
+        QueryContextFactoryImpl contextFactory = new QueryContextFactoryImpl(searchDao);
+        queryProcessor = new QueryProcessorImpl(
+                new JsonQueryParser() {
+                    @Override
+                    protected ObjectMapper getMapper() {
+                        ObjectMapper mapper = super.getMapper();
+                        mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
+                        return mapper;
+                    }
+                }
+                        .withQueryParser(new QueryParserImpl()),
+                new QueryBuilderImpl(),
+                contextFactory
+        );
+    }
+
     public static class Initializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
         @Override
         public void initialize(ConfigurableApplicationContext configurableApplicationContext) {
-            EnvironmentTestUtils.addEnvironment("testcontainers", configurableApplicationContext.getEnvironment(),
+            EnvironmentTestUtils.addEnvironment(
+                    "testcontainers",
+                    configurableApplicationContext.getEnvironment(),
                     "spring.datasource.url=" + postgres.getJdbcUrl(),
                     "spring.datasource.username=" + postgres.getUsername(),
                     "spring.datasource.password=" + postgres.getPassword(),

@@ -1,10 +1,11 @@
 package com.rbkmoney.fistful.magista.query.impl.parser;
 
+import com.rbkmoney.fistful.magista.query.impl.WalletFunction;
+import com.rbkmoney.fistful.magista.query.impl.WithdrawalFunction;
 import com.rbkmoney.magista.dsl.RootQuery;
 import com.rbkmoney.magista.dsl.parser.BaseQueryParser;
 import com.rbkmoney.magista.dsl.parser.QueryParser;
 import com.rbkmoney.magista.dsl.parser.QueryPart;
-import com.rbkmoney.fistful.magista.query.impl.*;
 
 import java.util.Arrays;
 import java.util.List;
@@ -17,7 +18,8 @@ public class QueryParserImpl extends BaseQueryParser {
                 Arrays.asList(
                         new RootQuery.RootParser(),
                         new WalletFunction.WalletParser(),
-                        new WithdrawalFunction.WithdrawalParser()
+                        new WithdrawalFunction.WithdrawalParser(),
+                        new DepositParser()
                 )
         );
     }

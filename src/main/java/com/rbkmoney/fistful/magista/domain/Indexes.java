@@ -4,20 +4,12 @@
 package com.rbkmoney.fistful.magista.domain;
 
 
-import com.rbkmoney.fistful.magista.domain.tables.ChallengeData;
-import com.rbkmoney.fistful.magista.domain.tables.ChallengeEvent;
-import com.rbkmoney.fistful.magista.domain.tables.IdentityData;
-import com.rbkmoney.fistful.magista.domain.tables.IdentityEvent;
-import com.rbkmoney.fistful.magista.domain.tables.WalletData;
-import com.rbkmoney.fistful.magista.domain.tables.WalletEvent;
-import com.rbkmoney.fistful.magista.domain.tables.WithdrawalData;
-import com.rbkmoney.fistful.magista.domain.tables.WithdrawalEvent;
-
-import javax.annotation.Generated;
-
+import com.rbkmoney.fistful.magista.domain.tables.*;
 import org.jooq.Index;
 import org.jooq.OrderField;
 import org.jooq.impl.Internal;
+
+import javax.annotation.Generated;
 
 
 /**
@@ -41,6 +33,14 @@ public class Indexes {
     public static final Index CHALLENGE_DATA_UKEY = Indexes0.CHALLENGE_DATA_UKEY;
     public static final Index CHALLENGE_EVENT_PKEY = Indexes0.CHALLENGE_EVENT_PKEY;
     public static final Index CHALLENGE_EVENT_UKEY = Indexes0.CHALLENGE_EVENT_UKEY;
+    public static final Index DEPOSIT_EVENT_CREATED_AT_IDX = Indexes0.DEPOSIT_EVENT_CREATED_AT_IDX;
+    public static final Index DEPOSIT_EVENT_ID_IDX = Indexes0.DEPOSIT_EVENT_ID_IDX;
+    public static final Index DEPOSIT_EVENT_OCCURED_AT_IDX = Indexes0.DEPOSIT_EVENT_OCCURED_AT_IDX;
+    public static final Index DEPOSIT_ID_IDX = Indexes0.DEPOSIT_ID_IDX;
+    public static final Index DEPOSIT_IDENTITY_ID_IDX = Indexes0.DEPOSIT_IDENTITY_ID_IDX;
+    public static final Index DEPOSIT_PARTY_ID_IDX = Indexes0.DEPOSIT_PARTY_ID_IDX;
+    public static final Index DEPOSIT_PKEY = Indexes0.DEPOSIT_PKEY;
+    public static final Index DEPOSIT_WALLET_ID_IDX = Indexes0.DEPOSIT_WALLET_ID_IDX;
     public static final Index IDENTITY_DATA_PKEY = Indexes0.IDENTITY_DATA_PKEY;
     public static final Index IDENTITY_DATA_UKEY = Indexes0.IDENTITY_DATA_UKEY;
     public static final Index IDENTITY_EVENT_PKEY = Indexes0.IDENTITY_EVENT_PKEY;
@@ -63,6 +63,14 @@ public class Indexes {
         public static Index CHALLENGE_DATA_UKEY = Internal.createIndex("challenge_data_ukey", ChallengeData.CHALLENGE_DATA, new OrderField[] { ChallengeData.CHALLENGE_DATA.IDENTITY_ID, ChallengeData.CHALLENGE_DATA.CHALLENGE_ID }, true);
         public static Index CHALLENGE_EVENT_PKEY = Internal.createIndex("challenge_event_pkey", ChallengeEvent.CHALLENGE_EVENT, new OrderField[] { ChallengeEvent.CHALLENGE_EVENT.ID }, true);
         public static Index CHALLENGE_EVENT_UKEY = Internal.createIndex("challenge_event_ukey", ChallengeEvent.CHALLENGE_EVENT, new OrderField[] { ChallengeEvent.CHALLENGE_EVENT.EVENT_ID, ChallengeEvent.CHALLENGE_EVENT.SEQUENCE_ID }, true);
+        public static Index DEPOSIT_EVENT_CREATED_AT_IDX = Internal.createIndex("deposit_event_created_at_idx", Deposit.DEPOSIT, new OrderField[]{Deposit.DEPOSIT.EVENT_CREATED_AT}, false);
+        public static Index DEPOSIT_EVENT_ID_IDX = Internal.createIndex("deposit_event_id_idx", Deposit.DEPOSIT, new OrderField[]{Deposit.DEPOSIT.EVENT_ID}, false);
+        public static Index DEPOSIT_EVENT_OCCURED_AT_IDX = Internal.createIndex("deposit_event_occured_at_idx", Deposit.DEPOSIT, new OrderField[]{Deposit.DEPOSIT.EVENT_OCCURED_AT}, false);
+        public static Index DEPOSIT_ID_IDX = Internal.createIndex("deposit_id_idx", Deposit.DEPOSIT, new OrderField[]{Deposit.DEPOSIT.DEPOSIT_ID}, false);
+        public static Index DEPOSIT_IDENTITY_ID_IDX = Internal.createIndex("deposit_identity_id_idx", Deposit.DEPOSIT, new OrderField[]{Deposit.DEPOSIT.IDENTITY_ID}, false);
+        public static Index DEPOSIT_PARTY_ID_IDX = Internal.createIndex("deposit_party_id_idx", Deposit.DEPOSIT, new OrderField[]{Deposit.DEPOSIT.PARTY_ID}, false);
+        public static Index DEPOSIT_PKEY = Internal.createIndex("deposit_pkey", Deposit.DEPOSIT, new OrderField[]{Deposit.DEPOSIT.ID}, true);
+        public static Index DEPOSIT_WALLET_ID_IDX = Internal.createIndex("deposit_wallet_id_idx", Deposit.DEPOSIT, new OrderField[]{Deposit.DEPOSIT.WALLET_ID}, false);
         public static Index IDENTITY_DATA_PKEY = Internal.createIndex("identity_data_pkey", IdentityData.IDENTITY_DATA, new OrderField[] { IdentityData.IDENTITY_DATA.ID }, true);
         public static Index IDENTITY_DATA_UKEY = Internal.createIndex("identity_data_ukey", IdentityData.IDENTITY_DATA, new OrderField[] { IdentityData.IDENTITY_DATA.IDENTITY_ID }, true);
         public static Index IDENTITY_EVENT_PKEY = Internal.createIndex("identity_event_pkey", IdentityEvent.IDENTITY_EVENT, new OrderField[] { IdentityEvent.IDENTITY_EVENT.ID }, true);

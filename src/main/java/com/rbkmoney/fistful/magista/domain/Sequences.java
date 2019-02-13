@@ -4,10 +4,10 @@
 package com.rbkmoney.fistful.magista.domain;
 
 
-import javax.annotation.Generated;
-
 import org.jooq.Sequence;
 import org.jooq.impl.SequenceImpl;
+
+import javax.annotation.Generated;
 
 
 /**
@@ -32,6 +32,11 @@ public class Sequences {
      * The sequence <code>mst.challenge_event_id_seq</code>
      */
     public static final Sequence<Long> CHALLENGE_EVENT_ID_SEQ = new SequenceImpl<Long>("challenge_event_id_seq", Mst.MST, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
+     * The sequence <code>mst.deposit_id_seq</code>
+     */
+    public static final Sequence<Long> DEPOSIT_ID_SEQ = new SequenceImpl<Long>("deposit_id_seq", Mst.MST, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
 
     /**
      * The sequence <code>mst.identity_data_id_seq</code>

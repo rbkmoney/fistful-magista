@@ -4,25 +4,16 @@
 package com.rbkmoney.fistful.magista.domain;
 
 
-import com.rbkmoney.fistful.magista.domain.tables.ChallengeData;
-import com.rbkmoney.fistful.magista.domain.tables.ChallengeEvent;
-import com.rbkmoney.fistful.magista.domain.tables.IdentityData;
-import com.rbkmoney.fistful.magista.domain.tables.IdentityEvent;
-import com.rbkmoney.fistful.magista.domain.tables.WalletData;
-import com.rbkmoney.fistful.magista.domain.tables.WalletEvent;
-import com.rbkmoney.fistful.magista.domain.tables.WithdrawalData;
-import com.rbkmoney.fistful.magista.domain.tables.WithdrawalEvent;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import javax.annotation.Generated;
-
+import com.rbkmoney.fistful.magista.domain.tables.*;
 import org.jooq.Catalog;
 import org.jooq.Sequence;
 import org.jooq.Table;
 import org.jooq.impl.SchemaImpl;
+
+import javax.annotation.Generated;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 
 /**
@@ -38,7 +29,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Mst extends SchemaImpl {
 
-    private static final long serialVersionUID = 1410319013;
+    private static final long serialVersionUID = 1334101934;
 
     /**
      * The reference instance of <code>mst</code>
@@ -54,6 +45,11 @@ public class Mst extends SchemaImpl {
      * The table <code>mst.challenge_event</code>.
      */
     public final ChallengeEvent CHALLENGE_EVENT = com.rbkmoney.fistful.magista.domain.tables.ChallengeEvent.CHALLENGE_EVENT;
+
+    /**
+     * The table <code>mst.deposit</code>.
+     */
+    public final Deposit DEPOSIT = com.rbkmoney.fistful.magista.domain.tables.Deposit.DEPOSIT;
 
     /**
      * The table <code>mst.identity_data</code>.
@@ -112,6 +108,7 @@ public class Mst extends SchemaImpl {
         return Arrays.<Sequence<?>>asList(
             Sequences.CHALLENGE_DATA_ID_SEQ,
             Sequences.CHALLENGE_EVENT_ID_SEQ,
+                Sequences.DEPOSIT_ID_SEQ,
             Sequences.IDENTITY_DATA_ID_SEQ,
             Sequences.IDENTITY_EVENT_ID_SEQ,
             Sequences.WALLET_DATA_ID_SEQ,
@@ -131,6 +128,7 @@ public class Mst extends SchemaImpl {
         return Arrays.<Table<?>>asList(
             ChallengeData.CHALLENGE_DATA,
             ChallengeEvent.CHALLENGE_EVENT,
+                Deposit.DEPOSIT,
             IdentityData.IDENTITY_DATA,
             IdentityEvent.IDENTITY_EVENT,
             WalletData.WALLET_DATA,

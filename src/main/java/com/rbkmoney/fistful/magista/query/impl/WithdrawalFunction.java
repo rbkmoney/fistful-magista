@@ -45,10 +45,13 @@ public class WithdrawalFunction extends PagedBaseFunction<Map.Entry<Long, StatWi
         QueryResult<Map.Entry<Long, StatWithdrawal>, List<Map.Entry<Long, StatWithdrawal>>> withdrawalsResult = (QueryResult<Map.Entry<Long, StatWithdrawal>, List<Map.Entry<Long, StatWithdrawal>>>) collectedResults.get(0);
 
         return new BaseQueryResult<>(
-                () -> withdrawalsResult.getDataStream(),
+                withdrawalsResult::getDataStream,
                 () -> {
-                    StatResponseData statResponseData = StatResponseData.withdrawals(withdrawalsResult.getDataStream()
-                            .map(withdrawalResponse -> withdrawalResponse.getValue()).collect(Collectors.toList()));
+                    StatResponseData statResponseData = StatResponseData.withdrawals(
+                            withdrawalsResult.getDataStream()
+                                    .map(Map.Entry::getValue)
+                                    .collect(Collectors.toList())
+                    );
                     StatResponse statResponse = new StatResponse(statResponseData);
                     List<Map.Entry<Long, StatWithdrawal>> withdrawalStats = withdrawalsResult.getCollectedStream();
                     if (!withdrawalsResult.getCollectedStream().isEmpty() && getQueryParameters().getSize() == withdrawalStats.size()) {
@@ -117,19 +120,19 @@ public class WithdrawalFunction extends PagedBaseFunction<Map.Entry<Long, StatWi
         }
 
         public String getDestinationId() {
-            return getStringParameter(WITHDRAWAL_DESTINATION_ID_PARAM, false);
+            return getStringParameter(DESTINATION_ID_PARAM, false);
         }
 
         public WithdrawalStatus getStatus() {
-            return statusesMap.get(getStringParameter(WITHDRAWAL_STATUS_PARAM, false));
+            return statusesMap.get(getStringParameter(STATUS_PARAM, false));
         }
 
         public Long getAmountFrom() {
-            return getLongParameter(WITHDRAWAL_AMOUNT_FROM_PARAM, false);
+            return getLongParameter(AMOUNT_FROM_PARAM, false);
         }
 
         public Long getAmountTo() {
-            return getLongParameter(WITHDRAWAL_AMOUNT_TO_PARAM, false);
+            return getLongParameter(AMOUNT_TO_PARAM, false);
         }
 
         public String getCurrencyCode() {
@@ -152,7 +155,7 @@ public class WithdrawalFunction extends PagedBaseFunction<Map.Entry<Long, StatWi
             super.validateParameters(parameters);
             WithdrawalParameters withdrawalParameters = super.checkParamsType(parameters, WithdrawalParameters.class);
             validateTimePeriod(withdrawalParameters.getFromTime(), withdrawalParameters.getToTime());
-            String stringStatus = parameters.getStringParameter(WITHDRAWAL_STATUS_PARAM, false);
+            String stringStatus = parameters.getStringParameter(STATUS_PARAM, false);
             if (stringStatus != null && withdrawalParameters.getStatus() == null) {
                 throw new IllegalArgumentException("Unknown withdrawal status: " + stringStatus);
             }
@@ -242,7 +245,7 @@ public class WithdrawalFunction extends PagedBaseFunction<Map.Entry<Long, StatWi
                         getFromId(),
                         parameters.getSize()
                 );
-                return new BaseQueryResult<>(() -> result.stream(), () -> result);
+                return new BaseQueryResult<>(result::stream, () -> result);
             } catch (DaoException e) {
                 throw new QueryExecutionException(e);
             }

@@ -6,6 +6,7 @@ import com.rbkmoney.magista.dsl.QueryContext;
 import com.rbkmoney.magista.dsl.QueryContextFactory;
 
 public class QueryContextFactoryImpl implements QueryContextFactory {
+
     private final SearchDao searchDao;
 
     public QueryContextFactoryImpl(SearchDao searchDao) {
