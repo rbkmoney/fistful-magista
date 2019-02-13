@@ -5,7 +5,6 @@ import com.rbkmoney.fistful.magista.dao.impl.mapper.RecordRowMapper;
 import com.rbkmoney.fistful.magista.domain.tables.pojos.Deposit;
 import com.rbkmoney.fistful.magista.domain.tables.records.DepositRecord;
 import com.rbkmoney.fistful.magista.exception.DaoException;
-import org.jooq.Condition;
 import org.jooq.Query;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,18 +47,22 @@ public class DepositDaoImpl extends AbstractGenericDao implements DepositDao {
 
     @Override
     public Deposit get(String depositId) throws DaoException {
-        Condition condition = DEPOSIT.DEPOSIT_ID.eq(depositId)
-                .and(DEPOSIT.CURRENT);
-        Query query = getDslContext().selectFrom(DEPOSIT).where(condition);
+        Query query = getDslContext().selectFrom(DEPOSIT)
+                .where(
+                        DEPOSIT.DEPOSIT_ID.eq(depositId)
+                                .and(DEPOSIT.CURRENT)
+                );
 
         return fetchOne(query, depositRowMapper);
     }
 
     @Override
     public void updateNotCurrent(String depositId) throws DaoException {
-        Condition condition = DEPOSIT.DEPOSIT_ID.eq(depositId)
-                .and(DEPOSIT.CURRENT);
-        Query query = getDslContext().update(DEPOSIT).set(DEPOSIT.CURRENT, false).where(condition);
+        Query query = getDslContext().update(DEPOSIT).set(DEPOSIT.CURRENT, false)
+                .where(
+                        DEPOSIT.DEPOSIT_ID.eq(depositId)
+                                .and(DEPOSIT.CURRENT)
+                );
 
         executeOne(query);
     }

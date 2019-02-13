@@ -16,13 +16,13 @@ public class DepositValidator extends PagedBaseFunction.PagedBaseValidator {
 
         //identity
         if (depositParameters.getIdentityId() == null) {
-            throw new IllegalArgumentException("Unknown deposit identity_id");
+            throw new IllegalArgumentException("Parameter identity_id must be set");
         }
 
         //party
         String partyId = parameters.getStringParameter(PARTY_ID_PARAM, false);
         if (partyId == null || depositParameters.getPartyId() == null) {
-            throw new IllegalArgumentException("Unknown deposit party: " + partyId);
+            throw new IllegalArgumentException("Parameter party_id must be set like UUID");
         }
 
         //time
