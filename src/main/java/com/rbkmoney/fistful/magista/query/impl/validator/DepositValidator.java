@@ -4,7 +4,6 @@ import com.rbkmoney.fistful.magista.query.impl.parameters.DepositParameters;
 import com.rbkmoney.magista.dsl.PagedBaseFunction;
 import com.rbkmoney.magista.dsl.QueryParameters;
 
-import static com.rbkmoney.fistful.magista.query.impl.Parameters.PARTY_ID_PARAM;
 import static com.rbkmoney.fistful.magista.query.impl.Parameters.STATUS_PARAM;
 
 public class DepositValidator extends PagedBaseFunction.PagedBaseValidator {
@@ -14,14 +13,8 @@ public class DepositValidator extends PagedBaseFunction.PagedBaseValidator {
         super.validateParameters(parameters);
         DepositParameters depositParameters = super.checkParamsType(parameters, DepositParameters.class);
 
-        //identity
-        if (depositParameters.getIdentityId() == null) {
-            throw new IllegalArgumentException("Parameter identity_id must be set");
-        }
-
         //party
-        String partyId = parameters.getStringParameter(PARTY_ID_PARAM, false);
-        if (partyId == null || depositParameters.getPartyId() == null) {
+        if (depositParameters.getPartyId() == null) {
             throw new IllegalArgumentException("Parameter party_id must be set like UUID");
         }
 

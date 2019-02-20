@@ -142,7 +142,7 @@ public class SearchDaoImpl extends AbstractGenericDao implements SearchDao {
                         parameters.getFromTime().map(TypeUtil::toLocalDateTime).map(DEPOSIT.EVENT_CREATED_AT::gt).orElse(DSL.trueCondition())
                                 .and(parameters.getToTime().map(TypeUtil::toLocalDateTime).map(DEPOSIT.EVENT_CREATED_AT::lt).orElse(DSL.trueCondition()))
                                 .and(parameters.getDepositId().map(DEPOSIT.DEPOSIT_ID::eq).orElse(DSL.trueCondition()))
-                                .and(DEPOSIT.IDENTITY_ID.eq(parameters.getIdentityId()))
+                                .and(parameters.getIdentityId().map(DEPOSIT.IDENTITY_ID::eq).orElse(DSL.trueCondition()))
                                 .and(parameters.getWalletId().map(DEPOSIT.WALLET_ID::eq).orElse(DSL.trueCondition()))
                                 .and(parameters.getSourceId().map(DEPOSIT.SOURCE_ID::eq).orElse(DSL.trueCondition()))
                                 .and(DEPOSIT.PARTY_ID.eq(parameters.getPartyId()))
