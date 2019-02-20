@@ -27,8 +27,8 @@ public class DepositParameters extends PagedBaseFunction.PagedBaseParameters {
         return Optional.ofNullable(getStringParameter(DEPOSIT_ID_PARAM, false));
     }
 
-    public String getIdentityId() {
-        return getStringParameter(IDENTITY_ID_PARAM, false);
+    public Optional<String> getIdentityId() {
+        return Optional.ofNullable(getStringParameter(IDENTITY_ID_PARAM, false));
     }
 
     public Optional<String> getWalletId() {
