@@ -120,7 +120,6 @@ public class DepositFunctionTest extends AbstractIntegrationTest {
         StatRequest statRequest = new StatRequest(json);
         StatResponse statResponse = queryProcessor.processQuery(statRequest);
         assertEquals(1, statResponse.getData().getDeposits().size());
-        System.out.println(statResponse.getData().getDeposits());
         assertNotNull(statResponse.getContinuationToken());
         assertEquals((Long) 2L, TokenUtil.extractIdValue(statResponse.getContinuationToken()).get());
 
