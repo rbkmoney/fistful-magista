@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.util.StringUtils;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -41,11 +42,13 @@ public class DepositFunctionTest extends AbstractIntegrationTest {
         deposit = random(Deposit.class);
         deposit.setId(1L);
         deposit.setCurrent(true);
+        deposit.setEventCreatedAt(LocalDateTime.now().minusMinutes(1));
         secondDeposit = random(Deposit.class);
         secondDeposit.setId(2L);
         secondDeposit.setCurrent(true);
         secondDeposit.setPartyId(deposit.getPartyId());
         secondDeposit.setIdentityId(deposit.getIdentityId());
+        secondDeposit.setEventCreatedAt(LocalDateTime.now().minusMinutes(1));
 
         depositDao.save(deposit);
         depositDao.save(secondDeposit);
@@ -117,6 +120,7 @@ public class DepositFunctionTest extends AbstractIntegrationTest {
         StatRequest statRequest = new StatRequest(json);
         StatResponse statResponse = queryProcessor.processQuery(statRequest);
         assertEquals(1, statResponse.getData().getDeposits().size());
+        System.out.println(statResponse.getData().getDeposits());
         assertNotNull(statResponse.getContinuationToken());
         assertEquals((Long) 2L, TokenUtil.extractIdValue(statResponse.getContinuationToken()).get());
 
