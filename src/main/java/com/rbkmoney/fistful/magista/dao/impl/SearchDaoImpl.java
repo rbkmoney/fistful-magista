@@ -151,6 +151,7 @@ public class SearchDaoImpl extends AbstractGenericDao implements SearchDao {
                                 .and(parameters.getCurrencyCode().map(DEPOSIT.CURRENCY_CODE::eq).orElse(DSL.trueCondition()))
                                 .and(parameters.getStatus().map(DEPOSIT.DEPOSIT_STATUS::eq).orElse(DSL.trueCondition()))
                                 .and(Optional.ofNullable(fromId).map(DEPOSIT.ID::lt).orElse(DSL.trueCondition()))
+                                .and(DEPOSIT.CURRENT)
                                 .and(DEPOSIT.PARTY_ID.isNotNull())
                                 .and(DEPOSIT.IDENTITY_ID.isNotNull())
                 )
