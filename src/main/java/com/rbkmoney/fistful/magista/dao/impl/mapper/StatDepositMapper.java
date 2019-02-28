@@ -1,9 +1,6 @@
 package com.rbkmoney.fistful.magista.dao.impl.mapper;
 
-import com.rbkmoney.fistful.fistful_stat.DepositFailed;
-import com.rbkmoney.fistful.fistful_stat.DepositPending;
-import com.rbkmoney.fistful.fistful_stat.DepositSucceeded;
-import com.rbkmoney.fistful.fistful_stat.StatDeposit;
+import com.rbkmoney.fistful.fistful_stat.*;
 import com.rbkmoney.fistful.magista.domain.enums.DepositStatus;
 import com.rbkmoney.fistful.magista.exception.NotFoundException;
 import com.rbkmoney.geck.common.util.TypeUtil;
@@ -39,7 +36,7 @@ public class StatDepositMapper implements RowMapper<Map.Entry<Long, StatDeposit>
                 deposit.setStatus(com.rbkmoney.fistful.fistful_stat.DepositStatus.pending(new DepositPending()));
                 break;
             case failed:
-                deposit.setStatus(com.rbkmoney.fistful.fistful_stat.DepositStatus.failed(new DepositFailed()));
+                deposit.setStatus(com.rbkmoney.fistful.fistful_stat.DepositStatus.failed(new DepositFailed(new Failure())));
                 break;
             default:
                 throw new NotFoundException(String.format("Deposit status '%s' not found", depositStatus.getLiteral()));
