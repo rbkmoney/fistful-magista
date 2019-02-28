@@ -22,7 +22,7 @@
         <exposed.ports>${server.port}</exposed.ports>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <dockerfile.base.service.tag>22c57470c4fc47161894f036b7cf9d70f42b75f5</dockerfile.base.service.tag>
-        <fistful-proto.version>1.17-8111fc9</fistful-proto.version>
+        <fistful-proto.version>1.21-d96f1ce</fistful-proto.version>
         <shared.resources.version>0.2.1</shared.resources.version>
         <db.name>fistful-magista</db.name>
         <db.port>5432</db.port>
