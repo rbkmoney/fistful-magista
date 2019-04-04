@@ -58,6 +58,7 @@ public class DepositCreatedHandler implements DepositEventHandler {
             deposit.setAmount(cash.getAmount());
             deposit.setCurrencyCode(cash.getCurrency().getSymbolicCode());
 
+            depositDao.updateNotCurrent(event.getSource());
             depositDao.save(deposit);
             log.info("Deposit have been saved, eventId={}, depositId={}", event.getId(), event.getSource());
         } catch (DaoException e) {
