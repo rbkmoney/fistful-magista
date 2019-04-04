@@ -24,7 +24,11 @@ public class DepositDaoImplTest extends AbstractIntegrationTest {
     @Test
     public void depositDaoTest() throws DaoException {
         Deposit deposit = random(Deposit.class);
+        deposit.setId(null);
         deposit.setCurrent(true);
+        depositDao.updateNotCurrent(deposit.getDepositId());
+        depositDao.save(deposit);
+        depositDao.updateNotCurrent(deposit.getDepositId());
         Long id = depositDao.save(deposit);
         deposit.setId(id);
         assertEquals(deposit, depositDao.get(deposit.getDepositId()));
