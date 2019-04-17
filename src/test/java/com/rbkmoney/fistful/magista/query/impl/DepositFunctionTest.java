@@ -54,7 +54,7 @@ public class DepositFunctionTest extends AbstractIntegrationTest {
 
     @After
     public void after() {
-        jdbcTemplate.execute("truncate mst.deposit");
+        jdbcTemplate.execute("truncate mst.deposit_data");
     }
 
     @Test
@@ -82,8 +82,8 @@ public class DepositFunctionTest extends AbstractIntegrationTest {
                 deposit.getAmount() + 1,
                 deposit.getCurrencyCode(),
                 StringUtils.capitalize(deposit.getDepositStatus().getLiteral()),
-                TypeUtil.temporalToString(deposit.getEventCreatedAt().minusHours(10)),
-                TypeUtil.temporalToString(deposit.getEventCreatedAt().plusHours(10))
+                TypeUtil.temporalToString(deposit.getCreatedAt().minusHours(10)),
+                TypeUtil.temporalToString(deposit.getCreatedAt().plusHours(10))
         );
         StatResponse statResponse = queryProcessor.processQuery(new StatRequest(json));
         List<StatDeposit> deposits = statResponse.getData().getDeposits();
