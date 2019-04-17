@@ -63,12 +63,12 @@ public class DepositParameters extends PagedBaseFunction.PagedBaseParameters {
         return Optional.empty();
     }
 
-    public Optional<TemporalAccessor> getFromTime() {
-        return Optional.ofNullable(getTimeParameter(FROM_TIME_PARAM, false));
+    public TemporalAccessor getFromTime() {
+        return getTimeParameter(FROM_TIME_PARAM, false);
     }
 
-    public Optional<TemporalAccessor> getToTime() {
-        return Optional.ofNullable(getTimeParameter(TO_TIME_PARAM, false));
+    public TemporalAccessor getToTime() {
+        return getTimeParameter(TO_TIME_PARAM, false);
     }
 
     private static Map<String, DepositStatus> getDepositStatusMap() {

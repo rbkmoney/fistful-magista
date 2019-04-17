@@ -2,14 +2,10 @@ package com.rbkmoney.fistful.magista.query.impl;
 
 import com.rbkmoney.fistful.fistful_stat.StatRequest;
 import com.rbkmoney.fistful.fistful_stat.StatResponse;
-import com.rbkmoney.fistful.fistful_stat.StatWallet;
 import com.rbkmoney.fistful.fistful_stat.StatWithdrawal;
 import com.rbkmoney.fistful.magista.AbstractIntegrationTest;
 import com.rbkmoney.fistful.magista.dao.WithdrawalDao;
-import com.rbkmoney.fistful.magista.domain.tables.pojos.WalletData;
-import com.rbkmoney.fistful.magista.domain.tables.pojos.WalletEvent;
 import com.rbkmoney.fistful.magista.domain.tables.pojos.WithdrawalData;
-import com.rbkmoney.fistful.magista.domain.tables.pojos.WithdrawalEvent;
 import com.rbkmoney.fistful.magista.exception.DaoException;
 import com.rbkmoney.geck.common.util.TypeUtil;
 import com.rbkmoney.magista.dsl.BadTokenException;
@@ -23,7 +19,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.List;
 import java.util.UUID;
 
@@ -39,36 +34,27 @@ public class WithdrawalFunctionTest extends AbstractIntegrationTest {
     private JdbcTemplate jdbcTemplate;
 
     private WithdrawalData withdrawalData;
-    private WithdrawalEvent withdrawalEvent;
     private WithdrawalData secondWithdrawalData;
-    private WithdrawalEvent secondWithdrawalEvent;
 
     @Before
     public void before() throws DaoException {
         super.before();
         withdrawalData = random(WithdrawalData.class);
         withdrawalData.setId(1L);
-        withdrawalDao.saveWithdrawalData(withdrawalData);
-        withdrawalEvent = random(WithdrawalEvent.class);
-        withdrawalEvent.setId(1L);
-        withdrawalEvent.setEventCreatedAt(LocalDateTime.now().minusMinutes(1));
-        withdrawalEvent.setWithdrawalId(withdrawalData.getWithdrawalId());
-        withdrawalDao.saveWithdrawalEvent(withdrawalEvent);
+        withdrawalData.setCreatedAt(LocalDateTime.now().minusMinutes(1));
+        withdrawalData.setWithdrawalId(withdrawalData.getWithdrawalId());
+        withdrawalDao.save(withdrawalData);
         secondWithdrawalData = random(WithdrawalData.class);
         secondWithdrawalData.setId(2L);
         secondWithdrawalData.setPartyId(withdrawalData.getPartyId());
         secondWithdrawalData.setIdentityId(withdrawalData.getIdentityId());
-        withdrawalDao.saveWithdrawalData(secondWithdrawalData);
-        secondWithdrawalEvent = random(WithdrawalEvent.class);
-        secondWithdrawalEvent.setId(2L);
-        secondWithdrawalEvent.setEventCreatedAt(LocalDateTime.now());
-        secondWithdrawalEvent.setWithdrawalId(secondWithdrawalData.getWithdrawalId());
-        withdrawalDao.saveWithdrawalEvent(secondWithdrawalEvent);
+        secondWithdrawalData.setCreatedAt(LocalDateTime.now());
+        withdrawalDao.save(secondWithdrawalData);
     }
 
     @After
     public void after() {
-        jdbcTemplate.execute("truncate mst.withdrawal_data, mst.withdrawal_event");
+        jdbcTemplate.execute("truncate mst.withdrawal_data");
     }
 
     @Test
@@ -91,12 +77,12 @@ public class WithdrawalFunctionTest extends AbstractIntegrationTest {
                 withdrawalData.getWithdrawalId(),
                 withdrawalData.getIdentityId(),
                 withdrawalData.getDestinationId(),
-                StringUtils.capitalize(withdrawalEvent.getWithdrawalStatus().getLiteral()),
+                StringUtils.capitalize(withdrawalData.getWithdrawalStatus().getLiteral()),
                 withdrawalData.getCurrencyCode(),
                 withdrawalData.getAmount() - 1,
                 withdrawalData.getAmount() + 1,
-                TypeUtil.temporalToString(withdrawalEvent.getEventCreatedAt().minusHours(10)),
-                TypeUtil.temporalToString(withdrawalEvent.getEventCreatedAt().plusHours(10))
+                TypeUtil.temporalToString(withdrawalData.getCreatedAt().minusHours(10)),
+                TypeUtil.temporalToString(withdrawalData.getCreatedAt().plusHours(10))
         );
         StatResponse statResponse = queryProcessor.processQuery(new StatRequest(json));
         List<StatWithdrawal> withdrawals = statResponse.getData().getWithdrawals();

@@ -3,11 +3,11 @@ package com.rbkmoney.fistful.magista.poller.handler.impl;
 import com.rbkmoney.fistful.identity.ChallengeCompleted;
 import com.rbkmoney.fistful.identity.Change;
 import com.rbkmoney.fistful.identity.SinkEvent;
-import com.rbkmoney.fistful.magista.dao.ChallengeDao;
+import com.rbkmoney.fistful.magista.dao.IdentityDao;
 import com.rbkmoney.fistful.magista.domain.enums.ChallengeEventType;
 import com.rbkmoney.fistful.magista.domain.enums.ChallengeResolution;
 import com.rbkmoney.fistful.magista.domain.enums.ChallengeStatus;
-import com.rbkmoney.fistful.magista.domain.tables.pojos.ChallengeEvent;
+import com.rbkmoney.fistful.magista.domain.tables.pojos.ChallengeData;
 import com.rbkmoney.fistful.magista.exception.DaoException;
 import com.rbkmoney.fistful.magista.exception.NotFoundException;
 import com.rbkmoney.fistful.magista.exception.StorageException;
@@ -24,11 +24,11 @@ public class IdentityChallengeStatusChangedEventHandler implements IdentityEvent
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
-    private final ChallengeDao challengeDao;
+    private final IdentityDao identityDao;
 
     @Autowired
-    public IdentityChallengeStatusChangedEventHandler(ChallengeDao challengeDao) {
-        this.challengeDao = challengeDao;
+    public IdentityChallengeStatusChangedEventHandler(IdentityDao identityDao) {
+        this.identityDao = identityDao;
     }
 
     @Override
@@ -41,27 +41,27 @@ public class IdentityChallengeStatusChangedEventHandler implements IdentityEvent
     public void handle(Change change, SinkEvent event) {
         try {
             log.info("Trying to handle IdentityChallengeStatusChanged, eventId={}, identityId={}", event.getId(), event.getSource());
-            ChallengeEvent challengeEvent = challengeDao.getLastChallengeEvent(event.getSource(), change.getIdentityChallenge().getId());
-            if (challengeEvent == null) {
-                throw new NotFoundException(String.format("ChallengeEvent with id='%s' not found", event.getSource()));
+            ChallengeData challengeData = identityDao.get(event.getSource(), change.getIdentityChallenge().getId());
+            if (challengeData == null) {
+                throw new NotFoundException(String.format("ChallengeData with identityId='%s', challengeId='%s' not found", event.getSource(), change.getIdentityChallenge().getId()));
             }
-            challengeEvent.setId(null);
-            challengeEvent.setEventId(event.getId());
-            challengeEvent.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
-            challengeEvent.setEventOccuredAt(TypeUtil.stringToLocalDateTime(event.getPayload().getOccuredAt()));
-            challengeEvent.setEventType(ChallengeEventType.CHALLENGE_STATUS_CHANGED);
-            challengeEvent.setSequenceId(event.getPayload().getSequence());
+
+            challengeData.setEventId(event.getId());
+            challengeData.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
+            challengeData.setEventOccurredAt(TypeUtil.stringToLocalDateTime(event.getPayload().getOccuredAt()));
+            challengeData.setEventType(ChallengeEventType.CHALLENGE_STATUS_CHANGED);
+            challengeData.setSequenceId(event.getPayload().getSequence());
             com.rbkmoney.fistful.identity.ChallengeStatus challengeStatus = change.getIdentityChallenge().getPayload().getStatusChanged();
-            challengeEvent.setChallengeStatus(TBaseUtil.unionFieldToEnum(challengeStatus, ChallengeStatus.class));
+            challengeData.setChallengeStatus(TBaseUtil.unionFieldToEnum(challengeStatus, ChallengeStatus.class));
             if (challengeStatus.isSetCompleted()) {
                 ChallengeCompleted challengeCompleted = challengeStatus.getCompleted();
-                challengeEvent.setChallengeResolution(TypeUtil.toEnumField(challengeCompleted.getResolution().toString(), ChallengeResolution.class));
+                challengeData.setChallengeResolution(TypeUtil.toEnumField(challengeCompleted.getResolution().toString(), ChallengeResolution.class));
                 if (challengeCompleted.isSetValidUntil()) {
-                    challengeEvent.setChallengeValidUntil(TypeUtil.stringToLocalDateTime(challengeCompleted.getValidUntil()));
+                    challengeData.setChallengeValidUntil(TypeUtil.stringToLocalDateTime(challengeCompleted.getValidUntil()));
                 }
             }
 
-            challengeDao.saveChallengeEvent(challengeEvent);
+            identityDao.save(challengeData);
             log.info("IdentityChallengeStatusChanged has been saved, eventId={}, identityId={}", event.getId(), event.getSource());
         } catch (DaoException ex) {
             throw new StorageException(ex);

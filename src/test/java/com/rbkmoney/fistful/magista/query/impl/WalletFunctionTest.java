@@ -6,7 +6,6 @@ import com.rbkmoney.fistful.fistful_stat.StatWallet;
 import com.rbkmoney.fistful.magista.AbstractIntegrationTest;
 import com.rbkmoney.fistful.magista.dao.WalletDao;
 import com.rbkmoney.fistful.magista.domain.tables.pojos.WalletData;
-import com.rbkmoney.fistful.magista.domain.tables.pojos.WalletEvent;
 import com.rbkmoney.fistful.magista.exception.DaoException;
 import com.rbkmoney.geck.common.util.TypeUtil;
 import com.rbkmoney.magista.dsl.BadTokenException;
@@ -34,36 +33,28 @@ public class WalletFunctionTest extends AbstractIntegrationTest {
     private JdbcTemplate jdbcTemplate;
 
     private WalletData walletData;
-    private WalletEvent walletEvent;
     private WalletData secondWalletData;
-    private WalletEvent secondWalletEvent;
 
     @Before
     public void before() throws DaoException {
         super.before();
         walletData = random(WalletData.class);
         walletData.setId(1L);
-        walletDao.saveWalletData(walletData);
-        walletEvent = random(WalletEvent.class);
-        walletEvent.setId(1L);
-        walletEvent.setEventCreatedAt(LocalDateTime.now().minusMinutes(1));
-        walletEvent.setWalletId(walletData.getWalletId());
-        walletDao.saveWalletEvent(walletEvent);
+        walletData.setEventCreatedAt(LocalDateTime.now().minusMinutes(1));
+        walletDao.save(walletData);
         secondWalletData = random(WalletData.class);
         secondWalletData.setId(2L);
         secondWalletData.setPartyId(walletData.getPartyId());
         secondWalletData.setIdentityId(walletData.getIdentityId());
-        walletDao.saveWalletData(secondWalletData);
-        secondWalletEvent = random(WalletEvent.class);
-        secondWalletEvent.setId(2L);
-        secondWalletEvent.setEventCreatedAt(LocalDateTime.now());
-        secondWalletEvent.setWalletId(secondWalletData.getWalletId());
-        walletDao.saveWalletEvent(secondWalletEvent);
+        secondWalletData.setId(2L);
+        secondWalletData.setEventCreatedAt(LocalDateTime.now());
+        secondWalletData.setWalletId(secondWalletData.getWalletId());
+        walletDao.save(secondWalletData);
     }
 
     @After
     public void after() {
-        jdbcTemplate.execute("truncate mst.wallet_data, mst.wallet_event");
+        jdbcTemplate.execute("truncate mst.wallet_data");
     }
 
     @Test
@@ -71,9 +62,9 @@ public class WalletFunctionTest extends AbstractIntegrationTest {
         String json = String.format("{'query': {'wallets': {'party_id': '%s','identity_id': '%s', 'currency_code':'%s', 'from_time': '%s','to_time': '%s'}}}",
                 walletData.getPartyId(),
                 walletData.getIdentityId(),
-                walletEvent.getCurrencyCode(),
-                TypeUtil.temporalToString(walletEvent.getEventCreatedAt().minusMinutes(1)),
-                TypeUtil.temporalToString(walletEvent.getEventCreatedAt().plusMinutes(1)));
+                walletData.getCurrencyCode(),
+                TypeUtil.temporalToString(walletData.getCreatedAt().minusMinutes(1)),
+                TypeUtil.temporalToString(walletData.getCreatedAt().plusMinutes(1)));
         StatResponse statResponse = queryProcessor.processQuery(new StatRequest(json));
         List<StatWallet> wallets = statResponse.getData().getWallets();
         assertEquals(1, wallets.size());

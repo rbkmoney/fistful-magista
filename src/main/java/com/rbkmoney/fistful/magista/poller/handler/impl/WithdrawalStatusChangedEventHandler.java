@@ -3,7 +3,7 @@ package com.rbkmoney.fistful.magista.poller.handler.impl;
 import com.rbkmoney.fistful.magista.dao.WithdrawalDao;
 import com.rbkmoney.fistful.magista.domain.enums.WithdrawalEventType;
 import com.rbkmoney.fistful.magista.domain.enums.WithdrawalStatus;
-import com.rbkmoney.fistful.magista.domain.tables.pojos.WithdrawalEvent;
+import com.rbkmoney.fistful.magista.domain.tables.pojos.WithdrawalData;
 import com.rbkmoney.fistful.magista.exception.DaoException;
 import com.rbkmoney.fistful.magista.exception.NotFoundException;
 import com.rbkmoney.fistful.magista.exception.StorageException;
@@ -38,20 +38,19 @@ public class WithdrawalStatusChangedEventHandler implements WithdrawalEventHandl
     public void handle(Change change, SinkEvent event) {
         try {
             log.info("Trying to handle WithdrawalStatusChanged, eventId={}, withdrawalId={}", event.getId(), event.getSource());
-            WithdrawalEvent withdrawalEvent = withdrawalDao.getLastWithdrawalEvent(event.getSource());
-            if (withdrawalEvent == null) {
+            WithdrawalData withdrawalData = withdrawalDao.get(event.getSource());
+            if (withdrawalData == null) {
                 throw new NotFoundException(String.format("WithdrawalEvent with withdrawalId='%s' not found", event.getSource()));
             }
 
-            withdrawalEvent.setId(null);
-            withdrawalEvent.setEventId(event.getId());
-            withdrawalEvent.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
-            withdrawalEvent.setEventOccuredAt(TypeUtil.stringToLocalDateTime(event.getPayload().getOccuredAt()));
-            withdrawalEvent.setEventType(WithdrawalEventType.WITHDRAWAL_STATUS_CHANGED);
-            withdrawalEvent.setSequenceId(event.getPayload().getSequence());
-            withdrawalEvent.setWithdrawalStatus(TBaseUtil.unionFieldToEnum(change.getStatusChanged(), WithdrawalStatus.class));
+            withdrawalData.setEventId(event.getId());
+            withdrawalData.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
+            withdrawalData.setEventOccurredAt(TypeUtil.stringToLocalDateTime(event.getPayload().getOccuredAt()));
+            withdrawalData.setEventType(WithdrawalEventType.WITHDRAWAL_STATUS_CHANGED);
+            withdrawalData.setSequenceId(event.getPayload().getSequence());
+            withdrawalData.setWithdrawalStatus(TBaseUtil.unionFieldToEnum(change.getStatusChanged(), WithdrawalStatus.class));
 
-            withdrawalDao.saveWithdrawalEvent(withdrawalEvent);
+            withdrawalDao.save(withdrawalData);
             log.info("WithdrawalStatusChanged has been saved, eventId={}, withdrawalId={}", event.getId(), event.getSource());
         } catch (DaoException ex) {
             throw new StorageException(ex);

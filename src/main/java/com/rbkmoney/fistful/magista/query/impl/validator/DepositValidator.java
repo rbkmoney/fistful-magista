@@ -19,8 +19,8 @@ public class DepositValidator extends PagedBaseFunction.PagedBaseValidator {
         }
 
         //time
-        if (depositParameters.getFromTime().isPresent() && depositParameters.getToTime().isPresent()) {
-            validateTimePeriod(depositParameters.getFromTime().get(), depositParameters.getToTime().get());
+        if (depositParameters.getFromTime() != null && depositParameters.getToTime() != null) {
+            validateTimePeriod(depositParameters.getFromTime(), depositParameters.getToTime());
         }
 
         //status

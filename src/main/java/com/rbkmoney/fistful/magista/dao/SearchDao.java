@@ -23,13 +23,17 @@ public interface SearchDao {
 
     Collection<Map.Entry<Long, StatWithdrawal>> getWithdrawals(
             WithdrawalFunction.WithdrawalParameters parameters,
-            Optional<LocalDateTime> fromTime,
-            Optional<LocalDateTime> toTime,
-            Optional<Long> fromId,
+            LocalDateTime fromTime,
+            LocalDateTime toTime,
+            Long fromId,
             int limit
     ) throws DaoException;
 
-    Collection<Map.Entry<Long, StatDeposit>> getDeposits(DepositParameters parameters,
-                                                         Long fromId,
-                                                         int limit) throws DaoException;
+    Collection<Map.Entry<Long, StatDeposit>> getDeposits(
+            DepositParameters parameters,
+            LocalDateTime fromTime,
+            LocalDateTime toTime,
+            Long fromId,
+            int limit
+    ) throws DaoException;
 }

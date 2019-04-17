@@ -9,7 +9,9 @@ import com.rbkmoney.fistful.magista.dao.SearchDao;
 import com.rbkmoney.fistful.magista.dao.WalletDao;
 import com.rbkmoney.fistful.magista.dao.WithdrawalDao;
 import com.rbkmoney.fistful.magista.domain.enums.DepositStatus;
-import com.rbkmoney.fistful.magista.domain.tables.pojos.*;
+import com.rbkmoney.fistful.magista.domain.tables.pojos.DepositData;
+import com.rbkmoney.fistful.magista.domain.tables.pojos.WalletData;
+import com.rbkmoney.fistful.magista.domain.tables.pojos.WithdrawalData;
 import com.rbkmoney.fistful.magista.exception.DaoException;
 import com.rbkmoney.fistful.magista.query.impl.WalletFunction;
 import com.rbkmoney.fistful.magista.query.impl.WithdrawalFunction;
@@ -41,15 +43,11 @@ public class SearchDaoImplTest extends AbstractIntegrationTest {
     @Test
     public void testGetWallets() throws DaoException {
         WalletData walletData = random(WalletData.class);
-        walletDao.saveWalletData(walletData);
-        WalletEvent walletEvent = random(WalletEvent.class);
-        walletEvent.setWalletId(walletData.getWalletId());
-        walletEvent.setIdentityId(walletData.getIdentityId());
-        walletDao.saveWalletEvent(walletEvent);
+        walletDao.save(walletData);
         HashMap<String, Object> map = new HashMap<>();
         map.put(PARTY_ID_PARAM, walletData.getPartyId());
         map.put(IDENTITY_ID_PARAM, walletData.getIdentityId());
-        map.put(CURRENCY_CODE_PARAM, walletEvent.getCurrencyCode());
+        map.put(CURRENCY_CODE_PARAM, walletData.getCurrencyCode());
         WalletFunction.WalletParameters walletParameters = new WalletFunction.WalletParameters(map, null);
         Collection<Map.Entry<Long, StatWallet>> wallets = searchDao.getWallets(walletParameters, Optional.of(walletData.getId() + 1), 100);
         assertEquals(wallets.size(), 1);
@@ -65,35 +63,43 @@ public class SearchDaoImplTest extends AbstractIntegrationTest {
     @Test
     public void testGetWithdrawals() throws DaoException {
         WithdrawalData withdrawalData = random(WithdrawalData.class);
-        withdrawalDao.saveWithdrawalData(withdrawalData);
-        WithdrawalEvent withdrawalEvent = random(WithdrawalEvent.class);
-        withdrawalEvent.setWithdrawalId(withdrawalData.getWithdrawalId());
-        withdrawalDao.saveWithdrawalEvent(withdrawalEvent);
+        withdrawalDao.save(withdrawalData);
         HashMap<String, Object> map = new HashMap<>();
         map.put(PARTY_ID_PARAM, withdrawalData.getPartyId());
         map.put(WALLET_ID_PARAM, withdrawalData.getWalletId());
         map.put(IDENTITY_ID_PARAM, withdrawalData.getIdentityId());
         map.put(DESTINATION_ID_PARAM, withdrawalData.getDestinationId());
-        map.put(STATUS_PARAM, withdrawalEvent.getWithdrawalStatus().getLiteral());
+        map.put(STATUS_PARAM, withdrawalData.getWithdrawalStatus().getLiteral());
         map.put(AMOUNT_FROM_PARAM, withdrawalData.getAmount() - 1);
         map.put(AMOUNT_TO_PARAM, withdrawalData.getAmount() + 1);
         map.put(CURRENCY_CODE_PARAM, withdrawalData.getCurrencyCode());
         WithdrawalFunction.WithdrawalParameters withdrawalParameters = new WithdrawalFunction.WithdrawalParameters(map, null);
-        Collection<Map.Entry<Long, StatWithdrawal>> withdrawals = searchDao.getWithdrawals(withdrawalParameters, Optional.of(withdrawalEvent.getEventCreatedAt().minusMinutes(1)), Optional.of(withdrawalEvent.getEventCreatedAt().plusMinutes(1)), Optional.of(withdrawalData.getId() + 1), 100);
+        Collection<Map.Entry<Long, StatWithdrawal>> withdrawals = searchDao.getWithdrawals(
+                withdrawalParameters,
+                withdrawalData.getCreatedAt().minusMinutes(1),
+                withdrawalData.getCreatedAt().plusMinutes(1),
+                withdrawalData.getId() + 1,
+                100
+        );
         assertEquals(withdrawals.size(), 1);
-        assertEquals(withdrawals.iterator().next().getValue().getFee(), withdrawalEvent.getFee().longValue());
+        assertEquals(withdrawals.iterator().next().getValue().getFee(), withdrawalData.getFee().longValue());
 
         map.clear();
         map.put(IDENTITY_ID_PARAM, "wrong_identity_id");
         withdrawalParameters = new WithdrawalFunction.WithdrawalParameters(map, null);
-        withdrawals = searchDao.getWithdrawals(withdrawalParameters, Optional.of(withdrawalEvent.getEventCreatedAt().minusMinutes(1)), Optional.of(withdrawalEvent.getEventCreatedAt().plusMinutes(1)), Optional.of(withdrawalData.getId() + 1), 100);
+        withdrawals = searchDao.getWithdrawals(
+                withdrawalParameters,
+                withdrawalData.getEventCreatedAt().minusMinutes(1),
+                withdrawalData.getEventCreatedAt().plusMinutes(1),
+                withdrawalData.getId() + 1,
+                100
+        );
         assertEquals(withdrawals.size(), 0);
     }
 
     @Test
     public void testGetDeposits() throws DaoException {
-        Deposit deposit = random(Deposit.class);
-        deposit.setCurrent(true);
+        DepositData deposit = random(DepositData.class);
         deposit.setDepositStatus(DepositStatus.pending);
         deposit.setPartyId(UUID.randomUUID());
         depositDao.save(deposit);
@@ -119,9 +125,11 @@ public class SearchDaoImplTest extends AbstractIntegrationTest {
         assertEquals(0, deposits.size());
     }
 
-    private Collection<Map.Entry<Long, StatDeposit>> getDeposits(Deposit deposit, DepositParameters parameters) throws DaoException {
+    private Collection<Map.Entry<Long, StatDeposit>> getDeposits(DepositData deposit, DepositParameters parameters) throws DaoException {
         return searchDao.getDeposits(
                 parameters,
+                null,
+                null,
                 deposit.getId() + 1,
                 100
         );

@@ -1,21 +1,13 @@
 package com.rbkmoney.fistful.magista.dao;
 
+import com.rbkmoney.fistful.magista.domain.tables.pojos.ChallengeData;
 import com.rbkmoney.fistful.magista.domain.tables.pojos.IdentityData;
-import com.rbkmoney.fistful.magista.domain.tables.pojos.IdentityEvent;
 import com.rbkmoney.fistful.magista.exception.DaoException;
 
-import java.util.Optional;
+public interface IdentityDao extends FistfulDao<IdentityData> {
 
-public interface IdentityDao extends GenericDao {
+    ChallengeData get(String identityId, String challengeId) throws DaoException;
 
-    IdentityData getIdentityData(String identityId) throws DaoException;
-
-    long saveIdentityData(IdentityData identityData) throws DaoException;
-
-    IdentityEvent getLastIdentityEvent(String identityId) throws DaoException;
-
-    long saveIdentityEvent(IdentityEvent identityEvent) throws DaoException;
-
-    Optional<Long> getLastEventId() throws DaoException;
+    long save(ChallengeData challenge) throws DaoException;
 
 }

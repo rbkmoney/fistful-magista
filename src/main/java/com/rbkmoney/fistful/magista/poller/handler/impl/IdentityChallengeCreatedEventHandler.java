@@ -4,11 +4,10 @@ import com.rbkmoney.fistful.identity.Challenge;
 import com.rbkmoney.fistful.identity.ChallengeChange;
 import com.rbkmoney.fistful.identity.Change;
 import com.rbkmoney.fistful.identity.SinkEvent;
-import com.rbkmoney.fistful.magista.dao.ChallengeDao;
+import com.rbkmoney.fistful.magista.dao.IdentityDao;
 import com.rbkmoney.fistful.magista.domain.enums.ChallengeEventType;
 import com.rbkmoney.fistful.magista.domain.enums.ChallengeStatus;
 import com.rbkmoney.fistful.magista.domain.tables.pojos.ChallengeData;
-import com.rbkmoney.fistful.magista.domain.tables.pojos.ChallengeEvent;
 import com.rbkmoney.fistful.magista.exception.DaoException;
 import com.rbkmoney.fistful.magista.exception.StorageException;
 import com.rbkmoney.fistful.magista.poller.handler.IdentityEventHandler;
@@ -18,16 +17,18 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
+
 @Component
 public class IdentityChallengeCreatedEventHandler implements IdentityEventHandler {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
-    private final ChallengeDao challengeDao;
+    private final IdentityDao identityDao;
 
     @Autowired
-    public IdentityChallengeCreatedEventHandler(ChallengeDao challengeDao) {
-        this.challengeDao = challengeDao;
+    public IdentityChallengeCreatedEventHandler(IdentityDao identityDao) {
+        this.identityDao = identityDao;
     }
 
     @Override
@@ -46,19 +47,19 @@ public class IdentityChallengeCreatedEventHandler implements IdentityEventHandle
         Challenge challenge = challengeChange.getPayload().getCreated();
         challengeData.setChallengeClassId(challenge.getCls());
 
-        ChallengeEvent challengeEvent = new ChallengeEvent();
-        challengeEvent.setEventId(event.getId());
-        challengeEvent.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
-        challengeEvent.setEventOccuredAt(TypeUtil.stringToLocalDateTime(event.getPayload().getOccuredAt()));
-        challengeEvent.setEventType(ChallengeEventType.CHALLENGE_CREATED);
-        challengeEvent.setSequenceId(event.getPayload().getSequence());
-        challengeEvent.setIdentityId(event.getSource());
-        challengeEvent.setChallengeId(challengeChange.getId());
-        challengeEvent.setChallengeStatus(ChallengeStatus.pending);
+        challengeData.setEventId(event.getId());
+        challengeData.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
+        LocalDateTime eventOccurredAt = TypeUtil.stringToLocalDateTime(event.getPayload().getOccuredAt());
+        challengeData.setCreatedAt(eventOccurredAt);
+        challengeData.setEventOccurredAt(eventOccurredAt);
+        challengeData.setEventType(ChallengeEventType.CHALLENGE_CREATED);
+        challengeData.setSequenceId(event.getPayload().getSequence());
+        challengeData.setIdentityId(event.getSource());
+        challengeData.setChallengeId(challengeChange.getId());
+        challengeData.setChallengeStatus(ChallengeStatus.pending);
 
         try {
-            challengeDao.saveChallengeData(challengeData);
-            challengeDao.saveChallengeEvent(challengeEvent);
+            identityDao.save(challengeData);
         } catch (DaoException ex) {
             throw new StorageException(ex);
         }
