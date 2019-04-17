@@ -29,7 +29,6 @@ public class DepositDaoImplTest extends AbstractIntegrationTest {
         Long id = depositDao.save(deposit);
         deposit.setId(id);
         assertEquals(deposit, depositDao.get(deposit.getDepositId()));
-        assertNull(depositDao.get(deposit.getDepositId()));
     }
 
     @After
