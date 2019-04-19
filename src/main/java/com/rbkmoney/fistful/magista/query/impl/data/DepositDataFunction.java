@@ -5,6 +5,7 @@ import com.rbkmoney.fistful.magista.exception.DaoException;
 import com.rbkmoney.fistful.magista.query.impl.DepositFunction;
 import com.rbkmoney.fistful.magista.query.impl.FunctionQueryContext;
 import com.rbkmoney.fistful.magista.query.impl.parameters.DepositParameters;
+import com.rbkmoney.geck.common.util.TypeUtil;
 import com.rbkmoney.magista.dsl.*;
 
 import java.util.Collection;
@@ -29,6 +30,8 @@ public class DepositDataFunction extends PagedBaseFunction<Map.Entry<Long, StatD
         try {
             Collection<Map.Entry<Long, StatDeposit>> result = functionContext.getSearchDao().getDeposits(
                     parameters,
+                    TypeUtil.toLocalDateTime(parameters.getFromTime()),
+                    TypeUtil.toLocalDateTime(parameters.getToTime()),
                     getFromId().orElse(null),
                     parameters.getSize()
             );

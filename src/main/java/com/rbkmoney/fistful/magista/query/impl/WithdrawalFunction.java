@@ -240,9 +240,9 @@ public class WithdrawalFunction extends PagedBaseFunction<Map.Entry<Long, StatWi
             try {
                 Collection<Map.Entry<Long, StatWithdrawal>> result = functionContext.getSearchDao().getWithdrawals(
                         parameters,
-                        Optional.ofNullable(TypeUtil.toLocalDateTime(parameters.getFromTime())),
-                        Optional.ofNullable(TypeUtil.toLocalDateTime(parameters.getToTime())),
-                        getFromId(),
+                        TypeUtil.toLocalDateTime(parameters.getFromTime()),
+                        TypeUtil.toLocalDateTime(parameters.getToTime()),
+                        getFromId().orElse(null),
                         parameters.getSize()
                 );
                 return new BaseQueryResult<>(result::stream, () -> result);

@@ -5,7 +5,7 @@ import com.rbkmoney.fistful.fistful_stat.StatRequest;
 import com.rbkmoney.fistful.fistful_stat.StatResponse;
 import com.rbkmoney.fistful.magista.AbstractIntegrationTest;
 import com.rbkmoney.fistful.magista.dao.DepositDao;
-import com.rbkmoney.fistful.magista.domain.tables.pojos.Deposit;
+import com.rbkmoney.fistful.magista.domain.tables.pojos.DepositData;
 import com.rbkmoney.fistful.magista.exception.DaoException;
 import com.rbkmoney.geck.common.util.TypeUtil;
 import com.rbkmoney.magista.dsl.BadTokenException;
@@ -33,19 +33,17 @@ public class DepositFunctionTest extends AbstractIntegrationTest {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    private Deposit deposit;
-    private Deposit secondDeposit;
+    private DepositData deposit;
+    private DepositData secondDeposit;
 
     @Before
     public void before() throws DaoException {
         super.before();
-        deposit = random(Deposit.class);
+        deposit = random(DepositData.class);
         deposit.setId(1L);
-        deposit.setCurrent(true);
         deposit.setEventCreatedAt(LocalDateTime.now().minusMinutes(1));
-        secondDeposit = random(Deposit.class);
+        secondDeposit = random(DepositData.class);
         secondDeposit.setId(2L);
-        secondDeposit.setCurrent(true);
         secondDeposit.setPartyId(deposit.getPartyId());
         secondDeposit.setIdentityId(deposit.getIdentityId());
         secondDeposit.setEventCreatedAt(LocalDateTime.now().minusMinutes(1));
@@ -56,7 +54,7 @@ public class DepositFunctionTest extends AbstractIntegrationTest {
 
     @After
     public void after() {
-        jdbcTemplate.execute("truncate mst.deposit");
+        jdbcTemplate.execute("truncate mst.deposit_data");
     }
 
     @Test
@@ -84,8 +82,8 @@ public class DepositFunctionTest extends AbstractIntegrationTest {
                 deposit.getAmount() + 1,
                 deposit.getCurrencyCode(),
                 StringUtils.capitalize(deposit.getDepositStatus().getLiteral()),
-                TypeUtil.temporalToString(deposit.getEventCreatedAt().minusHours(10)),
-                TypeUtil.temporalToString(deposit.getEventCreatedAt().plusHours(10))
+                TypeUtil.temporalToString(deposit.getCreatedAt().minusHours(10)),
+                TypeUtil.temporalToString(deposit.getCreatedAt().plusHours(10))
         );
         StatResponse statResponse = queryProcessor.processQuery(new StatRequest(json));
         List<StatDeposit> deposits = statResponse.getData().getDeposits();

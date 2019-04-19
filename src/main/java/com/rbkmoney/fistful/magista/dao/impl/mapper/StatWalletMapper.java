@@ -11,7 +11,6 @@ import java.util.AbstractMap;
 import java.util.Map;
 
 import static com.rbkmoney.fistful.magista.domain.tables.WalletData.WALLET_DATA;
-import static com.rbkmoney.fistful.magista.domain.tables.WalletEvent.WALLET_EVENT;
 
 public class StatWalletMapper implements RowMapper<Map.Entry<Long, StatWallet>> {
 
@@ -19,10 +18,10 @@ public class StatWalletMapper implements RowMapper<Map.Entry<Long, StatWallet>> 
     public Map.Entry<Long, StatWallet> mapRow(ResultSet rs, int i) throws SQLException {
         StatWallet statWallet = new StatWallet();
         statWallet.setId(rs.getString(WALLET_DATA.WALLET_ID.getName()));
-        statWallet.setIdentityId(rs.getString(WALLET_EVENT.IDENTITY_ID.getName()));
+        statWallet.setIdentityId(rs.getString(WALLET_DATA.IDENTITY_ID.getName()));
         statWallet.setName(rs.getString(WALLET_DATA.WALLET_NAME.getName()));
-        statWallet.setCreatedAt(TypeUtil.temporalToString(rs.getObject(WALLET_EVENT.EVENT_CREATED_AT.getName(), LocalDateTime.class)));
-        statWallet.setCurrencySymbolicCode(rs.getString(WALLET_EVENT.CURRENCY_CODE.getName()));
+        statWallet.setCreatedAt(TypeUtil.temporalToString(rs.getObject(WALLET_DATA.CREATED_AT.getName(), LocalDateTime.class)));
+        statWallet.setCurrencySymbolicCode(rs.getString(WALLET_DATA.CURRENCY_CODE.getName()));
         return new AbstractMap.SimpleEntry<>(rs.getLong(WALLET_DATA.ID.getName()), statWallet);
     }
 }

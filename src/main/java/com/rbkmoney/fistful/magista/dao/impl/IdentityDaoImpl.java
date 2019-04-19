@@ -2,10 +2,10 @@ package com.rbkmoney.fistful.magista.dao.impl;
 
 import com.rbkmoney.fistful.magista.dao.IdentityDao;
 import com.rbkmoney.fistful.magista.dao.impl.mapper.RecordRowMapper;
+import com.rbkmoney.fistful.magista.domain.tables.pojos.ChallengeData;
 import com.rbkmoney.fistful.magista.domain.tables.pojos.IdentityData;
-import com.rbkmoney.fistful.magista.domain.tables.pojos.IdentityEvent;
+import com.rbkmoney.fistful.magista.domain.tables.records.ChallengeDataRecord;
 import com.rbkmoney.fistful.magista.domain.tables.records.IdentityDataRecord;
-import com.rbkmoney.fistful.magista.domain.tables.records.IdentityEventRecord;
 import com.rbkmoney.fistful.magista.exception.DaoException;
 import org.jooq.Query;
 import org.jooq.impl.DSL;
@@ -15,42 +15,41 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
-
 import java.util.Optional;
 
+import static com.rbkmoney.fistful.magista.domain.tables.ChallengeData.CHALLENGE_DATA;
 import static com.rbkmoney.fistful.magista.domain.tables.IdentityData.IDENTITY_DATA;
-import static com.rbkmoney.fistful.magista.domain.tables.IdentityEvent.IDENTITY_EVENT;
-import static com.rbkmoney.fistful.magista.domain.tables.ChallengeEvent.CHALLENGE_EVENT;
 
 @Component
 public class IdentityDaoImpl extends AbstractGenericDao implements IdentityDao {
 
-    private final RecordRowMapper<IdentityData> identityDataRecordRowMapper;
-    private final RecordRowMapper<IdentityEvent> identityEventRecordRowMapper;
+    private final RecordRowMapper<IdentityData> identityRecordRowMapper;
+    private final RecordRowMapper<ChallengeData> challengeRecordRowMapper;
 
     @Autowired
     public IdentityDaoImpl(DataSource dataSource) {
         super(dataSource);
-        identityDataRecordRowMapper = new RecordRowMapper<>(IDENTITY_DATA, IdentityData.class);
-        identityEventRecordRowMapper = new RecordRowMapper<>(IDENTITY_EVENT, IdentityEvent.class);
+        identityRecordRowMapper = new RecordRowMapper<>(IDENTITY_DATA, IdentityData.class);
+        challengeRecordRowMapper = new RecordRowMapper<>(CHALLENGE_DATA, ChallengeData.class);
     }
 
     @Override
-    public IdentityData getIdentityData(String identityId) throws DaoException {
+    public IdentityData get(String identityId) throws DaoException {
         Query query = getDslContext().selectFrom(IDENTITY_DATA)
                 .where(IDENTITY_DATA.IDENTITY_ID.eq(identityId));
 
-        return fetchOne(query, identityDataRecordRowMapper);
+        return fetchOne(query, identityRecordRowMapper);
     }
 
     @Override
-    public long saveIdentityData(IdentityData identityData) throws DaoException {
-        IdentityDataRecord identityDataRecord = getDslContext().newRecord(IDENTITY_DATA, identityData);
+    public long save(IdentityData identity) throws DaoException {
+        IdentityDataRecord identityRecord = getDslContext().newRecord(IDENTITY_DATA, identity);
 
         Query query = getDslContext().insertInto(IDENTITY_DATA)
-                .set(identityDataRecord)
+                .set(identityRecord)
                 .onConflict(IDENTITY_DATA.IDENTITY_ID)
-                .doNothing()
+                .doUpdate()
+                .set(identityRecord)
                 .returning(IDENTITY_DATA.ID);
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -59,26 +58,15 @@ public class IdentityDaoImpl extends AbstractGenericDao implements IdentityDao {
     }
 
     @Override
-    public IdentityEvent getLastIdentityEvent(String identityId) throws DaoException {
-        Query query = getDslContext()
-                .selectFrom(IDENTITY_EVENT)
-                .where(IDENTITY_EVENT.IDENTITY_ID.eq(identityId))
-                .orderBy(IDENTITY_EVENT.ID.desc())
-                .limit(1);
+    public long save(ChallengeData challenge) throws DaoException {
+        ChallengeDataRecord challengeRecord = getDslContext().newRecord(CHALLENGE_DATA, challenge);
 
-        return fetchOne(query, identityEventRecordRowMapper);
-    }
-
-    @Override
-    public long saveIdentityEvent(IdentityEvent identityEvent) throws DaoException {
-        IdentityEventRecord identityEventRecord = getDslContext().newRecord(IDENTITY_EVENT, identityEvent);
-
-        Query query = getDslContext().insertInto(IDENTITY_EVENT)
-                .set(identityEventRecord)
-                .onConflict(IDENTITY_EVENT.EVENT_ID, IDENTITY_EVENT.SEQUENCE_ID)
+        Query query = getDslContext().insertInto(CHALLENGE_DATA)
+                .set(challengeRecord)
+                .onConflict(CHALLENGE_DATA.IDENTITY_ID, CHALLENGE_DATA.CHALLENGE_ID)
                 .doUpdate()
-                .set(identityEventRecord)
-                .returning(IDENTITY_EVENT.ID);
+                .set(challengeRecord)
+                .returning(CHALLENGE_DATA.ID);
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
         executeOne(query, keyHolder);
@@ -86,10 +74,22 @@ public class IdentityDaoImpl extends AbstractGenericDao implements IdentityDao {
     }
 
     @Override
+    public ChallengeData get(String identityId, String challengeId) throws DaoException {
+        Query query = getDslContext()
+                .selectFrom(CHALLENGE_DATA)
+                .where(
+                        CHALLENGE_DATA.IDENTITY_ID.eq(identityId)
+                                .and(CHALLENGE_DATA.CHALLENGE_ID.eq(challengeId))
+                );
+
+        return fetchOne(query, challengeRecordRowMapper);
+    }
+
+    @Override
     public Optional<Long> getLastEventId() throws DaoException {
         Query query = getDslContext().select(DSL.max(DSL.field("event_id"))).from(
-                getDslContext().select(DSL.max(IDENTITY_EVENT.EVENT_ID).as("event_id")).from(IDENTITY_EVENT)
-                        .unionAll(getDslContext().select(DSL.max(CHALLENGE_EVENT.EVENT_ID).as("event_id")).from(CHALLENGE_EVENT))
+                getDslContext().select(DSL.max(IDENTITY_DATA.EVENT_ID).as("event_id")).from(IDENTITY_DATA)
+                        .unionAll(getDslContext().select(DSL.max(CHALLENGE_DATA.EVENT_ID).as("event_id")).from(CHALLENGE_DATA))
         );
         return Optional.ofNullable(fetchOne(query, Long.class));
     }

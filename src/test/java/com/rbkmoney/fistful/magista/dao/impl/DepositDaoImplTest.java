@@ -2,7 +2,7 @@ package com.rbkmoney.fistful.magista.dao.impl;
 
 import com.rbkmoney.fistful.magista.AbstractIntegrationTest;
 import com.rbkmoney.fistful.magista.dao.DepositDao;
-import com.rbkmoney.fistful.magista.domain.tables.pojos.Deposit;
+import com.rbkmoney.fistful.magista.domain.tables.pojos.DepositData;
 import com.rbkmoney.fistful.magista.exception.DaoException;
 import org.junit.After;
 import org.junit.Test;
@@ -23,21 +23,16 @@ public class DepositDaoImplTest extends AbstractIntegrationTest {
 
     @Test
     public void depositDaoTest() throws DaoException {
-        Deposit deposit = random(Deposit.class);
+        DepositData deposit = random(DepositData.class);
         deposit.setId(null);
-        deposit.setCurrent(true);
-        depositDao.updateNotCurrent(deposit.getDepositId());
         depositDao.save(deposit);
-        depositDao.updateNotCurrent(deposit.getDepositId());
         Long id = depositDao.save(deposit);
         deposit.setId(id);
         assertEquals(deposit, depositDao.get(deposit.getDepositId()));
-        depositDao.updateNotCurrent(deposit.getDepositId());
-        assertNull(depositDao.get(deposit.getDepositId()));
     }
 
     @After
     public void after() {
-        jdbcTemplate.execute("truncate mst.deposit");
+        jdbcTemplate.execute("truncate mst.deposit_data");
     }
 }

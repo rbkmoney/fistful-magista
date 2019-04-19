@@ -3,7 +3,6 @@ package com.rbkmoney.fistful.magista.dao.impl;
 import com.rbkmoney.fistful.magista.AbstractIntegrationTest;
 import com.rbkmoney.fistful.magista.dao.WithdrawalDao;
 import com.rbkmoney.fistful.magista.domain.tables.pojos.WithdrawalData;
-import com.rbkmoney.fistful.magista.domain.tables.pojos.WithdrawalEvent;
 import com.rbkmoney.fistful.magista.exception.DaoException;
 import org.junit.After;
 import org.junit.Before;
@@ -23,37 +22,22 @@ public class WithdrawalDaoImplTest extends AbstractIntegrationTest {
     private JdbcTemplate jdbcTemplate;
 
     private WithdrawalData withdrawalData;
-    private WithdrawalEvent withdrawalEvent;
 
     @Before
     public void before() throws DaoException {
         withdrawalData = random(WithdrawalData.class);
-        withdrawalDao.saveWithdrawalData(withdrawalData);
-        withdrawalEvent = random(WithdrawalEvent.class);
-        withdrawalEvent.setWithdrawalId(withdrawalData.getWithdrawalId());
-        withdrawalDao.saveWithdrawalEvent(withdrawalEvent);
+        withdrawalDao.save(withdrawalData);
     }
 
     @After
     public void after() {
-        jdbcTemplate.execute("truncate mst.withdrawal_data, mst.withdrawal_event");
+        jdbcTemplate.execute("truncate mst.withdrawal_data");
     }
 
     @Test
     public void testGetWithdrawalData() throws DaoException {
-        WithdrawalData withdrawalDataGet = withdrawalDao.getWithdrawalData(this.withdrawalData.getWithdrawalId());
+        WithdrawalData withdrawalDataGet = withdrawalDao.get(this.withdrawalData.getWithdrawalId());
         assertEquals(withdrawalData.getCurrencyCode(), withdrawalDataGet.getCurrencyCode());
-    }
-
-    @Test
-    public void testGetLastWithdrawalEvent() throws DaoException {
-        WithdrawalEvent secondWithdrawalEvent = random(WithdrawalEvent.class);
-        String withdrawalId = withdrawalData.getWithdrawalId();
-        secondWithdrawalEvent.setWithdrawalId(withdrawalId);
-        withdrawalDao.saveWithdrawalEvent(secondWithdrawalEvent);
-        WithdrawalEvent lastWithdrawalEvent = withdrawalDao.getLastWithdrawalEvent(withdrawalId);
-        assertEquals(lastWithdrawalEvent.getId().longValue(), Math.max(withdrawalEvent.getId(), secondWithdrawalEvent.getId()));
-        assertEquals(withdrawalDao.getLastEventId().get().longValue(), Math.max(withdrawalEvent.getEventId(),secondWithdrawalEvent.getEventId() ));
     }
 
 }

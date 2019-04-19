@@ -13,7 +13,6 @@ import java.util.AbstractMap;
 import java.util.Map;
 
 import static com.rbkmoney.fistful.magista.domain.tables.WithdrawalData.WITHDRAWAL_DATA;
-import static com.rbkmoney.fistful.magista.domain.tables.WithdrawalEvent.WITHDRAWAL_EVENT;
 
 public class StatWithdrawalMapper implements RowMapper<Map.Entry<Long, StatWithdrawal>> {
 
@@ -21,14 +20,14 @@ public class StatWithdrawalMapper implements RowMapper<Map.Entry<Long, StatWithd
     public Map.Entry<Long, StatWithdrawal> mapRow(ResultSet rs, int i) throws SQLException {
         StatWithdrawal statWithdrawal = new StatWithdrawal();
         statWithdrawal.setId(rs.getString(WITHDRAWAL_DATA.WITHDRAWAL_ID.getName()));
-        statWithdrawal.setCreatedAt(TypeUtil.temporalToString(rs.getObject(WITHDRAWAL_EVENT.EVENT_CREATED_AT.getName(), LocalDateTime.class)));
+        statWithdrawal.setCreatedAt(TypeUtil.temporalToString(rs.getObject(WITHDRAWAL_DATA.CREATED_AT.getName(), LocalDateTime.class)));
         statWithdrawal.setIdentityId(rs.getString(WITHDRAWAL_DATA.IDENTITY_ID.getName()));
         statWithdrawal.setSourceId(rs.getString(WITHDRAWAL_DATA.WALLET_ID.getName()));
         statWithdrawal.setDestinationId(rs.getString(WITHDRAWAL_DATA.DESTINATION_ID.getName()));
         statWithdrawal.setAmount(rs.getLong(WITHDRAWAL_DATA.AMOUNT.getName()));
-        statWithdrawal.setFee(rs.getLong(WITHDRAWAL_EVENT.FEE.getName()));
+        statWithdrawal.setFee(rs.getLong(WITHDRAWAL_DATA.FEE.getName()));
         statWithdrawal.setCurrencySymbolicCode(rs.getString(WITHDRAWAL_DATA.CURRENCY_CODE.getName()));
-        String string = rs.getString(WITHDRAWAL_EVENT.WITHDRAWAL_STATUS.getName());
+        String string = rs.getString(WITHDRAWAL_DATA.WITHDRAWAL_STATUS.getName());
         WithdrawalStatus withdrawalStatus = TypeUtil.toEnumField(string, WithdrawalStatus.class);
         switch (withdrawalStatus) {
             case pending:

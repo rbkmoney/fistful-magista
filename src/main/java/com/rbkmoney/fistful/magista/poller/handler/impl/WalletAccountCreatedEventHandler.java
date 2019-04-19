@@ -6,7 +6,6 @@ import com.rbkmoney.fistful.magista.dao.WalletDao;
 import com.rbkmoney.fistful.magista.domain.enums.WalletEventType;
 import com.rbkmoney.fistful.magista.domain.tables.pojos.IdentityData;
 import com.rbkmoney.fistful.magista.domain.tables.pojos.WalletData;
-import com.rbkmoney.fistful.magista.domain.tables.pojos.WalletEvent;
 import com.rbkmoney.fistful.magista.exception.DaoException;
 import com.rbkmoney.fistful.magista.exception.NotFoundException;
 import com.rbkmoney.fistful.magista.exception.StorageException;
@@ -43,36 +42,29 @@ public class WalletAccountCreatedEventHandler implements WalletEventHandler {
         try {
             log.info("Trying to handle WalletAccountCreated, eventId={}, walletId={}", event.getId(), event.getSource());
             Account account = change.getAccount().getCreated();
-            WalletEvent walletEvent = walletDao.getLastWalletEvent(event.getSource());
-            if (walletEvent == null) {
-                throw new NotFoundException(String.format("WalletEvent with walletId='%s' not found", event.getSource()));
-            }
-
-            WalletData walletData = walletDao.getWalletData(walletEvent.getWalletId());
+            WalletData walletData = walletDao.get(event.getSource());
             if (walletData == null) {
-                throw new NotFoundException(String.format("WalletData with walletId='%s' not found", event.getSource()));
+                throw new NotFoundException(String.format("Wallet with walletId='%s' not found", event.getSource()));
             }
 
-            IdentityData identityData = identityDao.getIdentityData(account.getIdentity());
+            IdentityData identityData = identityDao.get(account.getIdentity());
             if (identityData == null) {
-                throw new NotFoundException(String.format("IdentityData with identityId='%s' not found", account.getIdentity()));
+                throw new NotFoundException(String.format("Identity with identityId='%s' not found", account.getIdentity()));
             }
 
-            walletEvent.setId(null);
-            walletEvent.setEventId(event.getId());
-            walletEvent.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
-            walletEvent.setEventOccuredAt(TypeUtil.stringToLocalDateTime(event.getPayload().getOccuredAt()));
-            walletEvent.setEventType(WalletEventType.WALLET_ACCOUNT_CREATED);
-            walletEvent.setSequenceId(event.getPayload().getSequence());
-            walletEvent.setWalletId(event.getSource());
-            walletEvent.setIdentityId(account.getIdentity());
-            walletEvent.setCurrencyCode(account.getCurrency().getSymbolicCode());
+            walletData.setEventId(event.getId());
+            walletData.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
+            walletData.setEventOccurredAt(TypeUtil.stringToLocalDateTime(event.getPayload().getOccuredAt()));
+            walletData.setEventType(WalletEventType.WALLET_ACCOUNT_CREATED);
+            walletData.setSequenceId(event.getPayload().getSequence());
+            walletData.setWalletId(event.getSource());
+            walletData.setIdentityId(account.getIdentity());
+            walletData.setCurrencyCode(account.getCurrency().getSymbolicCode());
 
             walletData.setPartyId(identityData.getPartyId());
             walletData.setIdentityId(identityData.getIdentityId());
 
-            walletDao.saveWalletData(walletData);
-            walletDao.saveWalletEvent(walletEvent);
+            walletDao.save(walletData);
             log.info("WalletAccountCreated has been saved, eventId={}, walletId={}", event.getId(), event.getSource());
         } catch (DaoException ex) {
             throw new StorageException(ex);

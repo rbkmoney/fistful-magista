@@ -24,7 +24,7 @@
         <dockerfile.base.service.tag>22c57470c4fc47161894f036b7cf9d70f42b75f5</dockerfile.base.service.tag>
         <fistful-proto.version>1.21-d96f1ce</fistful-proto.version>
         <shared.resources.version>0.2.1</shared.resources.version>
-        <db.name>fistful-magista</db.name>
+        <db.name>fistfulmst</db.name>
         <db.port>5432</db.port>
         <db.url>jdbc:postgresql://localhost:${db.port}/${db.name}</db.url>
         <db.user>postgres</db.user>
@@ -204,7 +204,7 @@
             <plugin>
                 <groupId>org.flywaydb</groupId>
                 <artifactId>flyway-maven-plugin</artifactId>
-                <version>4.2.0</version>
+                <version>${flyway.version}</version>
                 <configuration>
                     <url>${db.url}</url>
                     <user>${db.user}</user>
@@ -212,14 +212,19 @@
                     <schemas>
                         <schema>${db.schema}</schema>
                     </schemas>
+                    <locations>
+                        <location>filesystem:${project.basedir}/src/main/resources/db/migration</location>
+                    </locations>
                 </configuration>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.postgresql</groupId>
-                        <artifactId>postgresql</artifactId>
-                        <version>${postgresql.jdbc.version}</version>
-                    </dependency>
-                </dependencies>
+                <executions>
+                    <execution>
+                        <id>migrate</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>migrate</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>org.jooq</groupId>
@@ -242,15 +247,52 @@
                         <database>
                             <name>org.jooq.meta.postgres.PostgresDatabase</name>
                             <includes>.*</includes>
-                            <excludes>schema_version</excludes>
+                            <excludes>schema_version|flyway_schema_history</excludes>
                             <inputSchema>${db.schema}</inputSchema>
                         </database>
                         <target>
                             <packageName>com.rbkmoney.fistful.magista.domain</packageName>
-                            <directory>src/main/java/</directory>
+                            <directory>target/generated-sources/jooq</directory>
                         </target>
                     </generator>
                 </configuration>
+                <executions>
+                    <execution>
+                        <id>gen-src</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.rbkmoney.maven.plugins</groupId>
+                <artifactId>pg-embedded-plugin</artifactId>
+                <version>1.4</version>
+                <configuration>
+                    <port>${db.port}</port>
+                    <dbName>${db.name}</dbName>
+                    <schemas>
+                        <schema>${db.schema}</schema>
+                    </schemas>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>PG_server_start</id>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>start</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>PG_server_stop</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>stop</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

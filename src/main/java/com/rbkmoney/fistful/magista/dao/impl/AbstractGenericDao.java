@@ -9,7 +9,6 @@ import org.jooq.*;
 import org.jooq.conf.ParamType;
 import org.jooq.impl.DSL;
 import org.jooq.impl.DefaultConfiguration;
-import org.springframework.context.annotation.DependsOn;
 import org.springframework.core.NestedRuntimeException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.JdbcUpdateAffectedIncorrectNumberOfRowsException;
@@ -23,9 +22,7 @@ import java.sql.Types;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
-@DependsOn("dbInitializer")
 public abstract class AbstractGenericDao extends NamedParameterJdbcDaoSupport implements GenericDao {
 
     private final DSLContext dslContext;
@@ -245,14 +242,14 @@ public abstract class AbstractGenericDao extends NamedParameterJdbcDaoSupport im
 
     protected Condition appendDateTimeRangeConditions(Condition condition,
                                                       Field<LocalDateTime> field,
-                                                      Optional<LocalDateTime> fromTime,
-                                                      Optional<LocalDateTime> toTime) {
-        if (fromTime.isPresent()) {
-            condition = condition.and(field.ge(fromTime.get()));
+                                                      LocalDateTime fromTime,
+                                                      LocalDateTime toTime) {
+        if (fromTime != null) {
+            condition = condition.and(field.ge(fromTime));
         }
 
-        if (toTime.isPresent()) {
-            condition = condition.and(field.lt(toTime.get()));
+        if (toTime != null) {
+            condition = condition.and(field.lt(toTime));
         }
         return condition;
     }
