@@ -7,7 +7,7 @@
     <parent>
         <groupId>com.rbkmoney</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>1.5.10.RELEASE</version>
+        <version>2.1.1.RELEASE</version>
         <relativePath/>
     </parent>
 
@@ -21,7 +21,10 @@
         <server.port>8022</server.port>
         <exposed.ports>${server.port}</exposed.ports>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <dockerfile.base.service.tag>22c57470c4fc47161894f036b7cf9d70f42b75f5</dockerfile.base.service.tag>
+        <dockerfile.base.service.tag>c0d0900ec19c907d866f8360031a836049985110</dockerfile.base.service.tag>
+        <dockerfile.registry>${env.REGISTRY}</dockerfile.registry>
+        <metrics.version>1.1.0</metrics.version>
+        <shared.resources.version>0.3.6</shared.resources.version>
         <fistful-proto.version>1.21-d96f1ce</fistful-proto.version>
         <shared.resources.version>0.2.1</shared.resources.version>
         <db.name>fistfulmst</db.name>
@@ -65,6 +68,12 @@
             <artifactId>magista-dsl</artifactId>
             <version>1.0.0</version>
         </dependency>
+        <dependency>
+            <groupId>com.rbkmoney</groupId>
+            <artifactId>spring-boot-starter-metrics-statsd</artifactId>
+            <version>${metrics.version}</version>
+        </dependency>
+
         <!--Thirdparty libs-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -124,6 +133,7 @@
             <version>1.18.4</version>
             <scope>provided</scope>
         </dependency>
+
         <!--Test libs-->
         <dependency>
             <groupId>org.testcontainers</groupId>
@@ -178,7 +188,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-remote-resources-plugin</artifactId>
-                <version>1.5</version>
+                <version>1.6.0</version>
                 <dependencies>
                     <dependency>
                         <groupId>org.apache.maven.shared</groupId>
