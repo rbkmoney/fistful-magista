@@ -28,11 +28,9 @@ spring:
   output:
     ansi:
       enabled: always
-db:
-  skip:
-    validation: true
-retry-policy:
-  maxAttempts: 10
+fistful:
+  polling:
+    enabled: false
 deposit:
   polling:
     url: http://wapi:8022/v1/eventsink/deposit
