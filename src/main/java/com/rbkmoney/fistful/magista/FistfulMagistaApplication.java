@@ -5,11 +5,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.ServletComponentScan;
 
 @ServletComponentScan
-@SpringBootApplication(scanBasePackages = {"com.rbkmoney.fistful.magista", "com.rbkmoney.dbinit"})
+@SpringBootApplication(scanBasePackages = {"com.rbkmoney.fistful.magista"})
 public class FistfulMagistaApplication {
 
     public static void main(String... args) {
         SpringApplication.run(FistfulMagistaApplication.class, args);
     }
-
 }

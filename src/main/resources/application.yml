@@ -1,6 +1,19 @@
+info:
+  version: @project.version@
+  stage: dev
 server:
   port: @server.port@
+management:
+  metrics:
+    export:
+      statsd:
+        flavor: etsy
+        enabled: false
+  security:
+    flag: false
 spring:
+  application:
+    name: @project.name@
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
     driver-class-name: org.postgresql.Driver
@@ -10,13 +23,14 @@ spring:
     hikari:
       idle-timeout: 30000
       maximum-pool-size: 3
-flyway:
-  schemas: mst
-db:
-  skip:
-    validation: true
-retry-policy:
-  maxAttempts: 10
+  flyway:
+    schemas: @db.schema@
+  output:
+    ansi:
+      enabled: always
+fistful:
+  polling:
+    enabled: false
 deposit:
   polling:
     url: http://wapi:8022/v1/eventsink/deposit
@@ -45,7 +59,3 @@ withdrawal:
     retryDelay: 1000
     maxPoolSize: 1
     querySize: 100
-
-management:
-  security:
-    enabled: false
