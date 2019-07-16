@@ -15,8 +15,8 @@
     <version>1.1.4-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>reporter</name>
-    <description>Reporter</description>
+    <name>fistful-magista</name>
+    <description>Fistful-magista</description>
 
     <properties>
         <postgresql.version>42.2.5</postgresql.version>
