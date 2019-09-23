@@ -31,14 +31,15 @@ public class DepositCreatedHandler implements DepositEventHandler {
 
     @Override
     public boolean accept(Change change) {
-        return change.isSetCreated();
+        return change.isSetCreated() && change.getCreated().isSetDeposit();
     }
 
     @Override
     public void handle(Change change, SinkEvent event) {
         try {
+            Deposit deposit = change.getCreated().getDeposit();
+
             log.info("Start deposit created handling, eventId={}, depositId={}", event.getId(), event.getSource());
-            Deposit deposit = change.getCreated();
 
             WalletData walletData = getWallet(deposit);
 

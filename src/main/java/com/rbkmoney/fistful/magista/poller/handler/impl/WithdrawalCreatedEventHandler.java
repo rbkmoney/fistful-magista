@@ -14,14 +14,15 @@ import com.rbkmoney.fistful.withdrawal.Change;
 import com.rbkmoney.fistful.withdrawal.SinkEvent;
 import com.rbkmoney.fistful.withdrawal.Withdrawal;
 import com.rbkmoney.geck.common.util.TypeUtil;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 
 @Component
+@RequiredArgsConstructor
 public class WithdrawalCreatedEventHandler implements WithdrawalEventHandler {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
@@ -29,29 +30,19 @@ public class WithdrawalCreatedEventHandler implements WithdrawalEventHandler {
     private final WithdrawalDao withdrawalDao;
     private final WalletDao walletDao;
 
-    @Autowired
-    public WithdrawalCreatedEventHandler(WithdrawalDao withdrawalDao, WalletDao walletDao) {
-        this.withdrawalDao = withdrawalDao;
-        this.walletDao = walletDao;
-    }
-
     @Override
     public boolean accept(Change change) {
-        return change.isSetCreated();
+        return change.isSetCreated() && change.getCreated().isSetWithdrawal();
     }
 
     @Override
     public void handle(Change change, SinkEvent event) {
         try {
+            Withdrawal withdrawal = change.getCreated().getWithdrawal();
+
             log.info("Trying to handle WithdrawalCreated, eventId={}, withdrawalId={}", event.getId(), event.getSource());
-            Withdrawal withdrawal = change.getCreated();
-            WalletData walletData = walletDao.get(withdrawal.getSource());
-            if (walletData == null) {
-                throw new NotFoundException(String.format("WalletData with walletId='%s' not found", withdrawal.getSource()));
-            }
-            if (walletData.getPartyId() == null) {
-                throw new IllegalStateException(String.format("PartyId not found for WalletData with walletId='%s'; it must be set for correct saving of WithdrawalCreated", withdrawal.getSource()));
-            }
+
+            WalletData walletData = getWalletData(withdrawal);
 
             WithdrawalData withdrawalData = new WithdrawalData();
             withdrawalData.setWithdrawalId(event.getSource());
@@ -77,6 +68,17 @@ public class WithdrawalCreatedEventHandler implements WithdrawalEventHandler {
         } catch (DaoException ex) {
             throw new StorageException(ex);
         }
+    }
+
+    private WalletData getWalletData(Withdrawal withdrawal) throws DaoException {
+        WalletData walletData = walletDao.get(withdrawal.getSource());
+        if (walletData == null) {
+            throw new NotFoundException(String.format("WalletData with walletId='%s' not found", withdrawal.getSource()));
+        }
+        if (walletData.getPartyId() == null) {
+            throw new IllegalStateException(String.format("PartyId not found for WalletData with walletId='%s'; it must be set for correct saving of WithdrawalCreated", withdrawal.getSource()));
+        }
+        return walletData;
     }
 
 }

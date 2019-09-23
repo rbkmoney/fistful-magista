@@ -31,24 +31,35 @@ public class WithdrawalTransferCreatedEventHandler implements WithdrawalEventHan
 
     @Override
     public boolean accept(Change change) {
-        return change.isSetTransfer() && change.getTransfer().isSetCreated();
+        return change.isSetTransfer() && change.getTransfer().isSetPayload() && change.getTransfer().getPayload().isSetCreated()
+                && change.getTransfer().getPayload().getCreated().isSetTransfer() && change.getTransfer().getPayload().getCreated().getTransfer().isSetCashflow();
     }
 
     @Override
     public void handle(Change change, SinkEvent event) {
         try {
+            List<FinalCashFlowPosting> postings = change.getTransfer().getPayload().getCreated().getTransfer().getCashflow().getPostings();
+
             log.info("Trying to handle WithdrawalTransferCreated, eventId={}, withdrawalId={}", event.getId(), event.getSource());
-            WithdrawalData withdrawalData = withdrawalDao.get(event.getSource());
-            if (withdrawalData == null) {
-                throw new NotFoundException(String.format("Withdrawal with withdrawalId='%s' not found", event.getSource()));
-            }
-            List<FinalCashFlowPosting> postings = change.getTransfer().getCreated().getCashflow().getPostings();
+
+            WithdrawalData withdrawalData = getWithdrawalData(event);
+
             withdrawalData.setFee(CashFlowUtil.getFistfulFee(postings));
+
             withdrawalDao.save(withdrawalData);
+
             log.info("WithdrawalTransferCreated has been saved, eventId={}, withdrawalId={}", event.getId(), event.getSource());
         } catch (DaoException ex) {
             throw new StorageException(ex);
         }
+    }
+
+    private WithdrawalData getWithdrawalData(SinkEvent event) throws DaoException {
+        WithdrawalData withdrawalData = withdrawalDao.get(event.getSource());
+        if (withdrawalData == null) {
+            throw new NotFoundException(String.format("Withdrawal with withdrawalId='%s' not found", event.getSource()));
+        }
+        return withdrawalData;
     }
 
 }

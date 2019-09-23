@@ -9,6 +9,7 @@ import com.rbkmoney.fistful.magista.domain.tables.pojos.DepositData;
 import com.rbkmoney.fistful.magista.exception.DaoException;
 import com.rbkmoney.fistful.magista.exception.StorageException;
 import com.rbkmoney.fistful.magista.poller.handler.DepositEventHandler;
+import com.rbkmoney.fistful.transfer.Status;
 import com.rbkmoney.geck.common.util.TBaseUtil;
 import com.rbkmoney.geck.common.util.TypeUtil;
 import lombok.RequiredArgsConstructor;
@@ -24,13 +25,17 @@ public class DepositTransferStatusChangedHandler implements DepositEventHandler 
 
     @Override
     public boolean accept(Change change) {
-        return change.isSetTransfer() && change.getTransfer().isSetStatusChanged();
+        return change.isSetTransfer() && change.getTransfer().isSetPayload() && change.getTransfer().getPayload().isSetStatusChanged()
+                && change.getTransfer().getPayload().getStatusChanged().isSetStatus();
     }
 
     @Override
     public void handle(Change change, SinkEvent event) {
         try {
+            Status status = change.getTransfer().getPayload().getStatusChanged().getStatus();
+
             log.info("Start deposit transfer status changed handling, eventId={}, depositId={}, transferChange={}", event.getId(), event.getSource(), change.getTransfer());
+
             DepositData depositData = depositDao.get(event.getSource());
 
             depositData.setEventId(event.getId());
@@ -39,7 +44,7 @@ public class DepositTransferStatusChangedHandler implements DepositEventHandler 
             depositData.setSequenceId(event.getPayload().getSequence());
             depositData.setEventOccuredAt(TypeUtil.stringToLocalDateTime(event.getPayload().getOccuredAt()));
             depositData.setEventType(DepositEventType.DEPOSIT_TRANSFER_STATUS_CHANGED);
-            depositData.setDepositTransferStatus(TBaseUtil.unionFieldToEnum(change.getTransfer().getStatusChanged(), DepositTransferStatus.class));
+            depositData.setDepositTransferStatus(TBaseUtil.unionFieldToEnum(status, DepositTransferStatus.class));
 
             depositDao.save(depositData);
 

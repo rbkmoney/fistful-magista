@@ -2,6 +2,7 @@ package com.rbkmoney.fistful.magista.poller.handler.impl;
 
 import com.rbkmoney.fistful.deposit.Change;
 import com.rbkmoney.fistful.deposit.SinkEvent;
+import com.rbkmoney.fistful.deposit.status.Status;
 import com.rbkmoney.fistful.magista.dao.DepositDao;
 import com.rbkmoney.fistful.magista.domain.enums.DepositEventType;
 import com.rbkmoney.fistful.magista.domain.enums.DepositStatus;
@@ -24,13 +25,16 @@ public class DepositStatusChangedHandler implements DepositEventHandler {
 
     @Override
     public boolean accept(Change change) {
-        return change.isSetStatusChanged();
+        return change.isSetStatusChanged() && change.getStatusChanged().isSetStatus();
     }
 
     @Override
     public void handle(Change change, SinkEvent event) {
         try {
+            Status status = change.getStatusChanged().getStatus();
+
             log.info("Start deposit status changed handling, eventId={}, depositId={}, status={}", event.getId(), event.getSource(), change.getStatusChanged());
+
             DepositData depositData = depositDao.get(event.getSource());
 
             depositData.setEventId(event.getId());
@@ -39,7 +43,7 @@ public class DepositStatusChangedHandler implements DepositEventHandler {
             depositData.setSequenceId(event.getPayload().getSequence());
             depositData.setEventOccuredAt(TypeUtil.stringToLocalDateTime(event.getPayload().getOccuredAt()));
             depositData.setEventType(DepositEventType.DEPOSIT_STATUS_CHANGED);
-            depositData.setDepositStatus(TBaseUtil.unionFieldToEnum(change.getStatusChanged(), DepositStatus.class));
+            depositData.setDepositStatus(TBaseUtil.unionFieldToEnum(status, DepositStatus.class));
 
             depositDao.save(depositData);
             log.info("Deposit status have been changed, eventId={}, depositId={}, status={}", event.getId(), event.getSource(), change.getStatusChanged());
