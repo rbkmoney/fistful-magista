@@ -8,7 +8,7 @@ import javax.servlet.*;
 import javax.servlet.annotation.WebServlet;
 import java.io.IOException;
 
-@WebServlet("/stat")
+@WebServlet(urlPatterns = {"/stat", "/fistful/stat"})
 public class FistfulStatisticsServlet extends GenericServlet {
 
     private Servlet thriftServlet;
