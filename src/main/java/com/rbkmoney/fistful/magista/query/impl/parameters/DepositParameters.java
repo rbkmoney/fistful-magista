@@ -3,6 +3,7 @@ package com.rbkmoney.fistful.magista.query.impl.parameters;
 import com.rbkmoney.fistful.magista.domain.enums.DepositStatus;
 import com.rbkmoney.magista.dsl.PagedBaseFunction;
 import com.rbkmoney.magista.dsl.QueryParameters;
+import org.jooq.tools.StringUtils;
 
 import java.time.temporal.TemporalAccessor;
 import java.util.*;
@@ -40,7 +41,9 @@ public class DepositParameters extends PagedBaseFunction.PagedBaseParameters {
     }
 
     public UUID getPartyId() {
-        return UUID.fromString(getStringParameter(PARTY_ID_PARAM, false));
+        return Optional.ofNullable(getStringParameter(PARTY_ID_PARAM, false))
+                .map(UUID::fromString)
+                .orElse(null);
     }
 
     public Optional<Long> getAmountFrom() {
