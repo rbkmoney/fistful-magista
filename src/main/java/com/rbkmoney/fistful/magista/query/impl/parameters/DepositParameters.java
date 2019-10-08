@@ -40,7 +40,9 @@ public class DepositParameters extends PagedBaseFunction.PagedBaseParameters {
     }
 
     public UUID getPartyId() {
-        return UUID.fromString(getStringParameter(PARTY_ID_PARAM, false));
+        return Optional.ofNullable(getStringParameter(PARTY_ID_PARAM, false))
+                .map(UUID::fromString)
+                .orElse(null);
     }
 
     public Optional<Long> getAmountFrom() {
