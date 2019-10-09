@@ -13,11 +13,6 @@ public class DepositValidator extends PagedBaseFunction.PagedBaseValidator {
         super.validateParameters(parameters);
         DepositParameters depositParameters = super.checkParamsType(parameters, DepositParameters.class);
 
-        //party
-        if (depositParameters.getPartyId() == null) {
-            throw new IllegalArgumentException("Parameter party_id must be set like UUID");
-        }
-
         //time
         if (depositParameters.getFromTime() != null && depositParameters.getToTime() != null) {
             validateTimePeriod(depositParameters.getFromTime(), depositParameters.getToTime());
