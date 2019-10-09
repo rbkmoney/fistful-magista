@@ -150,4 +150,19 @@ public class DepositFunctionTest extends AbstractIntegrationTest {
         statRequest.setContinuationToken(UUID.randomUUID().toString());
         queryProcessor.processQuery(statRequest);
     }
+
+    @Test
+    public void testWithoutParameters() {
+        String dsl = "{'query': {'deposits': {}, 'size':'1'}}";
+        StatRequest statRequest = new StatRequest(dsl);
+        StatResponse statResponse = queryProcessor.processQuery(statRequest);
+        assertEquals(1, statResponse.getData().getDeposits().size());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testWhenPartyIdIncorrect() {
+        String dsl = "{'query': {'deposits': {'party_id': 'qwe'}}}";
+        StatRequest statRequest = new StatRequest(dsl);
+        queryProcessor.processQuery(statRequest);
+    }
 }
