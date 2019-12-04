@@ -58,6 +58,7 @@ public class WithdrawalCreatedEventHandler implements WithdrawalEventHandler {
             LocalDateTime occurredAt = TypeUtil.stringToLocalDateTime(event.getPayload().getOccuredAt());
             withdrawalData.setCreatedAt(occurredAt);
             withdrawalData.setEventOccurredAt(occurredAt);
+            withdrawalData.setExternalId(withdrawal.getExternalId());
             withdrawalData.setEventType(WithdrawalEventType.WITHDRAWAL_CREATED);
             withdrawalData.setSequenceId(event.getPayload().getSequence());
             withdrawalData.setWithdrawalId(event.getSource());

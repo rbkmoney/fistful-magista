@@ -69,6 +69,7 @@ public class SearchDaoImplTest extends AbstractIntegrationTest {
         map.put(WALLET_ID_PARAM, withdrawalData.getWalletId());
         map.put(IDENTITY_ID_PARAM, withdrawalData.getIdentityId());
         map.put(DESTINATION_ID_PARAM, withdrawalData.getDestinationId());
+        map.put(EXTERNAL_ID_PARAM, withdrawalData.getExternalId());
         map.put(STATUS_PARAM, withdrawalData.getWithdrawalStatus().getLiteral());
         map.put(AMOUNT_FROM_PARAM, withdrawalData.getAmount() - 1);
         map.put(AMOUNT_TO_PARAM, withdrawalData.getAmount() + 1);
