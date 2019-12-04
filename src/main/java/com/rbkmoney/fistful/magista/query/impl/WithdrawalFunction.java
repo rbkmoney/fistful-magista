@@ -127,6 +127,11 @@ public class WithdrawalFunction extends PagedBaseFunction<Map.Entry<Long, StatWi
             return statusesMap.get(getStringParameter(STATUS_PARAM, false));
         }
 
+        public String getExternalId() {
+            return getStringParameter(EXTERNAL_ID_PARAM, false);
+        }
+
+
         public Long getAmountFrom() {
             return getLongParameter(AMOUNT_FROM_PARAM, false);
         }

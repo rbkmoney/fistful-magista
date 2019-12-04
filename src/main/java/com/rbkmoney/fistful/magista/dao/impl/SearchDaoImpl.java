@@ -96,6 +96,7 @@ public class SearchDaoImpl extends AbstractGenericDao implements SearchDao {
                                                 .addValue(WITHDRAWAL_DATA.AMOUNT, parameters.getAmountTo(), LESS)
                                                 .addValue(WITHDRAWAL_DATA.CURRENCY_CODE, parameters.getCurrencyCode(), EQUALS)
                                                 .addValue(WITHDRAWAL_DATA.WITHDRAWAL_STATUS, parameters.getStatus(), EQUALS)
+                                                .addValue(WITHDRAWAL_DATA.EXTERNAL_ID, parameters.getExternalId(), EQUALS)
                                                 .addValue(WITHDRAWAL_DATA.ID, fromId, LESS)),
                                 WITHDRAWAL_DATA.CREATED_AT,
                                 fromTime,
