@@ -53,8 +53,8 @@ public class DepositCreatedHandler implements DepositEventHandler {
             depositData.setEventOccuredAt(occurredAt);
             depositData.setCreatedAt(occurredAt);
             depositData.setEventType(DepositEventType.DEPOSIT_CREATED);
-            depositData.setWalletId(deposit.getWallet());
-            depositData.setSourceId(deposit.getSource());
+            depositData.setWalletId(deposit.getWalletId());
+            depositData.setSourceId(deposit.getSourceId());
             depositData.setDepositStatus(DepositStatus.pending);
 
             depositData.setIdentityId(walletData.getIdentityId());
@@ -72,12 +72,12 @@ public class DepositCreatedHandler implements DepositEventHandler {
     }
 
     private WalletData getWallet(Deposit deposit) throws DaoException {
-        WalletData walletData = walletDao.get(deposit.getWallet());
+        WalletData walletData = walletDao.get(deposit.getWalletId());
         if (walletData == null) {
-            throw new NotFoundException(String.format("Wallet with walletId='%s' not found", deposit.getWallet()));
+            throw new NotFoundException(String.format("Wallet with walletId='%s' not found", deposit.getWalletId()));
         }
         if (walletData.getPartyId() == null) {
-            throw new IllegalStateException(String.format("PartyId not found for wallet with walletId='%s'; it must be set for correct saving of DepositCreated", deposit.getWallet()));
+            throw new IllegalStateException(String.format("PartyId not found for wallet with walletId='%s'; it must be set for correct saving of DepositCreated", deposit.getWalletId()));
         }
         return walletData;
     }

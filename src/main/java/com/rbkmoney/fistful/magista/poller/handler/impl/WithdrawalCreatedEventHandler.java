@@ -46,10 +46,10 @@ public class WithdrawalCreatedEventHandler implements WithdrawalEventHandler {
 
             WithdrawalData withdrawalData = new WithdrawalData();
             withdrawalData.setWithdrawalId(event.getSource());
-            withdrawalData.setWalletId(withdrawal.getSource());
+            withdrawalData.setWalletId(withdrawal.getId());
             withdrawalData.setPartyId(walletData.getPartyId());
             withdrawalData.setIdentityId(walletData.getIdentityId());
-            withdrawalData.setDestinationId(withdrawal.getDestination());
+            withdrawalData.setDestinationId(withdrawal.getDestinationId());
             withdrawalData.setAmount(withdrawal.getBody().getAmount());
             withdrawalData.setCurrencyCode(withdrawal.getBody().getCurrency().getSymbolicCode());
 
@@ -72,12 +72,12 @@ public class WithdrawalCreatedEventHandler implements WithdrawalEventHandler {
     }
 
     private WalletData getWalletData(Withdrawal withdrawal) throws DaoException {
-        WalletData walletData = walletDao.get(withdrawal.getSource());
+        WalletData walletData = walletDao.get(withdrawal.getId());
         if (walletData == null) {
-            throw new NotFoundException(String.format("WalletData with walletId='%s' not found", withdrawal.getSource()));
+            throw new NotFoundException(String.format("WalletData with walletId='%s' not found", withdrawal.getId()));
         }
         if (walletData.getPartyId() == null) {
-            throw new IllegalStateException(String.format("PartyId not found for WalletData with walletId='%s'; it must be set for correct saving of WithdrawalCreated", withdrawal.getSource()));
+            throw new IllegalStateException(String.format("PartyId not found for WalletData with walletId='%s'; it must be set for correct saving of WithdrawalCreated", withdrawal.getId()));
         }
         return walletData;
     }
