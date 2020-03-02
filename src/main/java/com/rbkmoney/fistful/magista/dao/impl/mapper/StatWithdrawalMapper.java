@@ -27,8 +27,8 @@ public class StatWithdrawalMapper implements RowMapper<Map.Entry<Long, StatWithd
         statWithdrawal.setAmount(rs.getLong(WITHDRAWAL_DATA.AMOUNT.getName()));
         statWithdrawal.setFee(rs.getLong(WITHDRAWAL_DATA.FEE.getName()));
         statWithdrawal.setCurrencySymbolicCode(rs.getString(WITHDRAWAL_DATA.CURRENCY_CODE.getName()));
-        String string = rs.getString(WITHDRAWAL_DATA.WITHDRAWAL_STATUS.getName());
-        WithdrawalStatus withdrawalStatus = TypeUtil.toEnumField(string, WithdrawalStatus.class);
+        statWithdrawal.setExternalId(rs.getString(WITHDRAWAL_DATA.EXTERNAL_ID.getName()));
+        WithdrawalStatus withdrawalStatus = TypeUtil.toEnumField(rs.getString(WITHDRAWAL_DATA.WITHDRAWAL_STATUS.getName()), WithdrawalStatus.class);
         switch (withdrawalStatus) {
             case pending:
                 statWithdrawal.setStatus(com.rbkmoney.fistful.fistful_stat.WithdrawalStatus.pending(new WithdrawalPending()));
