@@ -46,7 +46,7 @@ public class WithdrawalCreatedEventHandler implements WithdrawalEventHandler {
 
             WithdrawalData withdrawalData = new WithdrawalData();
             withdrawalData.setWithdrawalId(event.getSource());
-            withdrawalData.setWalletId(withdrawal.getId());
+            withdrawalData.setWalletId(withdrawal.getWalletId());
             withdrawalData.setPartyId(walletData.getPartyId());
             withdrawalData.setIdentityId(walletData.getIdentityId());
             withdrawalData.setDestinationId(withdrawal.getDestinationId());
