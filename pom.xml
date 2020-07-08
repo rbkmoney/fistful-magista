@@ -33,7 +33,7 @@
         <dockerfile.registry>${env.REGISTRY}</dockerfile.registry>
         <metrics.version>1.1.0</metrics.version>
         <shared.resources.version>0.3.6</shared.resources.version>
-        <fistful-proto.version>1.62-509c8d3</fistful-proto.version>
+        <fistful-proto.version>1.80-0650ca7</fistful-proto.version>
         <eventstock.version>1.2.6</eventstock.version>
         <!---->
         <db.name>fistfulmst</db.name>
