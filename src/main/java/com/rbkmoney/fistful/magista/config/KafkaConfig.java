@@ -1,11 +1,16 @@
 package com.rbkmoney.fistful.magista.config;
 
 import com.rbkmoney.fistful.magista.config.properties.KafkaSslProperties;
+import com.rbkmoney.fistful.magista.kafka.serde.DepositDeserializer;
+import com.rbkmoney.fistful.magista.kafka.serde.IdentityDeserializer;
+import com.rbkmoney.fistful.magista.kafka.serde.WalletDeserializer;
+import com.rbkmoney.fistful.magista.kafka.serde.WithdrawalDeserializer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.CommonClientConfigs;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.config.SslConfigs;
+import org.apache.kafka.common.serialization.Deserializer;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -45,13 +50,32 @@ public class KafkaConfig {
     private final KafkaSslProperties kafkaSslProperties;
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, Dummy> dummyListenerContainerFactory() {
-        ConcurrentKafkaListenerContainerFactory<String, Dummy> factory = new ConcurrentKafkaListenerContainerFactory<>();
+    public ConcurrentKafkaListenerContainerFactory<String, com.rbkmoney.fistful.deposit.TimestampedChange> depositListenerContainerFactory() {
+        return listenerContainerFactory(new DepositDeserializer());
+    }
 
-        DefaultKafkaConsumerFactory<String, Dummy> consumerFactory = new DefaultKafkaConsumerFactory<>(
+    @Bean
+    public ConcurrentKafkaListenerContainerFactory<String, com.rbkmoney.fistful.identity.TimestampedChange> identityListenerContainerFactory() {
+        return listenerContainerFactory(new IdentityDeserializer());
+    }
+
+    @Bean
+    public ConcurrentKafkaListenerContainerFactory<String, com.rbkmoney.fistful.wallet.TimestampedChange> walletListenerContainerFactory() {
+        return listenerContainerFactory(new WalletDeserializer());
+    }
+
+    @Bean
+    public ConcurrentKafkaListenerContainerFactory<String, com.rbkmoney.fistful.withdrawal.TimestampedChange> withdrawalListenerContainerFactory() {
+        return listenerContainerFactory(new WithdrawalDeserializer());
+    }
+
+    private <T> ConcurrentKafkaListenerContainerFactory<String, T> listenerContainerFactory(Deserializer<T> deserializer) {
+        ConcurrentKafkaListenerContainerFactory<String, T> factory = new ConcurrentKafkaListenerContainerFactory<>();
+
+        DefaultKafkaConsumerFactory<String, T> consumerFactory = new DefaultKafkaConsumerFactory<>(
                 consumerConfig(),
                 new StringDeserializer(),
-                new DummyDeserializer());
+                deserializer);
 
         factory.setConsumerFactory(consumerFactory);
         factory.setConcurrency(consumerConcurrency);
