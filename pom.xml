@@ -35,6 +35,7 @@
         <fistful-proto.version>1.84-a0c7afe</fistful-proto.version>
         <eventstock.version>1.2.6</eventstock.version>
         <kafka.common.lib.version>0.0.9</kafka.common.lib.version>
+        <machinegun-proto.version>1.12-ebae56f</machinegun-proto.version>
         <!---->
         <db.name>fistfulmst</db.name>
         <db.port>5432</db.port>
@@ -80,6 +81,11 @@
             <groupId>com.rbkmoney</groupId>
             <artifactId>custom-actuator-endpoints</artifactId>
             <version>0.0.3</version>
+        </dependency>
+        <dependency>
+            <groupId>com.rbkmoney</groupId>
+            <artifactId>machinegun-proto</artifactId>
+            <version>${machinegun-proto.version}</version>
         </dependency>
 
         <!--spring-->

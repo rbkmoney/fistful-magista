@@ -1,6 +1,6 @@
 package com.rbkmoney.fistful.magista.kafka.listener;
 
-import com.rbkmoney.fistful.identity.TimestampedChange;
+import com.rbkmoney.machinegun.eventsink.MachineEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -14,22 +14,22 @@ import java.util.List;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class IdentityListener {
+public class WalletEventListener {
 
-//    private final IdentityHandler handler;
+//    private final WalletHandler handler;
 
     @KafkaListener(
-            autoStartup = "${kafka.topic.identity.listener.enabled}",
-            topics = "${kafka.topic.identity.name}",
-            containerFactory = "identityLogListenerContainerFactory")
+            autoStartup = "${kafka.topic.wallet.listener.enabled}",
+            topics = "${kafka.topic.wallet.name}",
+            containerFactory = "walletEventListenerContainerFactory")
     public void listen(
-            List<TimestampedChange> batch,
+            List<MachineEvent> batch,
             @Header(KafkaHeaders.RECEIVED_PARTITION_ID) int partition,
             @Header(KafkaHeaders.OFFSET) int offset,
             Acknowledgment ack) {
-        log.info("Listening Identity: partition={}, offset={}, batch.size()={}", partition, offset, batch.size());
+        log.info("Listening Wallet: partition={}, offset={}, batch.size()={}", partition, offset, batch.size());
 //        handler.handle(batch);
         ack.acknowledge();
-        log.info("Ack Identity: partition={}, offset={}", partition, offset);
+        log.info("Ack Wallet: partition={}, offset={}", partition, offset);
     }
 }
