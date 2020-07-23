@@ -88,3 +88,20 @@ kafka:
     trust-store-type: changeit
     trust-store-location: changeit
     trust-store-password: changeit
+  topic:
+    deposit:
+      name: mg-events-ff-deposit
+      listener:
+        enabled: false
+    identity:
+      name: mg-events-ff-identity
+      listener:
+        enabled: false
+    wallet:
+      name: mg-events-ff-wallet
+      listener:
+        enabled: false
+    withdrawal:
+      name: mg-events-ff-withdrawal
+      listener:
+        enabled: false
