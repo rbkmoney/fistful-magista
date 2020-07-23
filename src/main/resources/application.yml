@@ -1,8 +1,10 @@
 info:
   version: @project.version@
   stage: dev
+
 server:
   port: @server.port@
+
 management:
   metrics:
     export:
@@ -11,6 +13,7 @@ management:
         enabled: false
   security:
     flag: false
+
 spring:
   application:
     name: @project.name@
@@ -28,9 +31,11 @@ spring:
   output:
     ansi:
       enabled: always
+
 fistful:
   polling:
     enabled: false
+
 deposit:
   polling:
     url: http://wapi:8022/v1/eventsink/deposit
@@ -38,6 +43,7 @@ deposit:
     retryDelay: 1000
     maxPoolSize: 1
     querySize: 100
+
 identity:
   polling:
     url: http://localhost:8022/v1/eventsink/identity
@@ -45,6 +51,7 @@ identity:
     retryDelay: 1000
     maxPoolSize: 1
     querySize: 100
+
 wallet:
   polling:
     url: http://localhost:8022/v1/eventsink/wallet
@@ -52,6 +59,7 @@ wallet:
     retryDelay: 1000
     maxPoolSize: 1
     querySize: 100
+
 withdrawal:
   polling:
     url: http://localhost:8022/v1/eventsink/withdrawal
@@ -59,3 +67,20 @@ withdrawal:
     retryDelay: 1000
     maxPoolSize: 1
     querySize: 100
+
+kafka:
+  bootstrap-servers: changeit:9092
+  consumer:
+    group-id: scrooge
+    concurrency: 7
+  max-poll-records: 100
+  max-poll-interval-ms: 60000
+  max-session-timeout-ms: 60000
+  ssl:
+    enabled: false
+    key-store-type: changeit
+    key-store-location: changeit
+    key-password: changeit
+    trust-store-type: changeit
+    trust-store-location: changeit
+    trust-store-password: changeit
