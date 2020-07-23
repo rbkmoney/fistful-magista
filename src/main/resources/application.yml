@@ -13,6 +13,9 @@ management:
         enabled: false
   security:
     flag: false
+  endpoint:
+    health:
+      show-details: always
 
 spring:
   application:
@@ -27,6 +30,7 @@ spring:
       idle-timeout: 30000
       maximum-pool-size: 3
   flyway:
+    table: schema_version
     schemas: @db.schema@
   output:
     ansi:

@@ -30,7 +30,7 @@ public abstract class AbstractGenericDao extends NamedParameterJdbcDaoSupport im
     public AbstractGenericDao(DataSource dataSource) {
         setDataSource(dataSource);
         Configuration configuration = new DefaultConfiguration();
-        configuration.set(SQLDialect.POSTGRES_10);
+        configuration.set(SQLDialect.POSTGRES);
         this.dslContext = DSL.using(configuration);
     }
 
