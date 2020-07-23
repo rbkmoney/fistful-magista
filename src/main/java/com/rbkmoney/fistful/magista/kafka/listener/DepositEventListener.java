@@ -1,6 +1,6 @@
 package com.rbkmoney.fistful.magista.kafka.listener;
 
-import com.rbkmoney.fistful.withdrawal.TimestampedChange;
+import com.rbkmoney.machinegun.eventsink.MachineEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -14,22 +14,22 @@ import java.util.List;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class WithdrawalListener {
+public class DepositEventListener {
 
-//    private final WithdrawalHandler handler;
+//    private final DepositHandler handler;
 
     @KafkaListener(
-            autoStartup = "${kafka.topic.withdrawal.listener.enabled}",
-            topics = "${kafka.topic.withdrawal.name}",
-            containerFactory = "withdrawalLogListenerContainerFactory")
+            autoStartup = "${kafka.topic.deposit.listener.enabled}",
+            topics = "${kafka.topic.deposit.name}",
+            containerFactory = "depositEventListenerContainerFactory")
     public void listen(
-            List<TimestampedChange> batch,
+            List<MachineEvent> batch,
             @Header(KafkaHeaders.RECEIVED_PARTITION_ID) int partition,
             @Header(KafkaHeaders.OFFSET) int offset,
             Acknowledgment ack) {
-        log.info("Listening Withdrawal: partition={}, offset={}, batch.size()={}", partition, offset, batch.size());
+        log.info("Listening Deposit: partition={}, offset={}, batch.size()={}", partition, offset, batch.size());
 //        handler.handle(batch);
         ack.acknowledge();
-        log.info("Ack Withdrawal: partition={}, offset={}", partition, offset);
+        log.info("Ack Deposit: partition={}, offset={}", partition, offset);
     }
 }
