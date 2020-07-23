@@ -3,7 +3,6 @@ package com.rbkmoney.fistful.magista.config;
 import com.rbkmoney.eventstock.client.EventPublisher;
 import com.rbkmoney.eventstock.client.poll.FistfulPollingEventPublisherBuilder;
 import com.rbkmoney.fistful.magista.poller.EventSinkHandler;
-import com.rbkmoney.fistful.magista.service.impl.IdentityEventService;
 import com.rbkmoney.fistful.magista.service.impl.WalletEventService;
 import com.rbkmoney.fistful.magista.service.impl.WithdrawalEventService;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,26 +32,6 @@ public class EventStockPollerConfig {
                 .withPollDelay(pollingMaxDelay)
                 .withEventRetryDelay(retryDelay)
                 .withEventHandler(new EventSinkHandler(walletEventService))
-                .build();
-    }
-
-    @Bean
-    public EventPublisher identityEventPublisher(
-            IdentityEventService identityEventService,
-            @Value("${identity.polling.url}") Resource pollingUrl,
-            @Value("${identity.polling.querySize}") int pollingQuerySize,
-            @Value("${identity.polling.maxPoolSize}") int pollingMaxPoolSize,
-            @Value("${identity.polling.delay}") int pollingMaxDelay,
-            @Value("${identity.polling.retryDelay}") int retryDelay
-    ) throws IOException {
-        return new FistfulPollingEventPublisherBuilder()
-                .withIdentityServiceAdapter()
-                .withURI(pollingUrl.getURI())
-                .withMaxQuerySize(pollingQuerySize)
-                .withMaxPoolSize(pollingMaxPoolSize)
-                .withPollDelay(pollingMaxDelay)
-                .withEventRetryDelay(retryDelay)
-                .withEventHandler(new EventSinkHandler(identityEventService))
                 .build();
     }
 
