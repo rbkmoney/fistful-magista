@@ -1,5 +1,6 @@
 package com.rbkmoney.fistful.magista.kafka.listener;
 
+import com.rbkmoney.fistful.magista.service.DepositEventService;
 import com.rbkmoney.machinegun.eventsink.MachineEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class DepositEventListener {
 
-//    private final DepositHandler handler;
+    private final DepositEventService depositEventService;
 
     @KafkaListener(
             autoStartup = "${kafka.topic.deposit.listener.enabled}",
@@ -28,7 +29,7 @@ public class DepositEventListener {
             @Header(KafkaHeaders.OFFSET) int offset,
             Acknowledgment ack) {
         log.info("Listening Deposit: partition={}, offset={}, batch.size()={}", partition, offset, batch.size());
-//        handler.handle(batch);
+        depositEventService.handleEvents(batch);
         ack.acknowledge();
         log.info("Ack Deposit: partition={}, offset={}", partition, offset);
     }
