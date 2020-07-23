@@ -5,7 +5,6 @@ import com.rbkmoney.eventstock.client.EventConstraint;
 import com.rbkmoney.eventstock.client.EventPublisher;
 import com.rbkmoney.eventstock.client.SubscriberConfig;
 import com.rbkmoney.eventstock.client.poll.EventFlowFilter;
-import com.rbkmoney.fistful.magista.service.impl.IdentityEventService;
 import com.rbkmoney.fistful.magista.service.impl.WalletEventService;
 import com.rbkmoney.fistful.magista.service.impl.WithdrawalEventService;
 import lombok.RequiredArgsConstructor;
@@ -20,11 +19,9 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class OnStart implements ApplicationListener<ApplicationReadyEvent> {
 
-    private final EventPublisher identityEventPublisher;
     private final EventPublisher walletEventPublisher;
     private final EventPublisher withdrawalEventPublisher;
 
-    private final IdentityEventService identityEventService;
     private final WalletEventService walletEventService;
     private final WithdrawalEventService withdrawalEventService;
 
@@ -34,7 +31,6 @@ public class OnStart implements ApplicationListener<ApplicationReadyEvent> {
     @Override
     public void onApplicationEvent(ApplicationReadyEvent event) {
         if (pollingEnabled) {
-            identityEventPublisher.subscribe(buildSubscriberConfig(identityEventService.getLastEventId()));
             walletEventPublisher.subscribe(buildSubscriberConfig(walletEventService.getLastEventId()));
             withdrawalEventPublisher.subscribe(buildSubscriberConfig(withdrawalEventService.getLastEventId()));
         }

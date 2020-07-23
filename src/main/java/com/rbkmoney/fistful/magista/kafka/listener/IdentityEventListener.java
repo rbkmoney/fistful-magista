@@ -1,5 +1,6 @@
 package com.rbkmoney.fistful.magista.kafka.listener;
 
+import com.rbkmoney.fistful.magista.service.IdentityEventService;
 import com.rbkmoney.machinegun.eventsink.MachineEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class IdentityEventListener {
 
-//    private final IdentityHandler handler;
+    private final IdentityEventService identityEventService;
 
     @KafkaListener(
             autoStartup = "${kafka.topic.identity.listener.enabled}",
@@ -28,7 +29,7 @@ public class IdentityEventListener {
             @Header(KafkaHeaders.OFFSET) int offset,
             Acknowledgment ack) {
         log.info("Listening Identity: partition={}, offset={}, batch.size()={}", partition, offset, batch.size());
-//        handler.handle(batch);
+        identityEventService.handleEvents(batch);
         ack.acknowledge();
         log.info("Ack Identity: partition={}, offset={}", partition, offset);
     }

@@ -40,14 +40,6 @@ fistful:
   polling:
     enabled: false
 
-identity:
-  polling:
-    url: http://localhost:8022/v1/eventsink/identity
-    delay: 10000
-    retryDelay: 1000
-    maxPoolSize: 1
-    querySize: 100
-
 wallet:
   polling:
     url: http://localhost:8022/v1/eventsink/wallet
