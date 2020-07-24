@@ -1,5 +1,6 @@
 package com.rbkmoney.fistful.magista.kafka.listener;
 
+import com.rbkmoney.fistful.magista.service.WithdrawalEventService;
 import com.rbkmoney.machinegun.eventsink.MachineEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class WithdrawalEventListener {
 
-//    private final WithdrawalHandler handler;
+    private final WithdrawalEventService withdrawalEventService;
 
     @KafkaListener(
             autoStartup = "${kafka.topic.withdrawal.listener.enabled}",
@@ -28,7 +29,7 @@ public class WithdrawalEventListener {
             @Header(KafkaHeaders.OFFSET) int offset,
             Acknowledgment ack) {
         log.info("Listening Withdrawal: partition={}, offset={}, batch.size()={}", partition, offset, batch.size());
-//        handler.handle(batch);
+        withdrawalEventService.handleEvents(batch);
         ack.acknowledge();
         log.info("Ack Withdrawal: partition={}, offset={}", partition, offset);
     }
