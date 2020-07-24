@@ -40,14 +40,6 @@ fistful:
   polling:
     enabled: false
 
-wallet:
-  polling:
-    url: http://localhost:8022/v1/eventsink/wallet
-    delay: 10000
-    retryDelay: 1000
-    maxPoolSize: 1
-    querySize: 100
-
 withdrawal:
   polling:
     url: http://localhost:8022/v1/eventsink/withdrawal

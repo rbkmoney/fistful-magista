@@ -1,4 +1,4 @@
-package com.rbkmoney.fistful.magista.poller.handler.impl;
+package com.rbkmoney.fistful.magista.poller.handler.wallet;
 
 import com.rbkmoney.fistful.account.Account;
 import com.rbkmoney.fistful.magista.dao.IdentityDao;
@@ -9,42 +9,36 @@ import com.rbkmoney.fistful.magista.domain.tables.pojos.WalletData;
 import com.rbkmoney.fistful.magista.exception.DaoException;
 import com.rbkmoney.fistful.magista.exception.NotFoundException;
 import com.rbkmoney.fistful.magista.exception.StorageException;
-import com.rbkmoney.fistful.magista.poller.handler.WalletEventHandler;
-import com.rbkmoney.fistful.wallet.Change;
-import com.rbkmoney.fistful.wallet.SinkEvent;
+import com.rbkmoney.fistful.wallet.TimestampedChange;
 import com.rbkmoney.geck.common.util.TypeUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import com.rbkmoney.machinegun.eventsink.MachineEvent;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
-@Component
+@Slf4j
+@Service
+@RequiredArgsConstructor
 public class WalletAccountCreatedEventHandler implements WalletEventHandler {
-
-    private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     private final WalletDao walletDao;
     private final IdentityDao identityDao;
 
-    @Autowired
-    public WalletAccountCreatedEventHandler(WalletDao walletDao, IdentityDao identityDao) {
-        this.walletDao = walletDao;
-        this.identityDao = identityDao;
+    @Override
+    public boolean accept(TimestampedChange change) {
+        return change.getChange().isSetAccount()
+                && change.getChange().getAccount().isSetCreated();
     }
 
     @Override
-    public boolean accept(Change change) {
-        return change.isSetAccount() && change.getAccount().isSetCreated();
-    }
-
-    @Override
-    public void handle(Change change, SinkEvent event) {
+    public void handle(TimestampedChange change, MachineEvent event) {
         try {
-            log.info("Trying to handle WalletAccountCreated, eventId={}, walletId={}", event.getId(), event.getSource());
-            Account account = change.getAccount().getCreated();
-            WalletData walletData = walletDao.get(event.getSource());
+            log.info("Trying to handle WalletAccountCreated: eventId={}, walletId={}", event.getEventId(), event.getSourceId());
+            Account account = change.getChange().getAccount().getCreated();
+
+            WalletData walletData = walletDao.get(event.getSourceId());
             if (walletData == null) {
-                throw new NotFoundException(String.format("Wallet with walletId='%s' not found", event.getSource()));
+                throw new NotFoundException(String.format("Wallet with walletId='%s' not found", event.getSourceId()));
             }
 
             IdentityData identityData = identityDao.get(account.getIdentity());
@@ -52,12 +46,11 @@ public class WalletAccountCreatedEventHandler implements WalletEventHandler {
                 throw new NotFoundException(String.format("Identity with identityId='%s' not found", account.getIdentity()));
             }
 
-            walletData.setEventId(event.getId());
+            walletData.setEventId(event.getEventId());
             walletData.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
-            walletData.setEventOccurredAt(TypeUtil.stringToLocalDateTime(event.getPayload().getOccuredAt()));
+            walletData.setEventOccurredAt(TypeUtil.stringToLocalDateTime(change.getOccuredAt()));
             walletData.setEventType(WalletEventType.WALLET_ACCOUNT_CREATED);
-            walletData.setSequenceId(event.getPayload().getSequence());
-            walletData.setWalletId(event.getSource());
+            walletData.setWalletId(event.getSourceId());
             walletData.setIdentityId(account.getIdentity());
             walletData.setCurrencyCode(account.getCurrency().getSymbolicCode());
 
@@ -65,10 +58,9 @@ public class WalletAccountCreatedEventHandler implements WalletEventHandler {
             walletData.setIdentityId(identityData.getIdentityId());
 
             walletDao.save(walletData);
-            log.info("WalletAccountCreated has been saved, eventId={}, walletId={}", event.getId(), event.getSource());
+            log.info("WalletAccountCreated has been saved: eventId={}, walletId={}", event.getEventId(), event.getSourceId());
         } catch (DaoException ex) {
             throw new StorageException(ex);
         }
     }
-
 }

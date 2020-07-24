@@ -1,5 +1,6 @@
 package com.rbkmoney.fistful.magista.kafka.listener;
 
+import com.rbkmoney.fistful.magista.service.WalletEventService;
 import com.rbkmoney.machinegun.eventsink.MachineEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class WalletEventListener {
 
-//    private final WalletHandler handler;
+    private final WalletEventService walletEventService;
 
     @KafkaListener(
             autoStartup = "${kafka.topic.wallet.listener.enabled}",
@@ -28,7 +29,7 @@ public class WalletEventListener {
             @Header(KafkaHeaders.OFFSET) int offset,
             Acknowledgment ack) {
         log.info("Listening Wallet: partition={}, offset={}, batch.size()={}", partition, offset, batch.size());
-//        handler.handle(batch);
+        walletEventService.handleEvents(batch);
         ack.acknowledge();
         log.info("Ack Wallet: partition={}, offset={}", partition, offset);
     }
