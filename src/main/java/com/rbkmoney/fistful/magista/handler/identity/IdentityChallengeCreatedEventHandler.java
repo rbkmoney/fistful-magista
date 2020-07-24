@@ -1,4 +1,4 @@
-package com.rbkmoney.fistful.magista.poller.handler.identity;
+package com.rbkmoney.fistful.magista.handler.identity;
 
 import com.rbkmoney.fistful.identity.Challenge;
 import com.rbkmoney.fistful.identity.ChallengeChange;

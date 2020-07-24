@@ -1,4 +1,4 @@
-package com.rbkmoney.fistful.magista.poller.handler.deposit;
+package com.rbkmoney.fistful.magista.handler.deposit;
 
 import com.rbkmoney.fistful.base.Cash;
 import com.rbkmoney.fistful.deposit.Deposit;

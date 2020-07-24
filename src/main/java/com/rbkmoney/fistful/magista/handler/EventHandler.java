@@ -1,4 +1,4 @@
-package com.rbkmoney.fistful.magista.poller.handler;
+package com.rbkmoney.fistful.magista.handler;
 
 public interface EventHandler<T, E> {
 

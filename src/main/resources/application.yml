@@ -36,18 +36,6 @@ spring:
     ansi:
       enabled: always
 
-fistful:
-  polling:
-    enabled: false
-
-withdrawal:
-  polling:
-    url: http://localhost:8022/v1/eventsink/withdrawal
-    delay: 10000
-    retryDelay: 1000
-    maxPoolSize: 1
-    querySize: 100
-
 kafka:
   bootstrap-servers: changeit:9092
   consumer:

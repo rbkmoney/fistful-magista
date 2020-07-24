@@ -1,7 +1,7 @@
 package com.rbkmoney.fistful.magista.service;
 
-import com.rbkmoney.fistful.identity.TimestampedChange;
-import com.rbkmoney.fistful.magista.handler.identity.IdentityEventHandler;
+import com.rbkmoney.fistful.withdrawal.TimestampedChange;
+import com.rbkmoney.fistful.magista.handler.withdrawal.WithdrawalEventHandler;
 import com.rbkmoney.machinegun.eventsink.MachineEvent;
 import com.rbkmoney.sink.common.parser.impl.MachineEventParser;
 import lombok.RequiredArgsConstructor;
@@ -15,9 +15,9 @@ import java.util.List;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class IdentityEventService {
+public class WithdrawalEventService {
 
-    private final List<IdentityEventHandler> identityEventHandlers;
+    private final List<WithdrawalEventHandler> withdrawalEventHandlers;
     private final MachineEventParser<TimestampedChange> parser;
 
     @Transactional(propagation = Propagation.REQUIRED)
@@ -29,7 +29,7 @@ public class IdentityEventService {
         TimestampedChange change = parser.parse(machineEvent);
 
         if (change.isSetChange()) {
-            identityEventHandlers.stream()
+            withdrawalEventHandlers.stream()
                     .filter(handler -> handler.accept(change))
                     .forEach(handler -> handler.handle(change, machineEvent));
         }

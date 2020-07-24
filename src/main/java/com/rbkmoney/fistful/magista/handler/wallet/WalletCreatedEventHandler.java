@@ -1,4 +1,4 @@
-package com.rbkmoney.fistful.magista.poller.handler.wallet;
+package com.rbkmoney.fistful.magista.handler.wallet;
 
 import com.rbkmoney.fistful.magista.dao.WalletDao;
 import com.rbkmoney.fistful.magista.domain.enums.WalletEventType;
