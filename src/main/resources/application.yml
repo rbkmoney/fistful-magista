@@ -39,7 +39,7 @@ spring:
 kafka:
   bootstrap-servers: changeit:9092
   consumer:
-    group-id: scrooge
+    group-id: fistful-magista
     concurrency: 7
   max-poll-records: 100
   max-poll-interval-ms: 60000
