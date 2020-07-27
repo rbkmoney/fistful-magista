@@ -7,5 +7,6 @@
         <appender-ref ref="CONSOLE"/>
     </root>
     <logger name="com.rbkmoney.woody" level="ALL"/>
+    <logger name="com.rbkmoney.fistful.magista" level="DEBUG"/>
 
 </configuration>

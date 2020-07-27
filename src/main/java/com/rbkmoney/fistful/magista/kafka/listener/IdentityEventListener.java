@@ -1,7 +1,7 @@
 package com.rbkmoney.fistful.magista.kafka.listener;
 
 import com.rbkmoney.fistful.magista.service.IdentityEventService;
-import com.rbkmoney.machinegun.eventsink.MachineEvent;
+import com.rbkmoney.machinegun.eventsink.SinkEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -11,6 +11,8 @@ import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
+import static java.util.stream.Collectors.toList;
 
 @Slf4j
 @Service
@@ -24,12 +26,12 @@ public class IdentityEventListener {
             topics = "${kafka.topic.identity.name}",
             containerFactory = "identityEventListenerContainerFactory")
     public void listen(
-            List<MachineEvent> batch,
+            List<SinkEvent> batch,
             @Header(KafkaHeaders.RECEIVED_PARTITION_ID) int partition,
             @Header(KafkaHeaders.OFFSET) int offset,
             Acknowledgment ack) {
         log.info("Listening Identity: partition={}, offset={}, batch.size()={}", partition, offset, batch.size());
-        identityEventService.handleEvents(batch);
+        identityEventService.handleEvents(batch.stream().map(SinkEvent::getEvent).collect(toList()));
         ack.acknowledge();
         log.info("Ack Identity: partition={}, offset={}", partition, offset);
     }

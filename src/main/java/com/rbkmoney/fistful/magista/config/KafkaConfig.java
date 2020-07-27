@@ -1,7 +1,7 @@
 package com.rbkmoney.fistful.magista.config;
 
 import com.rbkmoney.fistful.magista.config.properties.KafkaSslProperties;
-import com.rbkmoney.fistful.magista.kafka.serde.MachineEventDeserializer;
+import com.rbkmoney.fistful.magista.kafka.serde.SinkEventDeserializer;
 import com.rbkmoney.machinegun.eventsink.MachineEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -69,10 +69,7 @@ public class KafkaConfig {
     private <T> ConcurrentKafkaListenerContainerFactory<String, MachineEvent> listenerContainerFactory() {
         ConcurrentKafkaListenerContainerFactory<String, MachineEvent> factory = new ConcurrentKafkaListenerContainerFactory<>();
 
-        DefaultKafkaConsumerFactory<String, MachineEvent> consumerFactory = new DefaultKafkaConsumerFactory<>(
-                consumerConfig(),
-                new StringDeserializer(),
-                new MachineEventDeserializer());
+        DefaultKafkaConsumerFactory<String, MachineEvent> consumerFactory = new DefaultKafkaConsumerFactory<>(consumerConfig());
 
         factory.setConsumerFactory(consumerFactory);
         factory.setConcurrency(consumerConcurrency);
@@ -87,6 +84,8 @@ public class KafkaConfig {
     private Map<String, Object> consumerConfig() {
         Map<String, Object> config = new HashMap<>();
 
+        config.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+        config.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, SinkEventDeserializer.class);
         config.put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, maxPollRecords);
         config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         config.put(ConsumerConfig.GROUP_ID_CONFIG, consumerGroupId);
