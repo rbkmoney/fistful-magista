@@ -39,14 +39,12 @@ public class IdentityCreatedEventHandler implements IdentityEventHandler {
         identityData.setPartyContractId(identity.getContract());
         identityData.setIdentityProviderId(identity.getProvider());
         identityData.setIdentityClassId(identity.getCls());
-
         identityData.setEventId(event.getEventId());
         identityData.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
         LocalDateTime occurredAt = TypeUtil.stringToLocalDateTime(change.getOccuredAt());
         identityData.setCreatedAt(occurredAt);
         identityData.setEventOccurredAt(occurredAt);
         identityData.setEventType(IdentityEventType.IDENTITY_CREATED);
-        identityData.setIdentityId(event.getSourceId());
 
         try {
             identityDao.save(identityData);
