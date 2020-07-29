@@ -56,7 +56,6 @@ public class WithdrawalCreatedEventHandler implements WithdrawalEventHandler {
             withdrawalData.setEventOccurredAt(occurredAt);
             withdrawalData.setExternalId(withdrawal.getExternalId());
             withdrawalData.setEventType(WithdrawalEventType.WITHDRAWAL_CREATED);
-            withdrawalData.setWithdrawalId(event.getSourceId());
             withdrawalData.setWithdrawalStatus(WithdrawalStatus.pending);
 
             withdrawalDao.save(withdrawalData);
