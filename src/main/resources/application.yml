@@ -37,9 +37,9 @@ spring:
       enabled: always
 
 kafka:
-  bootstrap-servers: changeit:9092
+  bootstrap-servers: dev-kafka-mirror.bst1.rbkmoney.net:9092
   consumer:
-    group-id: fistful-magista
+    group-id: aromanov-fistful-magista-3
     concurrency: 7
   max-poll-records: 100
   max-poll-interval-ms: 60000
@@ -48,6 +48,7 @@ kafka:
     enabled: false
     key-store-type: changeit
     key-store-location: changeit
+    key-store-password: changeit
     key-password: changeit
     trust-store-type: changeit
     trust-store-location: changeit
