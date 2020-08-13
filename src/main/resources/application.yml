@@ -44,6 +44,7 @@ kafka:
   max-poll-records: 100
   max-poll-interval-ms: 60000
   max-session-timeout-ms: 60000
+  retry-delay-ms: 1000
   ssl:
     enabled: false
     key-store-type: changeit
