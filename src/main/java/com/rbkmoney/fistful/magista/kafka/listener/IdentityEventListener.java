@@ -22,7 +22,7 @@ import static java.util.stream.Collectors.toList;
 @RequiredArgsConstructor
 public class IdentityEventListener {
 
-    @Value("${kafka.consumer.retry-delay-ms}")
+    @Value("${kafka.retry-delay-ms}")
     private int retryDelayMs;
 
     private final IdentityEventService identityEventService;
