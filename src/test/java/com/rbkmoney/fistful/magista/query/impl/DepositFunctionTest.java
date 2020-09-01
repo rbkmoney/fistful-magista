@@ -91,7 +91,7 @@ public class DepositFunctionTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void testAllWallets() throws DaoException {
+    public void testAllDeposits() throws DaoException {
         String json = String.format(
                 "{'query': {'deposits': {'party_id': '%s','identity_id': '%s'}}}",
                 deposit.getPartyId(),

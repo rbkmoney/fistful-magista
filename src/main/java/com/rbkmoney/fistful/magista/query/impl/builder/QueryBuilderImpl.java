@@ -18,7 +18,8 @@ public class QueryBuilderImpl extends BaseQueryBuilder {
                         new RootQuery.RootBuilder(),
                         new WalletFunction.WalletBuilder(),
                         new WithdrawalFunction.WithdrawalBuilder(),
-                        new DepositBuilder()
+                        new DepositBuilder(),
+                        new IdentityBuilder()
                 )
         );
     }

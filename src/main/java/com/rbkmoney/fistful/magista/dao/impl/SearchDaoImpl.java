@@ -1,18 +1,21 @@
 package com.rbkmoney.fistful.magista.dao.impl;
 
-
 import com.rbkmoney.fistful.fistful_stat.StatDeposit;
+import com.rbkmoney.fistful.fistful_stat.StatIdentity;
 import com.rbkmoney.fistful.fistful_stat.StatWallet;
 import com.rbkmoney.fistful.fistful_stat.StatWithdrawal;
 import com.rbkmoney.fistful.magista.dao.SearchDao;
 import com.rbkmoney.fistful.magista.dao.impl.field.ConditionParameterSource;
 import com.rbkmoney.fistful.magista.dao.impl.mapper.StatDepositMapper;
+import com.rbkmoney.fistful.magista.dao.impl.mapper.StatIdentityMapper;
 import com.rbkmoney.fistful.magista.dao.impl.mapper.StatWalletMapper;
 import com.rbkmoney.fistful.magista.dao.impl.mapper.StatWithdrawalMapper;
 import com.rbkmoney.fistful.magista.exception.DaoException;
 import com.rbkmoney.fistful.magista.query.impl.WalletFunction;
 import com.rbkmoney.fistful.magista.query.impl.WithdrawalFunction;
 import com.rbkmoney.fistful.magista.query.impl.parameters.DepositParameters;
+import com.rbkmoney.fistful.magista.query.impl.parameters.IdentityParameters;
+import com.rbkmoney.geck.common.util.TypeUtil;
 import org.jooq.Operator;
 import org.jooq.Query;
 import org.jooq.impl.DSL;
@@ -25,7 +28,9 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
+import static com.rbkmoney.fistful.magista.domain.tables.ChallengeData.CHALLENGE_DATA;
 import static com.rbkmoney.fistful.magista.domain.tables.DepositData.DEPOSIT_DATA;
+import static com.rbkmoney.fistful.magista.domain.tables.IdentityData.IDENTITY_DATA;
 import static com.rbkmoney.fistful.magista.domain.tables.WalletData.WALLET_DATA;
 import static com.rbkmoney.fistful.magista.domain.tables.WithdrawalData.WITHDRAWAL_DATA;
 import static org.jooq.Comparator.*;
@@ -36,12 +41,14 @@ public class SearchDaoImpl extends AbstractGenericDao implements SearchDao {
     private final StatWalletMapper statWalletMapper;
     private final StatWithdrawalMapper statWithdrawalMapper;
     private final StatDepositMapper statDepositMapper;
+    private final StatIdentityMapper statIdentityMapper;
 
     public SearchDaoImpl(DataSource ds) {
         super(ds);
         statWalletMapper = new StatWalletMapper();
         statWithdrawalMapper = new StatWithdrawalMapper();
         statDepositMapper = new StatDepositMapper();
+        statIdentityMapper = new StatIdentityMapper();
     }
 
     @Override
@@ -125,8 +132,7 @@ public class SearchDaoImpl extends AbstractGenericDao implements SearchDao {
                         appendDateTimeRangeConditions(
                                 appendConditions(DSL.trueCondition(), Operator.AND,
                                         new ConditionParameterSource()
-                                                .addValue(DEPOSIT_DATA.PARTY_ID,
-                                                        Optional.ofNullable(parameters.getPartyId()).orElse(null), EQUALS)
+                                                .addValue(DEPOSIT_DATA.PARTY_ID, parameters.getPartyId(), EQUALS)
                                                 .addValue(DEPOSIT_DATA.DEPOSIT_ID, parameters.getDepositId().orElse(null), EQUALS)
                                                 .addValue(DEPOSIT_DATA.IDENTITY_ID, parameters.getIdentityId().orElse(null), EQUALS)
                                                 .addValue(DEPOSIT_DATA.WALLET_ID, parameters.getWalletId().orElse(null), EQUALS)
@@ -147,5 +153,40 @@ public class SearchDaoImpl extends AbstractGenericDao implements SearchDao {
                 .limit(limit);
 
         return fetch(query, statDepositMapper);
+    }
+
+    @Override
+    public Collection<Map.Entry<Long, StatIdentity>> getIdentities(IdentityParameters parameters, LocalDateTime fromTime, LocalDateTime toTime, Long fromId, int limit) throws DaoException {
+        Query query = getDslContext()
+                .select()
+                .from(IDENTITY_DATA.leftJoin(CHALLENGE_DATA).on(IDENTITY_DATA.IDENTITY_ID.eq(CHALLENGE_DATA.IDENTITY_ID)))
+                .where(
+                        appendDateTimeRangeConditions(
+                                appendConditions(DSL.trueCondition(), Operator.AND,
+                                        new ConditionParameterSource()
+                                                .addValue(IDENTITY_DATA.PARTY_ID, parameters.getPartyId(), EQUALS)
+                                                .addValue(IDENTITY_DATA.PARTY_CONTRACT_ID, parameters.getPartyContractId().orElse(null), EQUALS)
+                                                .addValue(IDENTITY_DATA.IDENTITY_ID, parameters.getIdentityId().orElse(null), EQUALS)
+                                                .addValue(IDENTITY_DATA.IDENTITY_PROVIDER_ID, parameters.getIdentityProviderId().orElse(null), EQUALS)
+                                                .addValue(IDENTITY_DATA.IDENTITY_CLASS_ID, parameters.getIdentityClassId().orElse(null), EQUALS)
+                                                .addValue(IDENTITY_DATA.IDENTITY_EFFECTIVE_CHALLENGE_ID, parameters.getIdentityEffectiveChallengeId().orElse(null), EQUALS)
+                                                .addValue(IDENTITY_DATA.IDENTITY_LEVEL_ID, parameters.getIdentityLevelId().orElse(null), EQUALS)
+                                                .addValue(IDENTITY_DATA.ID, fromId, LESS)
+                                                .addValue(CHALLENGE_DATA.CHALLENGE_ID, parameters.getChallengeId().orElse(null), EQUALS)
+                                                .addValue(CHALLENGE_DATA.CHALLENGE_CLASS_ID, parameters.getChallengeClassId().orElse(null), EQUALS)
+                                                .addValue(CHALLENGE_DATA.CHALLENGE_STATUS, parameters.getChallengeStatus().orElse(null), EQUALS)
+                                                .addValue(CHALLENGE_DATA.CHALLENGE_RESOLUTION, parameters.getChallengeResolution().orElse(null), EQUALS)
+                                                .addValue(CHALLENGE_DATA.CHALLENGE_VALID_UNTIL, TypeUtil.toLocalDateTime(parameters.getChallengeValidUntil()), GREATER_OR_EQUAL)
+
+                                ),
+                                IDENTITY_DATA.CREATED_AT,
+                                fromTime,
+                                toTime
+                        )
+                )
+                .orderBy(IDENTITY_DATA.ID.desc())
+                .limit(limit);
+
+        return fetch(query, statIdentityMapper);
     }
 }
