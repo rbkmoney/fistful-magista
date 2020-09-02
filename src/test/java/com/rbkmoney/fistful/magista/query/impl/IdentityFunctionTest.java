@@ -5,6 +5,7 @@ import com.rbkmoney.fistful.fistful_stat.StatRequest;
 import com.rbkmoney.fistful.fistful_stat.StatResponse;
 import com.rbkmoney.fistful.magista.AbstractIntegrationTest;
 import com.rbkmoney.fistful.magista.dao.IdentityDao;
+import com.rbkmoney.fistful.magista.domain.enums.ChallengeStatus;
 import com.rbkmoney.fistful.magista.domain.tables.pojos.ChallengeData;
 import com.rbkmoney.fistful.magista.domain.tables.pojos.IdentityData;
 import com.rbkmoney.fistful.magista.exception.DaoException;
@@ -37,6 +38,7 @@ public class IdentityFunctionTest extends AbstractIntegrationTest {
     private IdentityData identityDataSecond;
     private ChallengeData challengeData;
     private ChallengeData challengeDataSecond;
+    private ChallengeData challengeDataThird;
 
     @Before
     public void before() throws DaoException {
@@ -57,8 +59,36 @@ public class IdentityFunctionTest extends AbstractIntegrationTest {
 
         identityDao.save(identityData);
         identityDao.save(identityDataSecond);
-        System.out.println(identityData.toString());
-        System.out.println(identityDataSecond.toString());
+
+        challengeData = random(ChallengeData.class);
+        challengeData.setId(1L);
+        challengeData.setChallengeId("1");
+        challengeData.setIdentityId(identityData.getIdentityId());
+        challengeData.setCreatedAt(LocalDateTime.now().minusMinutes(1));
+        challengeData.setChallengeStatus(ChallengeStatus.pending);
+        challengeData.setChallengeValidUntil(LocalDateTime.now().minusMinutes(1));
+
+        challengeDataSecond = random(ChallengeData.class);
+        challengeDataSecond.setId(2L);
+        challengeDataSecond.setChallengeId("2");
+        challengeDataSecond.setIdentityId(challengeData.getIdentityId());
+        challengeDataSecond.setChallengeClassId(challengeData.getChallengeClassId());
+        challengeDataSecond.setChallengeStatus(ChallengeStatus.completed);
+        challengeDataSecond.setCreatedAt(LocalDateTime.now().minusMinutes(1));
+        challengeDataSecond.setChallengeValidUntil(LocalDateTime.now().minusMinutes(1));
+
+        challengeDataThird = random(ChallengeData.class);
+        challengeDataThird.setId(3L);
+        challengeDataThird.setChallengeId("3");
+        challengeDataThird.setIdentityId(identityDataSecond.getIdentityId());
+        challengeDataThird.setChallengeClassId(challengeData.getChallengeClassId());
+        challengeDataThird.setChallengeStatus(ChallengeStatus.completed);
+        challengeDataThird.setCreatedAt(LocalDateTime.now().minusMinutes(1));
+        challengeDataThird.setChallengeValidUntil(LocalDateTime.now().minusMinutes(1));
+
+        identityDao.save(challengeData);
+        identityDao.save(challengeDataSecond);
+        identityDao.save(challengeDataThird);
     }
 
     @After
@@ -92,13 +122,61 @@ public class IdentityFunctionTest extends AbstractIntegrationTest {
         );
         StatResponse statResponse = queryProcessor.processQuery(new StatRequest(json));
         List<StatIdentity> identities = statResponse.getData().getIdentities();
-        assertEquals(1, identities.size());
+        assertEquals(2, identities.size());
 
         json = String.format(
                 "{'query': {'identities': {" +
                         "'identity_id':'%s' " +
                         "}}}",
                 identityData.getIdentityId()
+        );
+        statResponse = queryProcessor.processQuery(new StatRequest(json));
+        identities = statResponse.getData().getIdentities();
+        assertEquals(2, identities.size());
+
+        json = String.format(
+                "{'query': {'identities': {" +
+                        "'party_id':'%s', " +
+                        "'party_contract_id': '%s', " +
+                        "'identity_id':'%s', " +
+                        "'identity_provider_id':'%s', " +
+                        "'identity_class_id': '%s', " +
+                        "'identity_effective_challenge_id':'%s', " +
+                        "'identity_level_id':'%s', " +
+                        "'challenge_id':'%s', " +
+                        "'challenge_class_id':'%s', " +
+                        "'challenge_status':'%s', " +
+                        "'challenge_resolution':'%s', " +
+                        "'challenge_valid_until':'%s', " +
+                        "'from_time': '%s'," +
+                        "'to_time': '%s'" +
+                        "}}}",
+                identityData.getPartyId(),
+                identityData.getPartyContractId(),
+                identityData.getIdentityId(),
+                identityData.getIdentityProviderId(),
+                identityData.getIdentityClassId(),
+                identityData.getIdentityEffectiveChallengeId(),
+                identityData.getIdentityLevelId(),
+                challengeData.getChallengeId(),
+                challengeData.getChallengeClassId(),
+                "Pending",
+                challengeData.getChallengeResolution(),
+                TypeUtil.temporalToString(challengeData.getChallengeValidUntil()),
+                TypeUtil.temporalToString(identityData.getCreatedAt().minusHours(10)),
+                TypeUtil.temporalToString(identityData.getCreatedAt().plusHours(10))
+        );
+        statResponse = queryProcessor.processQuery(new StatRequest(json));
+        identities = statResponse.getData().getIdentities();
+        assertEquals(1, identities.size());
+
+        json = String.format(
+                "{'query': {'identities': {" +
+                        "'identity_id':'%s', " +
+                        "'challenge_id':'%s' " +
+                        "}}}",
+                identityData.getIdentityId(),
+                challengeData.getChallengeId()
         );
         statResponse = queryProcessor.processQuery(new StatRequest(json));
         identities = statResponse.getData().getIdentities();
@@ -123,7 +201,71 @@ public class IdentityFunctionTest extends AbstractIntegrationTest {
         );
         StatResponse statResponse = queryProcessor.processQuery(new StatRequest(json));
         List<StatIdentity> identities = statResponse.getData().getIdentities();
+        assertEquals(3, identities.size());
+
+        json = String.format(
+                "{'query': {'identities': {" +
+                        "'party_id':'%s', " +
+                        "'party_contract_id': '%s', " +
+                        "'identity_provider_id':'%s', " +
+                        "'challenge_class_id':'%s', " +
+                        "'from_time': '%s'," +
+                        "'to_time': '%s'" +
+                        "}}}",
+                identityData.getPartyId(),
+                identityData.getPartyContractId(),
+                identityData.getIdentityProviderId(),
+                challengeData.getChallengeClassId(),
+                TypeUtil.temporalToString(identityData.getCreatedAt().minusHours(10)),
+                TypeUtil.temporalToString(identityData.getCreatedAt().plusHours(10))
+        );
+        statResponse = queryProcessor.processQuery(new StatRequest(json));
+        identities = statResponse.getData().getIdentities();
+        assertEquals(3, identities.size());
+
+        json = String.format(
+                "{'query': {'identities': {" +
+                        "'party_id':'%s', " +
+                        "'party_contract_id': '%s', " +
+                        "'identity_provider_id':'%s', " +
+                        "'challenge_class_id':'%s', " +
+                        "'challenge_status':'%s', " +
+                        "'from_time': '%s'," +
+                        "'to_time': '%s'" +
+                        "}}}",
+                identityData.getPartyId(),
+                identityData.getPartyContractId(),
+                identityData.getIdentityProviderId(),
+                challengeData.getChallengeClassId(),
+                "Completed",
+                TypeUtil.temporalToString(identityData.getCreatedAt().minusHours(10)),
+                TypeUtil.temporalToString(identityData.getCreatedAt().plusHours(10))
+        );
+        statResponse = queryProcessor.processQuery(new StatRequest(json));
+        identities = statResponse.getData().getIdentities();
         assertEquals(2, identities.size());
+
+        json = String.format(
+                "{'query': {'identities': {" +
+                        "'party_id':'%s', " +
+                        "'party_contract_id': '%s', " +
+                        "'identity_provider_id':'%s', " +
+                        "'challenge_class_id':'%s', " +
+                        "'challenge_id':'%s', " +
+                        "'from_time': '%s'," +
+                        "'to_time': '%s'" +
+                        "}}}",
+                identityData.getPartyId(),
+                identityData.getPartyContractId(),
+                identityData.getIdentityProviderId(),
+                challengeData.getChallengeClassId(),
+                challengeData.getChallengeId(),
+                TypeUtil.temporalToString(identityData.getCreatedAt().minusHours(10)),
+                TypeUtil.temporalToString(identityData.getCreatedAt().plusHours(10))
+        );
+        statResponse = queryProcessor.processQuery(new StatRequest(json));
+        identities = statResponse.getData().getIdentities();
+        assertEquals(1, identities.size());
     }
 
     @Test(expected = QueryParserException.class)
