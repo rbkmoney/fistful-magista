@@ -1,5 +1,9 @@
 package com.rbkmoney.fistful.magista.kafka.listener;
 
+import com.rbkmoney.fistful.Blocking;
+import com.rbkmoney.fistful.base.EventRange;
+import com.rbkmoney.fistful.identity.IdentityState;
+import com.rbkmoney.fistful.identity.ManagementSrv;
 import com.rbkmoney.fistful.magista.kafka.serde.SinkEventDeserializer;
 import com.rbkmoney.kafka.common.serialization.ThriftSerializer;
 import com.rbkmoney.machinegun.eventsink.MachineEvent;
@@ -16,7 +20,9 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.apache.thrift.TBase;
+import org.junit.Before;
 import org.junit.ClassRule;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.util.TestPropertyValues;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -27,6 +33,9 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.Properties;
+import java.util.UUID;
+
+import static org.mockito.Mockito.*;
 
 @Slf4j
 @ContextConfiguration(initializers = {
@@ -42,6 +51,17 @@ public abstract class AbstractListenerTest {
     @SuppressWarnings("rawtypes")
     public static PostgreSQLContainer postgres = (PostgreSQLContainer) new PostgreSQLContainer("postgres:9.6")
             .withStartupTimeout(Duration.ofMinutes(5));
+
+    @MockBean
+    private ManagementSrv.Iface identityManagementClient;
+
+    @Before
+    public void setUp() throws Exception {
+        IdentityState identityState = new IdentityState(UUID.randomUUID().toString(), "provider", "classid");
+        identityState.setBlocking(Blocking.unblocked);
+        identityState.setExternalId("id");
+        when(identityManagementClient.get(anyString(), any(EventRange.class))).thenReturn(identityState);
+    }
 
     public static class KafkaInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
 

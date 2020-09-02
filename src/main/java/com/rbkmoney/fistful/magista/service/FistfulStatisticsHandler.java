@@ -3,6 +3,7 @@ package com.rbkmoney.fistful.magista.service;
 import com.rbkmoney.fistful.fistful_stat.*;
 import com.rbkmoney.magista.dsl.BadTokenException;
 import com.rbkmoney.magista.dsl.QueryProcessor;
+import org.apache.commons.lang3.NotImplementedException;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +32,16 @@ public class FistfulStatisticsHandler implements FistfulStatisticsSrv.Iface {
 
     @Override
     public StatResponse getDeposits(StatRequest statRequest) throws InvalidRequest, BadToken, TException {
+        return getStatResponse(statRequest);
+    }
+
+    @Override
+    public StatResponse getDestinations(StatRequest statRequest) throws InvalidRequest, BadToken, TException {
+        throw new NotImplementedException("Method 'getDestinations' is not supposed to be called for this handler!");
+    }
+
+    @Override
+    public StatResponse getIdentities(StatRequest statRequest) throws InvalidRequest, BadToken, TException {
         return getStatResponse(statRequest);
     }
 

@@ -32,32 +32,29 @@ public class IdentityChallengeCreatedEventHandler implements IdentityEventHandle
 
     @Override
     public void handle(TimestampedChange change, MachineEvent event) {
-        log.info("Trying to handle IdentityChallengeCreated: eventId={}, identityId={}", event.getEventId(), event.getSourceId());
-        ChallengeChange challengeChange = change.getChange().getIdentityChallenge();
-
-        ChallengeData challengeData = new ChallengeData();
-        challengeData.setIdentityId(event.getSourceId());
-        challengeData.setChallengeId(challengeChange.getId());
-        Challenge challenge = challengeChange.getPayload().getCreated();
-        challengeData.setChallengeClassId(challenge.getCls());
-
-        challengeData.setEventId(event.getEventId());
-        challengeData.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
-        LocalDateTime eventOccurredAt = TypeUtil.stringToLocalDateTime(change.getOccuredAt());
-        challengeData.setCreatedAt(eventOccurredAt);
-        challengeData.setEventOccurredAt(eventOccurredAt);
-        challengeData.setEventType(ChallengeEventType.CHALLENGE_CREATED);
-        challengeData.setIdentityId(event.getSourceId());
-        challengeData.setChallengeId(challengeChange.getId());
-        challengeData.setChallengeStatus(ChallengeStatus.pending);
-
         try {
+            log.info("Trying to handle IdentityChallengeCreated: eventId={}, identityId={}", event.getEventId(), event.getSourceId());
+            ChallengeChange challengeChange = change.getChange().getIdentityChallenge();
+            Challenge challenge = challengeChange.getPayload().getCreated();
+            LocalDateTime eventOccurredAt = TypeUtil.stringToLocalDateTime(change.getOccuredAt());
+
+            ChallengeData challengeData = new ChallengeData();
+            challengeData.setEventId(event.getEventId());
+            challengeData.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
+            challengeData.setEventOccurredAt(eventOccurredAt);
+            challengeData.setEventType(ChallengeEventType.CHALLENGE_CREATED);
+            challengeData.setCreatedAt(eventOccurredAt);
+            challengeData.setIdentityId(event.getSourceId());
+            challengeData.setChallengeId(challengeChange.getId());
+            challengeData.setChallengeClassId(challenge.getCls());
+            challengeData.setChallengeStatus(ChallengeStatus.pending);
+
             identityDao.save(challengeData);
+
+            log.info("IdentityChallengeCreated has been saved: eventId={}, identityId={}", event.getEventId(), event.getSourceId());
         } catch (DaoException ex) {
             throw new StorageException(ex);
         }
-
-        log.info("IdentityChallengeCreated has been saved: eventId={}, identityId={}", event.getEventId(), event.getSourceId());
     }
 
 }
