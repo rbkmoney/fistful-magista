@@ -71,3 +71,7 @@ kafka:
       name: mg-events-ff-withdrawal
       listener:
         enabled: false
+
+identity-management:
+  url: http://hellgate:8022/v1/processing/identity-management
+  timeout: 5000
