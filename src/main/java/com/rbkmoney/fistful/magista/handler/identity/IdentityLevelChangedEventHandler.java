@@ -29,11 +29,8 @@ public class IdentityLevelChangedEventHandler implements IdentityEventHandler {
     public void handle(TimestampedChange change, MachineEvent event) {
         try {
             log.info("Trying to handle IdentityLevelChanged: eventId={}, identityId={}", event.getEventId(), event.getSourceId());
-            IdentityData identityData = identityDao.get(event.getSourceId());
-            if (identityData == null) {
-                throw new NotFoundException(String.format("Identity with id='%s' not found", event.getSourceId()));
-            }
 
+            IdentityData identityData = getIdentityData(event);
             identityData.setEventId(event.getEventId());
             identityData.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
             identityData.setEventOccurredAt(TypeUtil.stringToLocalDateTime(change.getOccuredAt()));
@@ -41,9 +38,18 @@ public class IdentityLevelChangedEventHandler implements IdentityEventHandler {
             identityData.setIdentityLevelId(change.getChange().getLevelChanged());
 
             identityDao.save(identityData);
+            
             log.info("IdentityLevelChanged has been saved, eventId={}, identityId={}", event.getEventId(), event.getSourceId());
         } catch (DaoException ex) {
             throw new StorageException(ex);
         }
+    }
+
+    private IdentityData getIdentityData(MachineEvent event) throws DaoException {
+        IdentityData identityData = identityDao.get(event.getSourceId());
+        if (identityData == null) {
+            throw new NotFoundException(String.format("Identity with id='%s' not found", event.getSourceId()));
+        }
+        return identityData;
     }
 }

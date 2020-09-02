@@ -30,29 +30,30 @@ public class IdentityCreatedEventHandler implements IdentityEventHandler {
 
     @Override
     public void handle(TimestampedChange change, MachineEvent event) {
-        log.info("Trying to handle IdentityCreated: eventId={}, identityId={}", event.getEventId(), event.getSourceId());
-        Identity identity = change.getChange().getCreated();
-
-        IdentityData identityData = new IdentityData();
-        identityData.setIdentityId(event.getSourceId());
-        identityData.setPartyId(UUID.fromString(identity.getParty()));
-        identityData.setPartyContractId(identity.getContract());
-        identityData.setIdentityProviderId(identity.getProvider());
-        identityData.setIdentityClassId(identity.getCls());
-        identityData.setEventId(event.getEventId());
-        identityData.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
-        LocalDateTime occurredAt = TypeUtil.stringToLocalDateTime(change.getOccuredAt());
-        identityData.setCreatedAt(occurredAt);
-        identityData.setEventOccurredAt(occurredAt);
-        identityData.setEventType(IdentityEventType.IDENTITY_CREATED);
-
         try {
+            log.info("Trying to handle IdentityCreated: eventId={}, identityId={}", event.getEventId(), event.getSourceId());
+
+            Identity identity = change.getChange().getCreated();
+            LocalDateTime occurredAt = TypeUtil.stringToLocalDateTime(change.getOccuredAt());
+
+            IdentityData identityData = new IdentityData();
+            identityData.setEventId(event.getEventId());
+            identityData.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
+            identityData.setCreatedAt(occurredAt);
+            identityData.setEventOccurredAt(occurredAt);
+            identityData.setEventType(IdentityEventType.IDENTITY_CREATED);
+            identityData.setIdentityId(event.getSourceId());
+            identityData.setPartyId(UUID.fromString(identity.getParty()));
+            identityData.setPartyContractId(identity.getContract());
+            identityData.setIdentityProviderId(identity.getProvider());
+            identityData.setIdentityClassId(identity.getCls());
+
             identityDao.save(identityData);
+
+            log.info("IdentityCreated has been saved: eventId={}, identityId={}", event.getEventId(), event.getSourceId());
         } catch (DaoException ex) {
             throw new StorageException(ex);
         }
-
-        log.info("IdentityCreated has been saved: eventId={}, identityId={}", event.getEventId(), event.getSourceId());
     }
 
 }
