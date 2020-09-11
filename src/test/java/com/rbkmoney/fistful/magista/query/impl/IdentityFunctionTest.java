@@ -46,7 +46,7 @@ public class IdentityFunctionTest extends AbstractIntegrationTest {
         identityData = random(IdentityData.class);
         identityData.setId(1L);
         identityData.setIdentityId("1");
-        identityData.setIdentityProviderId("1");
+        identityData.setIdentityProviderId("test");
         identityData.setCreatedAt(LocalDateTime.now().minusMinutes(1));
 
         identityDataSecond = random(IdentityData.class);
