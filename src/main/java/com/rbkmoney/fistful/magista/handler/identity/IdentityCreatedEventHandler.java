@@ -48,7 +48,6 @@ public class IdentityCreatedEventHandler implements IdentityEventHandler {
             IdentityState identityState = getIdentityState(event);
             Blocking blocking = identityState.getBlocking();
             String externalId = identity.getExternalId();
-            String name = identityState.getName();
 
             IdentityData identityData = new IdentityData();
             identityData.setEventId(event.getEventId());
@@ -61,7 +60,7 @@ public class IdentityCreatedEventHandler implements IdentityEventHandler {
             identityData.setPartyContractId(identity.getContract());
             identityData.setIdentityProviderId(identity.getProvider());
             identityData.setIdentityClassId(identity.getCls());
-            identityData.setName(name);
+            identityData.setName(""); //todo
             identityData.setBlocking(TypeUtil.toEnumField(blocking.name(), BlockingType.class));
             identityData.setExternalId(externalId);
 
