@@ -1,6 +1,11 @@
 package com.rbkmoney.fistful.magista.util;
 
+import com.rbkmoney.fistful.cashflow.FinalCashFlowAccount;
+import com.rbkmoney.fistful.cashflow.FinalCashFlowPosting;
+import com.rbkmoney.fistful.cashflow.MerchantCashFlowAccount;
+
 import java.util.List;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 public class CashFlowUtil {
@@ -29,5 +34,24 @@ public class CashFlowUtil {
                 .filter(filter)
                 .map(posting -> posting.getVolume().getAmount())
                 .reduce(0L, Long::sum);
+    }
+
+    public static Long computeAmount(List<FinalCashFlowPosting> finalCashFlow) {
+        long amountSource = computeAmount(finalCashFlow, FinalCashFlowPosting::getSource);
+        long amountDest = computeAmount(finalCashFlow, FinalCashFlowPosting::getDestination);
+        return amountDest - amountSource;
+    }
+
+    private static long computeAmount(List<FinalCashFlowPosting> finalCashFlow,
+                                      Function<FinalCashFlowPosting, FinalCashFlowAccount> func) {
+        return finalCashFlow.stream()
+                .filter(f -> isMerchantSettlement(func.apply(f).getAccountType()))
+                .mapToLong(cashFlow -> cashFlow.getVolume().getAmount())
+                .sum();
+    }
+
+    private static boolean isMerchantSettlement(com.rbkmoney.fistful.cashflow.CashFlowAccount cashFlowAccount) {
+        return cashFlowAccount.isSetMerchant() &&
+                cashFlowAccount.getMerchant() == MerchantCashFlowAccount.settlement;
     }
 }
