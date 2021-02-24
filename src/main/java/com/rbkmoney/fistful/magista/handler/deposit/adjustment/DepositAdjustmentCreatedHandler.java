@@ -67,6 +67,8 @@ public class DepositAdjustmentCreatedHandler implements DepositEventHandler {
             depositAdjustmentData.setExternalId(adjustment.getExternalId());
             depositAdjustmentData.setPartyId(depositData.getPartyId());
             depositAdjustmentData.setIdentityId(depositData.getIdentityId());
+            depositAdjustmentData.setPartyRevision(adjustment.getPartyRevision());
+            depositAdjustmentData.setDomainRevision(adjustment.getDomainRevision());
 
             depositAdjustmentDao.save(depositAdjustmentData)
                     .ifPresentOrElse(

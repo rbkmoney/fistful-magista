@@ -65,6 +65,8 @@ public class DepositRevertCreatedHandler implements DepositEventHandler {
             depositRevertData.setExternalId(revert.getExternalId());
             depositRevertData.setPartyId(depositData.getPartyId());
             depositRevertData.setIdentityId(depositData.getIdentityId());
+            depositRevertData.setPartyRevision(revert.getPartyRevision());
+            depositRevertData.setDomainRevision(revert.getDomainRevision());
 
             depositRevertDao.save(depositRevertData).ifPresentOrElse(
                     dbContractId -> log.info("Deposit revert created has been saved, eventId={}, depositId={}, revertId={}",
