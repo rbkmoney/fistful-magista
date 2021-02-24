@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -36,31 +37,27 @@ public class DepositTransferCreatedHandler implements DepositEventHandler {
     @Override
     public void handle(TimestampedChange change, MachineEvent event) {
         try {
-            List<FinalCashFlowPosting> postings = change
-                    .getChange()
-                    .getTransfer()
-                    .getPayload()
-                    .getCreated()
-                    .getTransfer()
-                    .getCashflow()
-                    .getPostings();
+            List<FinalCashFlowPosting> postings = change.getChange().getTransfer()
+                    .getPayload().getCreated().getTransfer().getCashflow().getPostings();
+
+            long eventId = event.getEventId();
+            String depositId = event.getSourceId();
+            LocalDateTime eventCreatedAt = TypeUtil.stringToLocalDateTime(event.getCreatedAt());
+            LocalDateTime eventOccuredAt = TypeUtil.stringToLocalDateTime(change.getOccuredAt());
+
             log.info("Start deposit transfer created handling: eventId={}, depositId={}, transferChange={}",
-                    event.getEventId(), event.getSourceId(), change.getChange().getTransfer());
+                    eventId, depositId, change.getChange().getTransfer());
 
             DepositData depositData = depositDao.get(event.getSourceId());
-            depositData.setEventId(event.getEventId());
-            depositData.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
-            depositData.setDepositId(event.getSourceId());
-            depositData.setEventOccuredAt(TypeUtil.stringToLocalDateTime(change.getOccuredAt()));
-            depositData.setEventType(DepositEventType.DEPOSIT_TRANSFER_CREATED);
+            initEventFields(depositData, eventId, eventCreatedAt, eventOccuredAt, DepositEventType.DEPOSIT_TRANSFER_CREATED);
             depositData.setDepositTransferStatus(DepositTransferStatus.created);
-
             depositData.setFee(CashFlowUtil.getFistfulFee(postings));
             depositData.setProviderFee(CashFlowUtil.getFistfulProviderFee(postings));
 
             depositDao.save(depositData);
-            log.info("Deposit transfer has been saved: eventId={}, depositId={}, transferChange={}",
-                    event.getEventId(), event.getSourceId(), change.getChange().getTransfer());
+
+            log.info("Deposit transfer created has been saved: eventId={}, depositId={}, transferChange={}",
+                    eventId, depositId, change.getChange().getTransfer());
         } catch (DaoException e) {
             throw new StorageException(e);
         }

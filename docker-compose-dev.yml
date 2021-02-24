@@ -1,23 +1,23 @@
 version: '3'
 services:
-  fistful-magista:
-    build: target/
-    image: fistful-magista:1.1.4-SNAPSHOT
-    ports:
-      - "8022:8022"
-    depends_on:
-      - postgresql
-    networks:
-      - fistfulmstnet
-    environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgresql:5432/fistfulmst
+  #  fistful-magista:
+  #    build: target/
+  #    image: fistful-magista:1.1.4-SNAPSHOT
+  #    ports:
+  #      - "8022:8022"
+  #    depends_on:
+  #      - postgresql
+  #    networks:
+  #      - fistfulmstnet
+  #    environment:
+  #      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgresql:5432/fistfulmst
 
   postgresql:
     image: postgres:9.6
-    networks:
-      - fistfulmstnet
-    volumes:
-    - ./data:/var/lib/postgresql
+    #    networks:
+    #      - fistfulmstnet
+    #    volumes:
+    #    - ./data:/var/lib/postgresql
     ports:
     - "5432:5432"
     environment:
@@ -25,5 +25,5 @@ services:
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: fistfulmst
 
-networks:
-  fistfulmstnet:
+#networks:
+#  fistfulmstnet:

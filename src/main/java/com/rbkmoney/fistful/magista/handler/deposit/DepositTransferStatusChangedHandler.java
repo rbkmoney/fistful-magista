@@ -15,6 +15,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -33,26 +35,25 @@ public class DepositTransferStatusChangedHandler implements DepositEventHandler 
     @Override
     public void handle(TimestampedChange change, MachineEvent event) {
         try {
-            Status status = change
-                    .getChange()
-                    .getTransfer()
-                    .getPayload()
-                    .getStatusChanged()
-                    .getStatus();
+            Status status = change.getChange().getTransfer()
+                    .getPayload().getStatusChanged().getStatus();
+
+            long eventId = event.getEventId();
+            String depositId = event.getSourceId();
+            LocalDateTime eventCreatedAt = TypeUtil.stringToLocalDateTime(event.getCreatedAt());
+            LocalDateTime eventOccuredAt = TypeUtil.stringToLocalDateTime(change.getOccuredAt());
+
             log.info("Start deposit transfer status changed handling: eventId={}, depositId={}, transferChange={}",
-                    event.getEventId(), event.getSourceId(), change.getChange().getTransfer());
+                    eventId, depositId, change.getChange().getTransfer());
 
             DepositData depositData = depositDao.get(event.getSourceId());
-            depositData.setEventId(event.getEventId());
-            depositData.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
-            depositData.setDepositId(event.getSourceId());
-            depositData.setEventOccuredAt(TypeUtil.stringToLocalDateTime(change.getOccuredAt()));
-            depositData.setEventType(DepositEventType.DEPOSIT_TRANSFER_STATUS_CHANGED);
+            initEventFields(depositData, eventId, eventCreatedAt, eventOccuredAt, DepositEventType.DEPOSIT_TRANSFER_STATUS_CHANGED);
             depositData.setDepositTransferStatus(TBaseUtil.unionFieldToEnum(status, DepositTransferStatus.class));
 
             depositDao.save(depositData);
-            log.info("Withdrawal deposit status have been changed: eventId={}, depositId={}, transferChange={}",
-                    event.getEventId(), event.getSourceId(), change.getChange().getTransfer());
+
+            log.info("Deposit transfer status have been changed: eventId={}, depositId={}, transferChange={}",
+                    eventId, depositId, change.getChange().getTransfer());
         } catch (DaoException e) {
             throw new StorageException(e);
         }
