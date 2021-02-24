@@ -11,6 +11,7 @@ CREATE TABLE mst.deposit_adjustment_data
     event_created_at TIMESTAMP WITHOUT TIME ZONE                    NOT NULL,
     event_occured_at TIMESTAMP WITHOUT TIME ZONE                    NOT NULL,
     event_type       mst.deposit_adjustment_data_event_type         NOT NULL,
+    created_at       TIMESTAMP WITHOUT TIME ZONE                    NOT NULL,
     source_id        CHARACTER VARYING                              NOT NULL,
     wallet_id        CHARACTER VARYING                              NOT NULL,
     deposit_id       CHARACTER VARYING                              NOT NULL,
@@ -31,12 +32,8 @@ CREATE TABLE mst.deposit_adjustment_data
     CONSTRAINT deposit_adjustment_data_pkey PRIMARY KEY (id)
 );
 
-CREATE INDEX deposit_adjustment_data_event_id_idx
-    ON mst.deposit_adjustment_data (event_id);
-CREATE INDEX deposit_adjustment_data_event_created_at_idx
-    ON mst.deposit_adjustment_data (event_created_at);
-CREATE INDEX deposit_adjustment_data_event_occured_at_idx
-    ON mst.deposit_adjustment_data (event_occured_at);
+CREATE INDEX deposit_adjustment_data_created_at_idx
+    ON mst.deposit_adjustment_data (created_at);
 CREATE INDEX deposit_adjustment_data_wallet_id_idx
     ON mst.deposit_adjustment_data (wallet_id);
 CREATE INDEX deposit_adjustment_data_deposit_id_idx
@@ -63,6 +60,7 @@ CREATE TABLE mst.deposit_revert_data
     event_created_at TIMESTAMP WITHOUT TIME ZONE                    NOT NULL,
     event_occured_at TIMESTAMP WITHOUT TIME ZONE                    NOT NULL,
     event_type       mst.deposit_revert_data_event_type             NOT NULL,
+    created_at       TIMESTAMP WITHOUT TIME ZONE                    NOT NULL,
     source_id        CHARACTER VARYING                              NOT NULL,
     wallet_id        CHARACTER VARYING                              NOT NULL,
     deposit_id       CHARACTER VARYING                              NOT NULL,
@@ -83,12 +81,8 @@ CREATE TABLE mst.deposit_revert_data
     CONSTRAINT deposit_revert_data_pkey PRIMARY KEY (id)
 );
 
-CREATE INDEX deposit_revert_data_event_id_idx
-    ON mst.deposit_revert_data (event_id);
-CREATE INDEX deposit_revert_data_event_created_at_idx
-    ON mst.deposit_revert_data (event_created_at);
-CREATE INDEX deposit_revert_data_event_occured_at_idx
-    ON mst.deposit_revert_data (event_occured_at);
+CREATE INDEX deposit_revert_data_created_at_idx
+    ON mst.deposit_revert_data (created_at);
 CREATE INDEX deposit_revert_data_wallet_id_idx
     ON mst.deposit_revert_data (wallet_id);
 CREATE INDEX deposit_revert_data_deposit_id_idx

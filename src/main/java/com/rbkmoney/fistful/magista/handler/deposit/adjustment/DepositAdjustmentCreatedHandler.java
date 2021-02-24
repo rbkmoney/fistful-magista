@@ -50,6 +50,7 @@ public class DepositAdjustmentCreatedHandler implements DepositEventHandler {
             LocalDateTime eventCreatedAt = TypeUtil.stringToLocalDateTime(event.getCreatedAt());
             LocalDateTime eventOccuredAt = TypeUtil.stringToLocalDateTime(change.getOccuredAt());
             DepositAdjustmentDataEventType eventType = DepositAdjustmentDataEventType.DEPOSIT_ADJUSTMENT_CREATED;
+            LocalDateTime createdAt = TypeUtil.stringToLocalDateTime(adjustment.getCreatedAt());
 
             DepositData depositData = depositDao.get(depositId);
 
@@ -57,6 +58,7 @@ public class DepositAdjustmentCreatedHandler implements DepositEventHandler {
 
             DepositAdjustmentData depositAdjustmentData = new DepositAdjustmentData();
             initEventFields(depositAdjustmentData, eventId, eventCreatedAt, eventOccuredAt, eventType);
+            depositAdjustmentData.setCreatedAt(createdAt);
             depositAdjustmentData.setSourceId(depositData.getSourceId());
             depositAdjustmentData.setWalletId(depositData.getWalletId());
             depositAdjustmentData.setDepositId(depositId);

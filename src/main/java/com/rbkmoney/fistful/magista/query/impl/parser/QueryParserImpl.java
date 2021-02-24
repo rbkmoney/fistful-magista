@@ -20,7 +20,8 @@ public class QueryParserImpl extends BaseQueryParser {
                         new WalletFunction.WalletParser(),
                         new WithdrawalFunction.WithdrawalParser(),
                         new DepositParser(),
-                        new IdentityParser()
+                        new IdentityParser(),
+                        new DepositRevertParser()
                 )
         );
     }

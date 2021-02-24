@@ -45,6 +45,7 @@ public class DepositRevertCreatedHandler implements DepositEventHandler {
             LocalDateTime eventOccuredAt = TypeUtil.stringToLocalDateTime(change.getOccuredAt());
             DepositRevertDataEventType eventType = DepositRevertDataEventType.DEPOSIT_REVERT_CREATED;
             Cash cash = revert.getBody();
+            LocalDateTime createdAt = TypeUtil.stringToLocalDateTime(revert.getCreatedAt());
 
             DepositData depositData = depositDao.get(depositId);
 
@@ -53,6 +54,7 @@ public class DepositRevertCreatedHandler implements DepositEventHandler {
 
             DepositRevertData depositRevertData = new DepositRevertData();
             initEventFields(depositRevertData, eventId, eventCreatedAt, eventOccuredAt, eventType);
+            depositRevertData.setCreatedAt(createdAt);
             depositRevertData.setSourceId(depositData.getSourceId());
             depositRevertData.setWalletId(depositData.getWalletId());
             depositRevertData.setDepositId(depositId);

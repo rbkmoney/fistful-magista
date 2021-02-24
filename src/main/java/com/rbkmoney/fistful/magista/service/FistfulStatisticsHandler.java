@@ -45,6 +45,16 @@ public class FistfulStatisticsHandler implements FistfulStatisticsSrv.Iface {
         return getStatResponse(statRequest);
     }
 
+    @Override
+    public StatResponse getDepositReverts(StatRequest statRequest) throws InvalidRequest, BadToken, TException {
+        return getStatResponse(statRequest);
+    }
+
+    @Override
+    public StatResponse getDepositAdjustments(StatRequest statRequest) throws InvalidRequest, BadToken, TException {
+        return getStatResponse(statRequest);
+    }
+
     private StatResponse getStatResponse(StatRequest statRequest) throws InvalidRequest, BadToken {
         log.info("New stat request: {}" ,statRequest);
         try {
