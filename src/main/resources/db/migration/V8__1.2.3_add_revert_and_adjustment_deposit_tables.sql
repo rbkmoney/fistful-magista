@@ -47,6 +47,8 @@ CREATE INDEX deposit_adjustment_data_party_id_idx
     ON mst.deposit_adjustment_data (party_id);
 CREATE INDEX deposit_adjustment_data_identity_id_idx
     ON mst.deposit_adjustment_data (identity_id);
+ALTER TABLE mst.deposit_adjustment_data
+    ADD CONSTRAINT deposit_adjustment_data_uniq UNIQUE (deposit_id, adjustment_id);
 
 CREATE TYPE mst.deposit_revert_data_status AS ENUM ('pending', 'succeeded', 'failed');
 CREATE TYPE mst.deposit_revert_data_event_type AS ENUM (
@@ -97,3 +99,5 @@ CREATE INDEX deposit_revert_data_party_id_idx
     ON mst.deposit_revert_data (party_id);
 CREATE INDEX deposit_revert_data_identity_id_idx
     ON mst.deposit_revert_data (identity_id);
+ALTER TABLE mst.deposit_revert_data
+    ADD CONSTRAINT deposit_revert_data_uniq UNIQUE (deposit_id, revert_id);
