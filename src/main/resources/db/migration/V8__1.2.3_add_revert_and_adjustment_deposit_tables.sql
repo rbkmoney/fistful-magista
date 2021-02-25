@@ -6,37 +6,35 @@ CREATE TYPE mst.deposit_adjustment_data_event_type AS ENUM (
 
 CREATE TABLE mst.deposit_adjustment_data
 (
-    id               BIGSERIAL                                      NOT NULL,
-    event_id         BIGINT                                         NOT NULL,
-    event_created_at TIMESTAMP WITHOUT TIME ZONE                    NOT NULL,
-    event_occured_at TIMESTAMP WITHOUT TIME ZONE                    NOT NULL,
-    event_type       mst.deposit_adjustment_data_event_type         NOT NULL,
-    source_id        CHARACTER VARYING                              NOT NULL,
-    wallet_id        CHARACTER VARYING                              NOT NULL,
-    deposit_id       CHARACTER VARYING                              NOT NULL,
-    adjustment_id    CHARACTER VARYING                              NOT NULL,
-    amount           BIGINT,
-    fee              BIGINT,
-    provider_fee     BIGINT,
-    currency_code    CHARACTER VARYING,
-    status           mst.deposit_adjustment_data_status             NOT NULL,
-    transfer_status  mst.deposit_transfer_status,
-    deposit_status   mst.deposit_status,
-    external_id      CHARACTER VARYING,
-    party_id         UUID,
-    identity_id      CHARACTER VARYING,
-    party_revision   BIGINT                                         NOT NULL,
-    domain_revision  BIGINT                                         NOT NULL,
-    wtime            TIMESTAMP DEFAULT timezone('utc'::text, now()) NOT NULL,
+    id                  BIGSERIAL                                      NOT NULL,
+    event_id            BIGINT                                         NOT NULL,
+    event_created_at    TIMESTAMP WITHOUT TIME ZONE                    NOT NULL,
+    event_occured_at    TIMESTAMP WITHOUT TIME ZONE                    NOT NULL,
+    event_type          mst.deposit_adjustment_data_event_type         NOT NULL,
+    created_at          TIMESTAMP WITHOUT TIME ZONE                    NOT NULL,
+    source_id           CHARACTER VARYING                              NOT NULL,
+    wallet_id           CHARACTER VARYING                              NOT NULL,
+    deposit_id          CHARACTER VARYING                              NOT NULL,
+    adjustment_id       CHARACTER VARYING                              NOT NULL,
+    amount              BIGINT,
+    fee                 BIGINT,
+    provider_fee        BIGINT,
+    currency_code       CHARACTER VARYING,
+    status              mst.deposit_adjustment_data_status             NOT NULL,
+    transfer_status     mst.deposit_transfer_status,
+    deposit_status      mst.deposit_status,
+    external_id         CHARACTER VARYING,
+    party_id            UUID,
+    identity_id         CHARACTER VARYING,
+    party_revision      BIGINT                                         NOT NULL,
+    domain_revision     BIGINT                                         NOT NULL,
+    operation_timestamp TIMESTAMP WITHOUT TIME ZONE                    NOT NULL,
+    wtime               TIMESTAMP DEFAULT timezone('utc'::text, now()) NOT NULL,
     CONSTRAINT deposit_adjustment_data_pkey PRIMARY KEY (id)
 );
 
-CREATE INDEX deposit_adjustment_data_event_id_idx
-    ON mst.deposit_adjustment_data (event_id);
-CREATE INDEX deposit_adjustment_data_event_created_at_idx
-    ON mst.deposit_adjustment_data (event_created_at);
-CREATE INDEX deposit_adjustment_data_event_occured_at_idx
-    ON mst.deposit_adjustment_data (event_occured_at);
+CREATE INDEX deposit_adjustment_data_created_at_idx
+    ON mst.deposit_adjustment_data (created_at);
 CREATE INDEX deposit_adjustment_data_wallet_id_idx
     ON mst.deposit_adjustment_data (wallet_id);
 CREATE INDEX deposit_adjustment_data_deposit_id_idx
@@ -63,6 +61,7 @@ CREATE TABLE mst.deposit_revert_data
     event_created_at TIMESTAMP WITHOUT TIME ZONE                    NOT NULL,
     event_occured_at TIMESTAMP WITHOUT TIME ZONE                    NOT NULL,
     event_type       mst.deposit_revert_data_event_type             NOT NULL,
+    created_at       TIMESTAMP WITHOUT TIME ZONE                    NOT NULL,
     source_id        CHARACTER VARYING                              NOT NULL,
     wallet_id        CHARACTER VARYING                              NOT NULL,
     deposit_id       CHARACTER VARYING                              NOT NULL,
@@ -83,12 +82,8 @@ CREATE TABLE mst.deposit_revert_data
     CONSTRAINT deposit_revert_data_pkey PRIMARY KEY (id)
 );
 
-CREATE INDEX deposit_revert_data_event_id_idx
-    ON mst.deposit_revert_data (event_id);
-CREATE INDEX deposit_revert_data_event_created_at_idx
-    ON mst.deposit_revert_data (event_created_at);
-CREATE INDEX deposit_revert_data_event_occured_at_idx
-    ON mst.deposit_revert_data (event_occured_at);
+CREATE INDEX deposit_revert_data_created_at_idx
+    ON mst.deposit_revert_data (created_at);
 CREATE INDEX deposit_revert_data_wallet_id_idx
     ON mst.deposit_revert_data (wallet_id);
 CREATE INDEX deposit_revert_data_deposit_id_idx
