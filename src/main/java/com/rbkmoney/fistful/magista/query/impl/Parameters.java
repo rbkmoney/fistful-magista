@@ -27,5 +27,7 @@ public class Parameters {
     public static final String CHALLENGE_RESOLUTION_PARAM = "challenge_resolution";
     public static final String CHALLENGE_VALID_UNTIL_PARAM = "challenge_valid_until";
     public static final String REVERT_ID_PARAM = "revert_id";
+    public static final String ADJUSTMENT_ID_PARAM = "adjustment_id";
+    public static final String DEPOSIT_STATUS_PARAM = "deposit_status";
 
 }

@@ -3,6 +3,7 @@ package com.rbkmoney.fistful.magista.dao.impl.mapper;
 import com.rbkmoney.fistful.base.Cash;
 import com.rbkmoney.fistful.base.CurrencyRef;
 import com.rbkmoney.fistful.fistful_stat.*;
+import com.rbkmoney.fistful.magista.domain.enums.DepositRevertDataStatus;
 import com.rbkmoney.fistful.magista.exception.NotFoundException;
 import com.rbkmoney.geck.common.util.TypeUtil;
 import org.springframework.jdbc.core.RowMapper;
@@ -22,9 +23,8 @@ public class StatDepositRevertMapper implements RowMapper<Map.Entry<Long, StatDe
         String revertId = rs.getString(DEPOSIT_REVERT_DATA.REVERT_ID.getName());
         String walletId = rs.getString(DEPOSIT_REVERT_DATA.WALLET_ID.getName());
         String sourceId = rs.getString(DEPOSIT_REVERT_DATA.SOURCE_ID.getName());
-        com.rbkmoney.fistful.magista.domain.enums.DepositRevertDataStatus status =
-                TypeUtil.toEnumField(rs.getString(DEPOSIT_REVERT_DATA.STATUS.getName()),
-                        com.rbkmoney.fistful.magista.domain.enums.DepositRevertDataStatus.class);
+        DepositRevertDataStatus status = TypeUtil.toEnumField(rs.getString(DEPOSIT_REVERT_DATA.STATUS.getName()),
+                DepositRevertDataStatus.class);
         long amount = rs.getLong(DEPOSIT_REVERT_DATA.AMOUNT.getName());
         String currencyCode = rs.getString(DEPOSIT_REVERT_DATA.CURRENCY_CODE.getName());
         String createdAt = TypeUtil.temporalToString(rs.getObject(DEPOSIT_REVERT_DATA.CREATED_AT.getName(), LocalDateTime.class));
@@ -48,7 +48,7 @@ public class StatDepositRevertMapper implements RowMapper<Map.Entry<Long, StatDe
         return new SimpleEntry<>(rs.getLong(DEPOSIT_REVERT_DATA.ID.getName()), statDepositRevert);
     }
 
-    private DepositRevertStatus getStatus(com.rbkmoney.fistful.magista.domain.enums.DepositRevertDataStatus status) {
+    private DepositRevertStatus getStatus(DepositRevertDataStatus status) {
         switch (status) {
             case pending:
                 return DepositRevertStatus.pending(new DepositRevertPending());
@@ -57,7 +57,7 @@ public class StatDepositRevertMapper implements RowMapper<Map.Entry<Long, StatDe
             case failed:
                 return DepositRevertStatus.failed(new DepositRevertFailed(new Failure()));
             default:
-                throw new NotFoundException(String.format("Deposit status '%s' not found", status.getLiteral()));
+                throw new NotFoundException(String.format("Deposit revert status '%s' not found", status.getLiteral()));
         }
     }
 }

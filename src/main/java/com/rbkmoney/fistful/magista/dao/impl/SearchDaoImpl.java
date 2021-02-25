@@ -7,6 +7,7 @@ import com.rbkmoney.fistful.magista.dao.impl.mapper.*;
 import com.rbkmoney.fistful.magista.exception.DaoException;
 import com.rbkmoney.fistful.magista.query.impl.WalletFunction;
 import com.rbkmoney.fistful.magista.query.impl.WithdrawalFunction;
+import com.rbkmoney.fistful.magista.query.impl.parameters.DepositAdjustmentParameters;
 import com.rbkmoney.fistful.magista.query.impl.parameters.DepositParameters;
 import com.rbkmoney.fistful.magista.query.impl.parameters.DepositRevertParameters;
 import com.rbkmoney.fistful.magista.query.impl.parameters.IdentityParameters;
@@ -24,6 +25,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static com.rbkmoney.fistful.magista.domain.tables.ChallengeData.CHALLENGE_DATA;
+import static com.rbkmoney.fistful.magista.domain.tables.DepositAdjustmentData.DEPOSIT_ADJUSTMENT_DATA;
 import static com.rbkmoney.fistful.magista.domain.tables.DepositData.DEPOSIT_DATA;
 import static com.rbkmoney.fistful.magista.domain.tables.DepositRevertData.DEPOSIT_REVERT_DATA;
 import static com.rbkmoney.fistful.magista.domain.tables.IdentityData.IDENTITY_DATA;
@@ -39,6 +41,7 @@ public class SearchDaoImpl extends AbstractGenericDao implements SearchDao {
     private final StatDepositMapper statDepositMapper;
     private final StatIdentityMapper statIdentityMapper;
     private final StatDepositRevertMapper statDepositRevertMapper;
+    private final StatDepositAdjustmentMapper statDepositAdjustmentMapper;
 
     public SearchDaoImpl(HikariDataSource dataSource) {
         super(dataSource);
@@ -47,6 +50,7 @@ public class SearchDaoImpl extends AbstractGenericDao implements SearchDao {
         statDepositMapper = new StatDepositMapper();
         statIdentityMapper = new StatIdentityMapper();
         statDepositRevertMapper = new StatDepositRevertMapper();
+        statDepositAdjustmentMapper = new StatDepositAdjustmentMapper();
     }
 
     @Override
@@ -215,6 +219,40 @@ public class SearchDaoImpl extends AbstractGenericDao implements SearchDao {
                 )
                 .orderBy(DEPOSIT_REVERT_DATA.ID.desc())
                 .limit(limit);
+
         return fetch(query, statDepositRevertMapper);
+    }
+
+    @Override
+    public Collection<Map.Entry<Long, StatDepositAdjustment>> getDepositsAdjustments(DepositAdjustmentParameters parameters, LocalDateTime fromTime, LocalDateTime toTime, Long fromId, int limit) throws DaoException {
+        Query query = getDslContext()
+                .select()
+                .from(DEPOSIT_ADJUSTMENT_DATA)
+                .where(
+                        appendDateTimeRangeConditions(
+                                appendConditions(DSL.trueCondition(), Operator.AND,
+                                        new ConditionParameterSource()
+                                                .addValue(DEPOSIT_ADJUSTMENT_DATA.PARTY_ID, parameters.getPartyId(), EQUALS)
+                                                .addValue(DEPOSIT_ADJUSTMENT_DATA.IDENTITY_ID, parameters.getIdentityId().orElse(null), EQUALS)
+                                                .addValue(DEPOSIT_ADJUSTMENT_DATA.SOURCE_ID, parameters.getSourceId().orElse(null), EQUALS)
+                                                .addValue(DEPOSIT_ADJUSTMENT_DATA.WALLET_ID, parameters.getWalletId().orElse(null), EQUALS)
+                                                .addValue(DEPOSIT_ADJUSTMENT_DATA.DEPOSIT_ID, parameters.getDepositId().orElse(null), EQUALS)
+                                                .addValue(DEPOSIT_ADJUSTMENT_DATA.ADJUSTMENT_ID, parameters.getAdjustmentId().orElse(null), EQUALS)
+                                                .addValue(DEPOSIT_ADJUSTMENT_DATA.AMOUNT, parameters.getAmountFrom().orElse(null), GREATER_OR_EQUAL)
+                                                .addValue(DEPOSIT_ADJUSTMENT_DATA.AMOUNT, parameters.getAmountTo().orElse(null), LESS_OR_EQUAL)
+                                                .addValue(DEPOSIT_ADJUSTMENT_DATA.CURRENCY_CODE, parameters.getCurrencyCode().orElse(null), EQUALS)
+                                                .addValue(DEPOSIT_ADJUSTMENT_DATA.STATUS, parameters.getDepositAdjustmentStatus().orElse(null), EQUALS)
+                                                .addValue(DEPOSIT_ADJUSTMENT_DATA.DEPOSIT_STATUS, parameters.getDepositStatus().orElse(null), EQUALS)
+                                                .addValue(DEPOSIT_ADJUSTMENT_DATA.ID, fromId, LESS)
+                                ),
+                                DEPOSIT_ADJUSTMENT_DATA.CREATED_AT,
+                                fromTime,
+                                toTime
+                        )
+                )
+                .orderBy(DEPOSIT_ADJUSTMENT_DATA.ID.desc())
+                .limit(limit);
+
+        return fetch(query, statDepositAdjustmentMapper);
     }
 }

@@ -21,7 +21,8 @@ public class QueryParserImpl extends BaseQueryParser {
                         new WithdrawalFunction.WithdrawalParser(),
                         new DepositParser(),
                         new IdentityParser(),
-                        new DepositRevertParser()
+                        new DepositRevertParser(),
+                        new DepositAdjustmentParser()
                 )
         );
     }

@@ -20,7 +20,8 @@ public class QueryBuilderImpl extends BaseQueryBuilder {
                         new WithdrawalFunction.WithdrawalBuilder(),
                         new DepositBuilder(),
                         new IdentityBuilder(),
-                        new DepositRevertBuilder()
+                        new DepositRevertBuilder(),
+                        new DepositAdjustmentBuilder()
                 )
         );
     }

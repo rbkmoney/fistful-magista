@@ -4,6 +4,7 @@ import com.rbkmoney.fistful.fistful_stat.*;
 import com.rbkmoney.fistful.magista.exception.DaoException;
 import com.rbkmoney.fistful.magista.query.impl.WalletFunction;
 import com.rbkmoney.fistful.magista.query.impl.WithdrawalFunction;
+import com.rbkmoney.fistful.magista.query.impl.parameters.DepositAdjustmentParameters;
 import com.rbkmoney.fistful.magista.query.impl.parameters.DepositParameters;
 import com.rbkmoney.fistful.magista.query.impl.parameters.DepositRevertParameters;
 import com.rbkmoney.fistful.magista.query.impl.parameters.IdentityParameters;
@@ -47,6 +48,14 @@ public interface SearchDao {
 
     Collection<Map.Entry<Long, StatDepositRevert>> getDepositsReverts(
             DepositRevertParameters parameters,
+            LocalDateTime fromTime,
+            LocalDateTime toTime,
+            Long fromId,
+            int limit
+    ) throws DaoException;
+
+    Collection<Map.Entry<Long, StatDepositAdjustment>> getDepositsAdjustments(
+            DepositAdjustmentParameters parameters,
             LocalDateTime fromTime,
             LocalDateTime toTime,
             Long fromId,
