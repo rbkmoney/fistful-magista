@@ -192,7 +192,7 @@ public class SearchDaoImpl extends AbstractGenericDao implements SearchDao {
     }
 
     @Override
-    public Collection<Map.Entry<Long, StatDepositRevert>> getDepositsReverts(DepositRevertParameters parameters, LocalDateTime fromTime, LocalDateTime toTime, Long fromId, int limit) throws DaoException {
+    public Collection<Map.Entry<Long, StatDepositRevert>> getDepositReverts(DepositRevertParameters parameters, LocalDateTime fromTime, LocalDateTime toTime, Long fromId, int limit) throws DaoException {
         Query query = getDslContext()
                 .select()
                 .from(DEPOSIT_REVERT_DATA)
@@ -224,7 +224,7 @@ public class SearchDaoImpl extends AbstractGenericDao implements SearchDao {
     }
 
     @Override
-    public Collection<Map.Entry<Long, StatDepositAdjustment>> getDepositsAdjustments(DepositAdjustmentParameters parameters, LocalDateTime fromTime, LocalDateTime toTime, Long fromId, int limit) throws DaoException {
+    public Collection<Map.Entry<Long, StatDepositAdjustment>> getDepositAdjustments(DepositAdjustmentParameters parameters, LocalDateTime fromTime, LocalDateTime toTime, Long fromId, int limit) throws DaoException {
         Query query = getDslContext()
                 .select()
                 .from(DEPOSIT_ADJUSTMENT_DATA)

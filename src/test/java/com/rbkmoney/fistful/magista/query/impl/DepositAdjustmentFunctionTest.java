@@ -60,7 +60,7 @@ public class DepositAdjustmentFunctionTest extends AbstractIntegrationTest {
     @Test
     public void testOneDepositAdjustment() throws DaoException {
         String json = String.format(
-                "{'query': {'deposits_adjustments': {" +
+                "{'query': {'deposit_adjustments': {" +
                         "'party_id': '%s', " +
                         "'identity_id': '%s', " +
                         "'source_id':'%s', " +
@@ -95,9 +95,9 @@ public class DepositAdjustmentFunctionTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void testAllDepositsAdjustments() throws DaoException {
+    public void testAllDepositAdjustments() throws DaoException {
         String json = String.format(
-                "{'query': {'deposits_adjustments': {'party_id': '%s','identity_id': '%s'}}}",
+                "{'query': {'deposit_adjustments': {'party_id': '%s','identity_id': '%s'}}}",
                 depositAdjustmentData.getPartyId(),
                 depositAdjustmentData.getIdentityId()
         );
@@ -108,14 +108,14 @@ public class DepositAdjustmentFunctionTest extends AbstractIntegrationTest {
 
     @Test(expected = QueryParserException.class)
     public void testWhenSizeOverflow() {
-        String json = "{'query': {'deposits_adjustments': {'size': 1001}}}";
+        String json = "{'query': {'deposit_adjustments': {'size': 1001}}}";
         queryProcessor.processQuery(new StatRequest(json));
     }
 
     @Test
     public void testContinuationToken() {
         String json = String.format(
-                "{'query': {'deposits_adjustments': {'party_id': '%s','identity_id': '%s'}, 'size':'1'}}",
+                "{'query': {'deposit_adjustments': {'party_id': '%s','identity_id': '%s'}, 'size':'1'}}",
                 depositAdjustmentData.getPartyId(),
                 depositAdjustmentData.getIdentityId()
         );
@@ -137,8 +137,8 @@ public class DepositAdjustmentFunctionTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void testIfNotPresentDepositsAdjustments() {
-        String json = "{'query': {'deposits_adjustments': {'party_id': '6954b4d1-f39f-4cc1-8843-eae834e6f849','identity_id': 'nuda'}}}";
+    public void testIfNotPresentDepositAdjustments() {
+        String json = "{'query': {'deposit_adjustments': {'party_id': '6954b4d1-f39f-4cc1-8843-eae834e6f849','identity_id': 'nuda'}}}";
         StatResponse statResponse = queryProcessor.processQuery(new StatRequest(json));
         assertEquals(0, statResponse.getData().getDepositAdjustments().size());
     }
@@ -146,7 +146,7 @@ public class DepositAdjustmentFunctionTest extends AbstractIntegrationTest {
     @Test(expected = BadTokenException.class)
     public void testBadToken() {
         String json = String.format(
-                "{'query': {'deposits_adjustments': {'party_id': '%s','identity_id': '%s'}, 'size':'1'}}",
+                "{'query': {'deposit_adjustments': {'party_id': '%s','identity_id': '%s'}, 'size':'1'}}",
                 depositAdjustmentData.getPartyId(),
                 depositAdjustmentData.getIdentityId()
         );
@@ -157,7 +157,7 @@ public class DepositAdjustmentFunctionTest extends AbstractIntegrationTest {
 
     @Test
     public void testWithoutParameters() {
-        String dsl = "{'query': {'deposits_adjustments': {}, 'size':'1'}}";
+        String dsl = "{'query': {'deposit_adjustments': {}, 'size':'1'}}";
         StatRequest statRequest = new StatRequest(dsl);
         StatResponse statResponse = queryProcessor.processQuery(statRequest);
         assertEquals(1, statResponse.getData().getDepositAdjustments().size());
@@ -165,7 +165,7 @@ public class DepositAdjustmentFunctionTest extends AbstractIntegrationTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testWhenPartyIdIncorrect() {
-        String dsl = "{'query': {'deposits_adjustments': {'party_id': 'qwe'}}}";
+        String dsl = "{'query': {'deposit_adjustments': {'party_id': 'qwe'}}}";
         StatRequest statRequest = new StatRequest(dsl);
         queryProcessor.processQuery(statRequest);
     }

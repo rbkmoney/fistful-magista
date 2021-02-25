@@ -60,7 +60,7 @@ public class DepositRevertFunctionTest extends AbstractIntegrationTest {
     @Test
     public void testOneDepositRevert() throws DaoException {
         String json = String.format(
-                "{'query': {'deposits_reverts': {" +
+                "{'query': {'deposit_reverts': {" +
                         "'party_id': '%s', " +
                         "'identity_id': '%s', " +
                         "'source_id':'%s', " +
@@ -93,9 +93,9 @@ public class DepositRevertFunctionTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void testAllDepositsReverts() throws DaoException {
+    public void testAllDepositReverts() throws DaoException {
         String json = String.format(
-                "{'query': {'deposits_reverts': {'party_id': '%s','identity_id': '%s'}}}",
+                "{'query': {'deposit_reverts': {'party_id': '%s','identity_id': '%s'}}}",
                 depositRevertData.getPartyId(),
                 depositRevertData.getIdentityId()
         );
@@ -106,14 +106,14 @@ public class DepositRevertFunctionTest extends AbstractIntegrationTest {
 
     @Test(expected = QueryParserException.class)
     public void testWhenSizeOverflow() {
-        String json = "{'query': {'deposits_reverts': {'size': 1001}}}";
+        String json = "{'query': {'deposit_reverts': {'size': 1001}}}";
         queryProcessor.processQuery(new StatRequest(json));
     }
 
     @Test
     public void testContinuationToken() {
         String json = String.format(
-                "{'query': {'deposits_reverts': {'party_id': '%s','identity_id': '%s'}, 'size':'1'}}",
+                "{'query': {'deposit_reverts': {'party_id': '%s','identity_id': '%s'}, 'size':'1'}}",
                 depositRevertData.getPartyId(),
                 depositRevertData.getIdentityId()
         );
@@ -135,8 +135,8 @@ public class DepositRevertFunctionTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void testIfNotPresentDepositsReverts() {
-        String json = "{'query': {'deposits_reverts': {'party_id': '6954b4d1-f39f-4cc1-8843-eae834e6f849','identity_id': 'nuda'}}}";
+    public void testIfNotPresentDepositReverts() {
+        String json = "{'query': {'deposit_reverts': {'party_id': '6954b4d1-f39f-4cc1-8843-eae834e6f849','identity_id': 'nuda'}}}";
         StatResponse statResponse = queryProcessor.processQuery(new StatRequest(json));
         assertEquals(0, statResponse.getData().getDepositReverts().size());
     }
@@ -144,7 +144,7 @@ public class DepositRevertFunctionTest extends AbstractIntegrationTest {
     @Test(expected = BadTokenException.class)
     public void testBadToken() {
         String json = String.format(
-                "{'query': {'deposits_reverts': {'party_id': '%s','identity_id': '%s'}, 'size':'1'}}",
+                "{'query': {'deposit_reverts': {'party_id': '%s','identity_id': '%s'}, 'size':'1'}}",
                 depositRevertData.getPartyId(),
                 depositRevertData.getIdentityId()
         );
@@ -155,7 +155,7 @@ public class DepositRevertFunctionTest extends AbstractIntegrationTest {
 
     @Test
     public void testWithoutParameters() {
-        String dsl = "{'query': {'deposits_reverts': {}, 'size':'1'}}";
+        String dsl = "{'query': {'deposit_reverts': {}, 'size':'1'}}";
         StatRequest statRequest = new StatRequest(dsl);
         StatResponse statResponse = queryProcessor.processQuery(statRequest);
         assertEquals(1, statResponse.getData().getDepositReverts().size());
@@ -163,7 +163,7 @@ public class DepositRevertFunctionTest extends AbstractIntegrationTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testWhenPartyIdIncorrect() {
-        String dsl = "{'query': {'deposits_reverts': {'party_id': 'qwe'}}}";
+        String dsl = "{'query': {'deposit_reverts': {'party_id': 'qwe'}}}";
         StatRequest statRequest = new StatRequest(dsl);
         queryProcessor.processQuery(statRequest);
     }

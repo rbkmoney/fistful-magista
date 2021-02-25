@@ -28,7 +28,7 @@ public class DepositAdjustmentDataFunction extends PagedBaseFunction<Map.Entry<L
         FunctionQueryContext functionContext = getContext(context);
         DepositAdjustmentParameters parameters = new DepositAdjustmentParameters(getQueryParameters(), getQueryParameters().getDerivedParameters());
         try {
-            Collection<Map.Entry<Long, StatDepositAdjustment>> result = functionContext.getSearchDao().getDepositsAdjustments(
+            Collection<Map.Entry<Long, StatDepositAdjustment>> result = functionContext.getSearchDao().getDepositAdjustments(
                     parameters,
                     TypeUtil.toLocalDateTime(parameters.getFromTime()),
                     TypeUtil.toLocalDateTime(parameters.getToTime()),

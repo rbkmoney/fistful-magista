@@ -28,7 +28,7 @@ public class DepositRevertDataFunction extends PagedBaseFunction<Map.Entry<Long,
         FunctionQueryContext functionContext = getContext(context);
         DepositRevertParameters parameters = new DepositRevertParameters(getQueryParameters(), getQueryParameters().getDerivedParameters());
         try {
-            Collection<Map.Entry<Long, StatDepositRevert>> result = functionContext.getSearchDao().getDepositsReverts(
+            Collection<Map.Entry<Long, StatDepositRevert>> result = functionContext.getSearchDao().getDepositReverts(
                     parameters,
                     TypeUtil.toLocalDateTime(parameters.getFromTime()),
                     TypeUtil.toLocalDateTime(parameters.getToTime()),

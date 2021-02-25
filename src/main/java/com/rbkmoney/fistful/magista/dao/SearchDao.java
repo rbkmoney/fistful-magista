@@ -46,7 +46,7 @@ public interface SearchDao {
             int limit
     ) throws DaoException;
 
-    Collection<Map.Entry<Long, StatDepositRevert>> getDepositsReverts(
+    Collection<Map.Entry<Long, StatDepositRevert>> getDepositReverts(
             DepositRevertParameters parameters,
             LocalDateTime fromTime,
             LocalDateTime toTime,
@@ -54,7 +54,7 @@ public interface SearchDao {
             int limit
     ) throws DaoException;
 
-    Collection<Map.Entry<Long, StatDepositAdjustment>> getDepositsAdjustments(
+    Collection<Map.Entry<Long, StatDepositAdjustment>> getDepositAdjustments(
             DepositAdjustmentParameters parameters,
             LocalDateTime fromTime,
             LocalDateTime toTime,

@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 public class DepositRevertFunction extends PagedBaseFunction<Map.Entry<Long, StatDepositRevert>, StatResponse> implements CompositeQuery<Map.Entry<Long, StatDepositRevert>, StatResponse> {
 
-    private static final String FUNC_NAME = "deposits_reverts";
+    private static final String FUNC_NAME = "deposit_reverts";
 
     private final CompositeQuery<QueryResult, List<QueryResult>> subquery;
 
@@ -47,10 +47,10 @@ public class DepositRevertFunction extends PagedBaseFunction<Map.Entry<Long, Sta
         return new BaseQueryResult<>(
                 queryResult::getDataStream,
                 () -> {
-                    List<StatDepositRevert> depositsReverts = queryResult.getDataStream()
+                    List<StatDepositRevert> depositReverts = queryResult.getDataStream()
                             .map(Map.Entry::getValue)
                             .collect(Collectors.toList());
-                    StatResponse statResponse = new StatResponse(StatResponseData.deposit_reverts(depositsReverts));
+                    StatResponse statResponse = new StatResponse(StatResponseData.deposit_reverts(depositReverts));
                     List<Map.Entry<Long, StatDepositRevert>> entries = queryResult.getCollectedStream();
                     if (!entries.isEmpty() && entries.size() == getQueryParameters().getSize()) {
                         statResponse.setContinuationToken(

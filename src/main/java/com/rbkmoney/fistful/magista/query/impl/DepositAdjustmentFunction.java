@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 public class DepositAdjustmentFunction extends PagedBaseFunction<Map.Entry<Long, StatDepositAdjustment>, StatResponse> implements CompositeQuery<Map.Entry<Long, StatDepositAdjustment>, StatResponse> {
 
-    private static final String FUNC_NAME = "deposits_adjustments";
+    private static final String FUNC_NAME = "deposit_adjustments";
 
     private final CompositeQuery<QueryResult, List<QueryResult>> subquery;
 
