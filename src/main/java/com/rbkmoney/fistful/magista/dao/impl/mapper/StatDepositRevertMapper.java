@@ -33,17 +33,17 @@ public class StatDepositRevertMapper implements RowMapper<Map.Entry<Long, StatDe
         String reason = rs.getString(DEPOSIT_REVERT_DATA.REASON.getName());
         String externalId = rs.getString(DEPOSIT_REVERT_DATA.EXTERNAL_ID.getName());
 
-        StatDepositRevert statDepositRevert = new StatDepositRevert();
-        statDepositRevert.setId(revertId);
-        statDepositRevert.setWalletId(walletId);
-        statDepositRevert.setSourceId(sourceId);
-        statDepositRevert.setStatus(getStatus(status));
-        statDepositRevert.setBody(new Cash(amount, new CurrencyRef(currencyCode)));
-        statDepositRevert.setCreatedAt(createdAt);
-        statDepositRevert.setDomainRevision(domainRevision);
-        statDepositRevert.setPartyRevision(partyRevision);
-        statDepositRevert.setReason(reason);
-        statDepositRevert.setExternalId(externalId);
+        StatDepositRevert statDepositRevert = new StatDepositRevert()
+                .setId(revertId)
+                .setWalletId(walletId)
+                .setSourceId(sourceId)
+                .setStatus(getStatus(status))
+                .setBody(new Cash(amount, new CurrencyRef(currencyCode)))
+                .setCreatedAt(createdAt)
+                .setDomainRevision(domainRevision)
+                .setPartyRevision(partyRevision)
+                .setReason(reason)
+                .setExternalId(externalId);
 
         return new SimpleEntry<>(rs.getLong(DEPOSIT_REVERT_DATA.ID.getName()), statDepositRevert);
     }
