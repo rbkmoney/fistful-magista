@@ -29,6 +29,7 @@ public class StatDepositAdjustmentMapper implements RowMapper<Map.Entry<Long, St
         long partyRevision = rs.getLong(DEPOSIT_ADJUSTMENT_DATA.PARTY_REVISION.getName());
         String externalId = rs.getString(DEPOSIT_ADJUSTMENT_DATA.EXTERNAL_ID.getName());
         String operationTimestamp = TypeUtil.temporalToString(rs.getObject(DEPOSIT_ADJUSTMENT_DATA.OPERATION_TIMESTAMP.getName(), LocalDateTime.class));
+        String depositId = rs.getString(DEPOSIT_ADJUSTMENT_DATA.DEPOSIT_ID.getName());
 
         StatDepositAdjustment statDepositAdjustment = new StatDepositAdjustment()
                 .setId(adjustmentId)
@@ -38,7 +39,8 @@ public class StatDepositAdjustmentMapper implements RowMapper<Map.Entry<Long, St
                 .setDomainRevision(domainRevision)
                 .setPartyRevision(partyRevision)
                 .setExternalId(externalId)
-                .setOperationTimestamp(operationTimestamp);
+                .setOperationTimestamp(operationTimestamp)
+                .setDepositId(depositId);
 
         return new AbstractMap.SimpleEntry<>(rs.getLong(DEPOSIT_ADJUSTMENT_DATA.ID.getName()), statDepositAdjustment);
     }
