@@ -16,7 +16,6 @@ import java.util.AbstractMap;
 import java.util.Map;
 
 import static com.rbkmoney.fistful.magista.domain.tables.DepositAdjustmentData.DEPOSIT_ADJUSTMENT_DATA;
-import static com.rbkmoney.fistful.magista.domain.tables.DepositRevertData.DEPOSIT_REVERT_DATA;
 
 public class StatDepositAdjustmentMapper implements RowMapper<Map.Entry<Long, StatDepositAdjustment>> {
 
@@ -30,7 +29,7 @@ public class StatDepositAdjustmentMapper implements RowMapper<Map.Entry<Long, St
         long partyRevision = rs.getLong(DEPOSIT_ADJUSTMENT_DATA.PARTY_REVISION.getName());
         String externalId = rs.getString(DEPOSIT_ADJUSTMENT_DATA.EXTERNAL_ID.getName());
         String operationTimestamp = TypeUtil.temporalToString(rs.getObject(DEPOSIT_ADJUSTMENT_DATA.OPERATION_TIMESTAMP.getName(), LocalDateTime.class));
-        String depositId = rs.getString(DEPOSIT_REVERT_DATA.DEPOSIT_ID.getName());
+        String depositId = rs.getString(DEPOSIT_ADJUSTMENT_DATA.DEPOSIT_ID.getName());
 
         StatDepositAdjustment statDepositAdjustment = new StatDepositAdjustment()
                 .setId(adjustmentId)
