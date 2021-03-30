@@ -32,6 +32,7 @@ public class StatDepositRevertMapper implements RowMapper<Map.Entry<Long, StatDe
         long partyRevision = rs.getLong(DEPOSIT_REVERT_DATA.PARTY_REVISION.getName());
         String reason = rs.getString(DEPOSIT_REVERT_DATA.REASON.getName());
         String externalId = rs.getString(DEPOSIT_REVERT_DATA.EXTERNAL_ID.getName());
+        String depositId = rs.getString(DEPOSIT_REVERT_DATA.DEPOSIT_ID.getName());
 
         StatDepositRevert statDepositRevert = new StatDepositRevert()
                 .setId(revertId)
@@ -43,7 +44,8 @@ public class StatDepositRevertMapper implements RowMapper<Map.Entry<Long, StatDe
                 .setDomainRevision(domainRevision)
                 .setPartyRevision(partyRevision)
                 .setReason(reason)
-                .setExternalId(externalId);
+                .setExternalId(externalId)
+                .setDepositId(depositId);
 
         return new SimpleEntry<>(rs.getLong(DEPOSIT_REVERT_DATA.ID.getName()), statDepositRevert);
     }
