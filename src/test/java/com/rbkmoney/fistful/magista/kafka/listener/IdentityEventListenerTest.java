@@ -9,7 +9,6 @@ import com.rbkmoney.fistful.magista.exception.DaoException;
 import com.rbkmoney.kafka.common.serialization.ThriftSerializer;
 import com.rbkmoney.machinegun.eventsink.SinkEvent;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -138,7 +137,7 @@ public class IdentityEventListenerTest extends AbstractListenerTest {
         // Given
         TimestampedChange change = new TimestampedChange()
                 .setOccuredAt("2016-03-22T06:12:27Z")
-                .setChange(Change.identity_challenge(new ChallengeChange("id",getApprovedStatus())));
+                .setChange(Change.identity_challenge(new ChallengeChange("id", getApprovedStatus())));
 
         SinkEvent sinkEvent = sinkEvent(machineEvent(new ThriftSerializer<>(), change));
 
