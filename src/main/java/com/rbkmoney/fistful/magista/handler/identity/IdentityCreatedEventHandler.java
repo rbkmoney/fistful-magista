@@ -40,7 +40,8 @@ public class IdentityCreatedEventHandler implements IdentityEventHandler {
     @Override
     public void handle(TimestampedChange change, MachineEvent event) {
         try {
-            log.info("Trying to handle IdentityCreated: eventId={}, identityId={}", event.getEventId(), event.getSourceId());
+            log.info("Trying to handle IdentityCreated: eventId={}, identityId={}", event.getEventId(),
+                    event.getSourceId());
 
             Identity identity = change.getChange().getCreated();
             LocalDateTime occurredAt = TypeUtil.stringToLocalDateTime(change.getOccuredAt());
@@ -66,7 +67,8 @@ public class IdentityCreatedEventHandler implements IdentityEventHandler {
 
             identityDao.save(identityData);
 
-            log.info("IdentityCreated has been saved: eventId={}, identityId={}", event.getEventId(), event.getSourceId());
+            log.info("IdentityCreated has been saved: eventId={}, identityId={}", event.getEventId(),
+                    event.getSourceId());
         } catch (DaoException ex) {
             throw new StorageException(ex);
         }
@@ -74,9 +76,11 @@ public class IdentityCreatedEventHandler implements IdentityEventHandler {
 
     private IdentityState getIdentityState(MachineEvent event) {
         try {
-            IdentityState identityState = identityManagementClient.get(event.getSourceId(), new EventRange().setLimit((int) event.getEventId()));
+            IdentityState identityState = identityManagementClient
+                    .get(event.getSourceId(), new EventRange().setLimit((int) event.getEventId()));
             if (identityState == null) {
-                throw new NotFoundException(String.format("IdentityState with identityId='%s' not found", event.getSourceId()));
+                throw new NotFoundException(
+                        String.format("IdentityState with identityId='%s' not found", event.getSourceId()));
             }
             return identityState;
         } catch (TException e) {

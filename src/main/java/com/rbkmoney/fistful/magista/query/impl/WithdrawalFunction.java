@@ -22,27 +22,34 @@ import java.util.stream.Stream;
 import static com.rbkmoney.fistful.magista.query.impl.Parameters.*;
 
 
-public class WithdrawalFunction extends PagedBaseFunction<Map.Entry<Long, StatWithdrawal>, StatResponse> implements CompositeQuery<Map.Entry<Long, StatWithdrawal>, StatResponse> {
+public class WithdrawalFunction extends PagedBaseFunction<Map.Entry<Long, StatWithdrawal>, StatResponse>
+        implements CompositeQuery<Map.Entry<Long, StatWithdrawal>, StatResponse> {
 
     public static final String FUNC_NAME = "withdrawals";
 
     private final CompositeQuery<QueryResult, List<QueryResult>> subquery;
 
-    private WithdrawalFunction(Object descriptor, QueryParameters params, String continuationToken, CompositeQuery<QueryResult, List<QueryResult>> subquery) {
+    private WithdrawalFunction(Object descriptor, QueryParameters params, String continuationToken,
+                               CompositeQuery<QueryResult, List<QueryResult>> subquery) {
         super(descriptor, params, FUNC_NAME, continuationToken);
         this.subquery = subquery;
     }
 
     @Override
-    public QueryResult<Map.Entry<Long, StatWithdrawal>, StatResponse> execute(QueryContext context) throws QueryExecutionException {
+    public QueryResult<Map.Entry<Long, StatWithdrawal>, StatResponse> execute(QueryContext context)
+            throws QueryExecutionException {
         QueryResult<QueryResult, List<QueryResult>> collectedResults = subquery.execute(context);
 
         return execute(context, collectedResults.getCollectedStream());
     }
 
     @Override
-    public QueryResult<Map.Entry<Long, StatWithdrawal>, StatResponse> execute(QueryContext context, List<QueryResult> collectedResults) throws QueryExecutionException {
-        QueryResult<Map.Entry<Long, StatWithdrawal>, List<Map.Entry<Long, StatWithdrawal>>> withdrawalsResult = (QueryResult<Map.Entry<Long, StatWithdrawal>, List<Map.Entry<Long, StatWithdrawal>>>) collectedResults.get(0);
+    public QueryResult<Map.Entry<Long, StatWithdrawal>, StatResponse> execute(QueryContext context,
+                                                                              List<QueryResult> collectedResults)
+            throws QueryExecutionException {
+        QueryResult<Map.Entry<Long, StatWithdrawal>, List<Map.Entry<Long, StatWithdrawal>>> withdrawalsResult =
+                (QueryResult<Map.Entry<Long, StatWithdrawal>, List<Map.Entry<Long, StatWithdrawal>>>) collectedResults
+                        .get(0);
 
         return new BaseQueryResult<>(
                 withdrawalsResult::getDataStream,
@@ -54,7 +61,8 @@ public class WithdrawalFunction extends PagedBaseFunction<Map.Entry<Long, StatWi
                     );
                     StatResponse statResponse = new StatResponse(statResponseData);
                     List<Map.Entry<Long, StatWithdrawal>> withdrawalStats = withdrawalsResult.getCollectedStream();
-                    if (!withdrawalsResult.getCollectedStream().isEmpty() && getQueryParameters().getSize() == withdrawalStats.size()) {
+                    if (!withdrawalsResult.getCollectedStream().isEmpty()
+                            && getQueryParameters().getSize() == withdrawalStats.size()) {
                         statResponse.setContinuationToken(
                                 TokenUtil.buildToken(
                                         getQueryParameters(),
@@ -173,7 +181,8 @@ public class WithdrawalFunction extends PagedBaseFunction<Map.Entry<Long, StatWi
         @Override
         public List<QueryPart> parseQuery(Map<String, Object> source, QueryPart parent) throws QueryParserException {
             Map<String, Object> funcSource = (Map) source.get(FUNC_NAME);
-            WithdrawalParameters parameters = getValidatedParameters(funcSource, parent, WithdrawalParameters::new, validator);
+            WithdrawalParameters parameters =
+                    getValidatedParameters(funcSource, parent, WithdrawalParameters::new, validator);
 
             return Stream.of(
                     new QueryPart(FUNC_NAME, parameters, parent)
@@ -197,22 +206,26 @@ public class WithdrawalFunction extends PagedBaseFunction<Map.Entry<Long, StatWi
         private WithdrawalValidator validator = new WithdrawalValidator();
 
         @Override
-        public Query buildQuery(List<QueryPart> queryParts, String continuationToken, QueryPart parentQueryPart, QueryBuilder baseBuilder) throws QueryBuilderException {
-            Query resultQuery = buildSingleQuery(WithdrawalParser.getMainDescriptor(), queryParts, queryPart -> createQuery(queryPart, continuationToken));
+        public Query buildQuery(List<QueryPart> queryParts, String continuationToken, QueryPart parentQueryPart,
+                                QueryBuilder baseBuilder) throws QueryBuilderException {
+            Query resultQuery = buildSingleQuery(WithdrawalParser.getMainDescriptor(), queryParts,
+                    queryPart -> createQuery(queryPart, continuationToken));
             validator.validateQuery(resultQuery);
             return resultQuery;
         }
 
         private CompositeQuery createQuery(QueryPart queryPart, String continuationToken) {
             List<Query> queries = Arrays.asList(
-                    new GetDataFunction(queryPart.getDescriptor() + ":" + GetDataFunction.FUNC_NAME, queryPart.getParameters(), continuationToken)
+                    new GetDataFunction(queryPart.getDescriptor() + ":" + GetDataFunction.FUNC_NAME,
+                            queryPart.getParameters(), continuationToken)
             );
             CompositeQuery<QueryResult, List<QueryResult>> compositeQuery = createCompositeQuery(
                     queryPart.getDescriptor(),
                     getParameters(queryPart.getParent()),
                     queries
             );
-            return createWithdrawalFunction(queryPart.getDescriptor(), queryPart.getParameters(), continuationToken, compositeQuery);
+            return createWithdrawalFunction(queryPart.getDescriptor(), queryPart.getParameters(), continuationToken,
+                    compositeQuery);
         }
 
         @Override
@@ -221,13 +234,19 @@ public class WithdrawalFunction extends PagedBaseFunction<Map.Entry<Long, StatWi
         }
     }
 
-    private static WithdrawalFunction createWithdrawalFunction(Object descriptor, QueryParameters queryParameters, String continuationToken, CompositeQuery<QueryResult, List<QueryResult>> subquery) {
-        WithdrawalFunction withdrawalFunction = new WithdrawalFunction(descriptor, queryParameters, continuationToken, subquery);
+    private static WithdrawalFunction createWithdrawalFunction(
+            Object descriptor,
+            QueryParameters queryParameters,
+            String continuationToken,
+            CompositeQuery<QueryResult, List<QueryResult>> subquery) {
+        WithdrawalFunction withdrawalFunction =
+                new WithdrawalFunction(descriptor, queryParameters, continuationToken, subquery);
         subquery.setParentQuery(withdrawalFunction);
         return withdrawalFunction;
     }
 
-    private static class GetDataFunction extends PagedBaseFunction<Map.Entry<Long, StatWithdrawal>, Collection<Map.Entry<Long, StatWithdrawal>>> {
+    private static class GetDataFunction
+            extends PagedBaseFunction<Map.Entry<Long, StatWithdrawal>, Collection<Map.Entry<Long, StatWithdrawal>>> {
         private static final String FUNC_NAME = WithdrawalFunction.FUNC_NAME + "_data";
 
         public GetDataFunction(Object descriptor, QueryParameters params, String continuationToken) {
@@ -239,9 +258,11 @@ public class WithdrawalFunction extends PagedBaseFunction<Map.Entry<Long, StatWi
         }
 
         @Override
-        public QueryResult<Map.Entry<Long, StatWithdrawal>, Collection<Map.Entry<Long, StatWithdrawal>>> execute(QueryContext context) throws QueryExecutionException {
+        public QueryResult<Map.Entry<Long, StatWithdrawal>, Collection<Map.Entry<Long, StatWithdrawal>>> execute(
+                QueryContext context) throws QueryExecutionException {
             FunctionQueryContext functionContext = getContext(context);
-            WithdrawalParameters parameters = new WithdrawalParameters(getQueryParameters(), getQueryParameters().getDerivedParameters());
+            WithdrawalParameters parameters =
+                    new WithdrawalParameters(getQueryParameters(), getQueryParameters().getDerivedParameters());
             try {
                 Collection<Map.Entry<Long, StatWithdrawal>> result = functionContext.getSearchDao().getWithdrawals(
                         parameters,

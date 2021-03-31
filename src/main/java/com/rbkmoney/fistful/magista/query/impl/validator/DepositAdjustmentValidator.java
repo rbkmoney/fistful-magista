@@ -11,7 +11,8 @@ public class DepositAdjustmentValidator extends PagedBaseFunction.PagedBaseValid
     @Override
     public void validateParameters(QueryParameters queryParameters) throws IllegalArgumentException {
         super.validateParameters(queryParameters);
-        DepositAdjustmentParameters parameters = super.checkParamsType(queryParameters, DepositAdjustmentParameters.class);
+        DepositAdjustmentParameters parameters =
+                super.checkParamsType(queryParameters, DepositAdjustmentParameters.class);
 
         //time
         if (parameters.getFromTime() != null && parameters.getToTime() != null) {

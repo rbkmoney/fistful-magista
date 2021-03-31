@@ -56,7 +56,7 @@ public class FistfulStatisticsHandler implements FistfulStatisticsSrv.Iface {
     }
 
     private StatResponse getStatResponse(StatRequest statRequest) throws InvalidRequest, BadToken {
-        log.info("New stat request: {}" ,statRequest);
+        log.info("New stat request: {}", statRequest);
         try {
             StatResponse statResponse = queryProcessor.processQuery(statRequest);
             log.debug("Stat response: {}", statResponse);

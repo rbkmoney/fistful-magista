@@ -33,7 +33,8 @@ public class WalletAccountCreatedEventHandler implements WalletEventHandler {
     @Override
     public void handle(TimestampedChange change, MachineEvent event) {
         try {
-            log.info("Trying to handle WalletAccountCreated: eventId={}, walletId={}", event.getEventId(), event.getSourceId());
+            log.info("Trying to handle WalletAccountCreated: eventId={}, walletId={}", event.getEventId(),
+                    event.getSourceId());
             Account account = change.getChange().getAccount().getCreated();
 
             WalletData walletData = walletDao.get(event.getSourceId());
@@ -43,7 +44,8 @@ public class WalletAccountCreatedEventHandler implements WalletEventHandler {
 
             IdentityData identityData = identityDao.get(account.getIdentity());
             if (identityData == null) {
-                throw new NotFoundException(String.format("Identity with identityId='%s' not found", account.getIdentity()));
+                throw new NotFoundException(
+                        String.format("Identity with identityId='%s' not found", account.getIdentity()));
             }
 
             walletData.setEventId(event.getEventId());
@@ -58,7 +60,8 @@ public class WalletAccountCreatedEventHandler implements WalletEventHandler {
             walletData.setIdentityId(identityData.getIdentityId());
 
             walletDao.save(walletData);
-            log.info("WalletAccountCreated has been saved: eventId={}, walletId={}", event.getEventId(), event.getSourceId());
+            log.info("WalletAccountCreated has been saved: eventId={}, walletId={}", event.getEventId(),
+                    event.getSourceId());
         } catch (DaoException ex) {
             throw new StorageException(ex);
         }

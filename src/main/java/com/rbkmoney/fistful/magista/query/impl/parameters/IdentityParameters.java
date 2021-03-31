@@ -19,8 +19,9 @@ public class IdentityParameters extends PagedBaseFunction.PagedBaseParameters {
             "Completed", ChallengeStatus.completed,
             "Failed", ChallengeStatus.failed);
 
-    private static final Map<String, ChallengeResolution> CHALLENGE_RESOLUTION_MAP = Map.of("Approved", ChallengeResolution.approved,
-            "Denied", ChallengeResolution.denied);
+    private static final Map<String, ChallengeResolution> CHALLENGE_RESOLUTION_MAP =
+            Map.of("Approved", ChallengeResolution.approved,
+                    "Denied", ChallengeResolution.denied);
 
     public IdentityParameters(Map<String, Object> parameters, QueryParameters derivedParameters) {
         super(parameters, derivedParameters);

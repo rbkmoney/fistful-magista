@@ -44,17 +44,20 @@ public class DepositAdjustmentTransferStatusChangedHandler implements DepositEve
             String adjustmentId = change.getChange().getAdjustment().getId();
             LocalDateTime eventCreatedAt = TypeUtil.stringToLocalDateTime(event.getCreatedAt());
             LocalDateTime eventOccuredAt = TypeUtil.stringToLocalDateTime(change.getOccuredAt());
-            DepositAdjustmentDataEventType eventType = DepositAdjustmentDataEventType.DEPOSIT_ADJUSTMENT_TRANSFER_STATUS_CHANGED;
+            DepositAdjustmentDataEventType eventType =
+                    DepositAdjustmentDataEventType.DEPOSIT_ADJUSTMENT_TRANSFER_STATUS_CHANGED;
 
-            log.info("Start deposit adjustment transfer status changed handling, eventId={}, depositId={}, adjustmentId={}",
+            log.info(
+                    "Start deposit adjustment transfer status changed handling, " +
+                            "eventId={}, depositId={}, adjustmentId={}",
                     eventId, depositId, adjustmentId);
 
             DepositAdjustmentData depositAdjustmentData = depositAdjustmentDao.get(depositId, adjustmentId);
             initEventFields(depositAdjustmentData, eventId, eventCreatedAt, eventOccuredAt, eventType);
             depositAdjustmentData.setTransferStatus(TBaseUtil.unionFieldToEnum(status, DepositTransferStatus.class));
 
-            depositAdjustmentDao.save(depositAdjustmentData).
-                    ifPresentOrElse(
+            depositAdjustmentDao.save(depositAdjustmentData)
+                    .ifPresentOrElse(
                             dbContractId -> log.info("Deposit adjustment transfer status has been changed, " +
                                     "eventId={}, depositId={}, adjustmentId={}", eventId, depositId, adjustmentId),
                             () -> log.info("Deposit adjustment transfer status has NOT been changed, " +

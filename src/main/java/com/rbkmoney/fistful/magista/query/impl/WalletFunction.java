@@ -22,27 +22,33 @@ import java.util.stream.Stream;
 import static com.rbkmoney.fistful.magista.query.impl.Parameters.*;
 
 
-public class WalletFunction extends PagedBaseFunction<Map.Entry<Long, StatWallet>, StatResponse> implements CompositeQuery<Map.Entry<Long, StatWallet>, StatResponse> {
+public class WalletFunction extends PagedBaseFunction<Map.Entry<Long, StatWallet>, StatResponse>
+        implements CompositeQuery<Map.Entry<Long, StatWallet>, StatResponse> {
 
     public static final String FUNC_NAME = "wallets";
 
     private final CompositeQuery<QueryResult, List<QueryResult>> subquery;
 
-    private WalletFunction(Object descriptor, QueryParameters params, String continuationToken, CompositeQuery<QueryResult, List<QueryResult>> subquery) {
+    private WalletFunction(Object descriptor, QueryParameters params, String continuationToken,
+                           CompositeQuery<QueryResult, List<QueryResult>> subquery) {
         super(descriptor, params, FUNC_NAME, continuationToken);
         this.subquery = subquery;
     }
 
     @Override
-    public QueryResult<Map.Entry<Long, StatWallet>, StatResponse> execute(QueryContext context) throws QueryExecutionException {
+    public QueryResult<Map.Entry<Long, StatWallet>, StatResponse> execute(QueryContext context)
+            throws QueryExecutionException {
         QueryResult<QueryResult, List<QueryResult>> collectedResults = subquery.execute(context);
 
         return execute(context, collectedResults.getCollectedStream());
     }
 
     @Override
-    public QueryResult<Map.Entry<Long, StatWallet>, StatResponse> execute(QueryContext context, List<QueryResult> collectedResults) throws QueryExecutionException {
-        QueryResult<Map.Entry<Long, StatWallet>, List<Map.Entry<Long, StatWallet>>> walletsResult = (QueryResult<Map.Entry<Long, StatWallet>, List<Map.Entry<Long, StatWallet>>>) collectedResults.get(0);
+    public QueryResult<Map.Entry<Long, StatWallet>, StatResponse> execute(QueryContext context,
+                                                                          List<QueryResult> collectedResults)
+            throws QueryExecutionException {
+        QueryResult<Map.Entry<Long, StatWallet>, List<Map.Entry<Long, StatWallet>>> walletsResult =
+                (QueryResult<Map.Entry<Long, StatWallet>, List<Map.Entry<Long, StatWallet>>>) collectedResults.get(0);
 
         return new BaseQueryResult<>(
                 () -> walletsResult.getDataStream(),
@@ -51,7 +57,8 @@ public class WalletFunction extends PagedBaseFunction<Map.Entry<Long, StatWallet
                             .map(walletResponse -> walletResponse.getValue()).collect(Collectors.toList()));
                     StatResponse statResponse = new StatResponse(statResponseData);
                     List<Map.Entry<Long, StatWallet>> walletStats = walletsResult.getCollectedStream();
-                    if (!walletsResult.getCollectedStream().isEmpty() && getQueryParameters().getSize() == walletStats.size()) {
+                    if (!walletsResult.getCollectedStream().isEmpty()
+                            && getQueryParameters().getSize() == walletStats.size()) {
                         statResponse.setContinuationToken(
                                 TokenUtil.buildToken(
                                         getQueryParameters(),
@@ -146,22 +153,26 @@ public class WalletFunction extends PagedBaseFunction<Map.Entry<Long, StatWallet
         private WalletValidator validator = new WalletValidator();
 
         @Override
-        public Query buildQuery(List<QueryPart> queryParts, String continuationToken, QueryPart parentQueryPart, QueryBuilder baseBuilder) throws QueryBuilderException {
-            Query resultQuery = buildSingleQuery(WalletParser.getMainDescriptor(), queryParts, queryPart -> createQuery(queryPart, continuationToken));
+        public Query buildQuery(List<QueryPart> queryParts, String continuationToken, QueryPart parentQueryPart,
+                                QueryBuilder baseBuilder) throws QueryBuilderException {
+            Query resultQuery = buildSingleQuery(WalletParser.getMainDescriptor(), queryParts,
+                    queryPart -> createQuery(queryPart, continuationToken));
             validator.validateQuery(resultQuery);
             return resultQuery;
         }
 
         private CompositeQuery createQuery(QueryPart queryPart, String continuationToken) {
             List<Query> queries = Arrays.asList(
-                    new GetDataFunction(queryPart.getDescriptor() + ":" + GetDataFunction.FUNC_NAME, queryPart.getParameters(), continuationToken)
+                    new GetDataFunction(queryPart.getDescriptor() + ":" + GetDataFunction.FUNC_NAME,
+                            queryPart.getParameters(), continuationToken)
             );
             CompositeQuery<QueryResult, List<QueryResult>> compositeQuery = createCompositeQuery(
                     queryPart.getDescriptor(),
                     getParameters(queryPart.getParent()),
                     queries
             );
-            return createWalletFunction(queryPart.getDescriptor(), queryPart.getParameters(), continuationToken, compositeQuery);
+            return createWalletFunction(queryPart.getDescriptor(), queryPart.getParameters(), continuationToken,
+                    compositeQuery);
         }
 
         @Override
@@ -170,13 +181,16 @@ public class WalletFunction extends PagedBaseFunction<Map.Entry<Long, StatWallet
         }
     }
 
-    private static WalletFunction createWalletFunction(Object descriptor, QueryParameters queryParameters, String continuationToken, CompositeQuery<QueryResult, List<QueryResult>> subquery) {
+    private static WalletFunction createWalletFunction(Object descriptor, QueryParameters queryParameters,
+                                                       String continuationToken,
+                                                       CompositeQuery<QueryResult, List<QueryResult>> subquery) {
         WalletFunction walletFunction = new WalletFunction(descriptor, queryParameters, continuationToken, subquery);
         subquery.setParentQuery(walletFunction);
         return walletFunction;
     }
 
-    private static class GetDataFunction extends PagedBaseFunction<Map.Entry<Long, StatWallet>, Collection<Map.Entry<Long, StatWallet>>> {
+    private static class GetDataFunction
+            extends PagedBaseFunction<Map.Entry<Long, StatWallet>, Collection<Map.Entry<Long, StatWallet>>> {
         private static final String FUNC_NAME = WalletFunction.FUNC_NAME + "_data";
 
         public GetDataFunction(Object descriptor, QueryParameters params, String continuationToken) {
@@ -188,9 +202,11 @@ public class WalletFunction extends PagedBaseFunction<Map.Entry<Long, StatWallet
         }
 
         @Override
-        public QueryResult<Map.Entry<Long, StatWallet>, Collection<Map.Entry<Long, StatWallet>>> execute(QueryContext context) throws QueryExecutionException {
+        public QueryResult<Map.Entry<Long, StatWallet>, Collection<Map.Entry<Long, StatWallet>>> execute(
+                QueryContext context) throws QueryExecutionException {
             FunctionQueryContext functionContext = getContext(context);
-            WalletParameters parameters = new WalletParameters(getQueryParameters(), getQueryParameters().getDerivedParameters());
+            WalletParameters parameters =
+                    new WalletParameters(getQueryParameters(), getQueryParameters().getDerivedParameters());
             try {
                 Collection<Map.Entry<Long, StatWallet>> result = functionContext.getSearchDao().getWallets(
                         parameters,

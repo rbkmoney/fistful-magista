@@ -28,7 +28,8 @@ public class IdentityLevelChangedEventHandler implements IdentityEventHandler {
     @Override
     public void handle(TimestampedChange change, MachineEvent event) {
         try {
-            log.info("Trying to handle IdentityLevelChanged: eventId={}, identityId={}", event.getEventId(), event.getSourceId());
+            log.info("Trying to handle IdentityLevelChanged: eventId={}, identityId={}", event.getEventId(),
+                    event.getSourceId());
 
             IdentityData identityData = getIdentityData(event);
             identityData.setEventId(event.getEventId());
@@ -38,8 +39,9 @@ public class IdentityLevelChangedEventHandler implements IdentityEventHandler {
             identityData.setIdentityLevelId(change.getChange().getLevelChanged());
 
             identityDao.save(identityData);
-            
-            log.info("IdentityLevelChanged has been saved, eventId={}, identityId={}", event.getEventId(), event.getSourceId());
+
+            log.info("IdentityLevelChanged has been saved, eventId={}, identityId={}", event.getEventId(),
+                    event.getSourceId());
         } catch (DaoException ex) {
             throw new StorageException(ex);
         }

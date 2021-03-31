@@ -27,7 +27,8 @@ public class StatDepositRevertMapper implements RowMapper<Map.Entry<Long, StatDe
                 DepositRevertDataStatus.class);
         long amount = rs.getLong(DEPOSIT_REVERT_DATA.AMOUNT.getName());
         String currencyCode = rs.getString(DEPOSIT_REVERT_DATA.CURRENCY_CODE.getName());
-        String createdAt = TypeUtil.temporalToString(rs.getObject(DEPOSIT_REVERT_DATA.CREATED_AT.getName(), LocalDateTime.class));
+        String createdAt =
+                TypeUtil.temporalToString(rs.getObject(DEPOSIT_REVERT_DATA.CREATED_AT.getName(), LocalDateTime.class));
         long domainRevision = rs.getLong(DEPOSIT_REVERT_DATA.DOMAIN_REVISION.getName());
         long partyRevision = rs.getLong(DEPOSIT_REVERT_DATA.PARTY_REVISION.getName());
         String reason = rs.getString(DEPOSIT_REVERT_DATA.REASON.getName());

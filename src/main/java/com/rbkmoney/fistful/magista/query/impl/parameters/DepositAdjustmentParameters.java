@@ -14,7 +14,8 @@ import static com.rbkmoney.fistful.magista.query.impl.Parameters.*;
 
 public class DepositAdjustmentParameters extends PagedBaseFunction.PagedBaseParameters {
 
-    private static final Map<String, DepositAdjustmentDataStatus> depositAdjustmentStatusMap = getDepositAdjustmentStatusMap();
+    private static final Map<String, DepositAdjustmentDataStatus> depositAdjustmentStatusMap =
+            getDepositAdjustmentStatusMap();
     private static final Map<String, DepositStatus> depositStatusMap = getDepositStatusMap();
 
     public DepositAdjustmentParameters(Map<String, Object> parameters, QueryParameters derivedParameters) {

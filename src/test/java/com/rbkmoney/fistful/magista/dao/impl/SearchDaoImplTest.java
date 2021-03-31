@@ -49,7 +49,10 @@ public class SearchDaoImplTest extends AbstractIntegrationTest {
         map.put(IDENTITY_ID_PARAM, walletData.getIdentityId());
         map.put(CURRENCY_CODE_PARAM, walletData.getCurrencyCode());
         WalletFunction.WalletParameters walletParameters = new WalletFunction.WalletParameters(map, null);
-        Collection<Map.Entry<Long, StatWallet>> wallets = searchDao.getWallets(walletParameters, Optional.of(walletData.getId() + 1), 100);
+        Collection<Map.Entry<Long, StatWallet>> wallets = searchDao.getWallets(
+                walletParameters,
+                Optional.of(walletData.getId() + 1),
+                100);
         assertEquals(wallets.size(), 1);
         assertEquals(wallets.iterator().next().getValue().getName(), walletData.getWalletName());
 
@@ -74,7 +77,8 @@ public class SearchDaoImplTest extends AbstractIntegrationTest {
         map.put(AMOUNT_FROM_PARAM, withdrawalData.getAmount() - 1);
         map.put(AMOUNT_TO_PARAM, withdrawalData.getAmount() + 1);
         map.put(CURRENCY_CODE_PARAM, withdrawalData.getCurrencyCode());
-        WithdrawalFunction.WithdrawalParameters withdrawalParameters = new WithdrawalFunction.WithdrawalParameters(map, null);
+        WithdrawalFunction.WithdrawalParameters withdrawalParameters =
+                new WithdrawalFunction.WithdrawalParameters(map, null);
         Collection<Map.Entry<Long, StatWithdrawal>> withdrawals = searchDao.getWithdrawals(
                 withdrawalParameters,
                 withdrawalData.getCreatedAt().minusMinutes(1),
@@ -126,7 +130,8 @@ public class SearchDaoImplTest extends AbstractIntegrationTest {
         assertEquals(0, deposits.size());
     }
 
-    private Collection<Map.Entry<Long, StatDeposit>> getDeposits(DepositData deposit, DepositParameters parameters) throws DaoException {
+    private Collection<Map.Entry<Long, StatDeposit>> getDeposits(DepositData deposit, DepositParameters parameters)
+            throws DaoException {
         return searchDao.getDeposits(
                 parameters,
                 null,

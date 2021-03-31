@@ -59,7 +59,8 @@ public class WalletFunctionTest extends AbstractIntegrationTest {
 
     @Test
     public void testOneWallet() throws DaoException {
-        String json = String.format("{'query': {'wallets': {'party_id': '%s','identity_id': '%s', 'currency_code':'%s', 'from_time': '%s','to_time': '%s'}}}",
+        String json = String.format("{'query': {'wallets': {'party_id': '%s','identity_id': '%s', " +
+                        "'currency_code':'%s', 'from_time': '%s','to_time': '%s'}}}",
                 walletData.getPartyId(),
                 walletData.getIdentityId(),
                 walletData.getCurrencyCode(),

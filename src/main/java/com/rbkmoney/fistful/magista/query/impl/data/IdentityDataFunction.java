@@ -11,7 +11,8 @@ import com.rbkmoney.magista.dsl.*;
 import java.util.Collection;
 import java.util.Map;
 
-public class IdentityDataFunction extends PagedBaseFunction<Map.Entry<Long, StatIdentity>, Collection<Map.Entry<Long, StatIdentity>>> {
+public class IdentityDataFunction
+        extends PagedBaseFunction<Map.Entry<Long, StatIdentity>, Collection<Map.Entry<Long, StatIdentity>>> {
 
     private static final String FUNC_NAME = IdentityFunction.getMainDescriptor() + "_data";
 
@@ -24,9 +25,11 @@ public class IdentityDataFunction extends PagedBaseFunction<Map.Entry<Long, Stat
     }
 
     @Override
-    public QueryResult<Map.Entry<Long, StatIdentity>, Collection<Map.Entry<Long, StatIdentity>>> execute(QueryContext context) throws QueryExecutionException {
+    public QueryResult<Map.Entry<Long, StatIdentity>, Collection<Map.Entry<Long, StatIdentity>>> execute(
+            QueryContext context) throws QueryExecutionException {
         FunctionQueryContext functionContext = getContext(context);
-        IdentityParameters parameters = new IdentityParameters(getQueryParameters(), getQueryParameters().getDerivedParameters());
+        IdentityParameters parameters =
+                new IdentityParameters(getQueryParameters(), getQueryParameters().getDerivedParameters());
         try {
             Collection<Map.Entry<Long, StatIdentity>> result = functionContext.getSearchDao().getIdentities(
                     parameters,

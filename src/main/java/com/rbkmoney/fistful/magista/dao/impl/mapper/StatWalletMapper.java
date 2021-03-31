@@ -20,7 +20,8 @@ public class StatWalletMapper implements RowMapper<Map.Entry<Long, StatWallet>> 
         statWallet.setId(rs.getString(WALLET_DATA.WALLET_ID.getName()));
         statWallet.setIdentityId(rs.getString(WALLET_DATA.IDENTITY_ID.getName()));
         statWallet.setName(rs.getString(WALLET_DATA.WALLET_NAME.getName()));
-        statWallet.setCreatedAt(TypeUtil.temporalToString(rs.getObject(WALLET_DATA.CREATED_AT.getName(), LocalDateTime.class)));
+        statWallet.setCreatedAt(
+                TypeUtil.temporalToString(rs.getObject(WALLET_DATA.CREATED_AT.getName(), LocalDateTime.class)));
         statWallet.setCurrencySymbolicCode(rs.getString(WALLET_DATA.CURRENCY_CODE.getName()));
         return new AbstractMap.SimpleEntry<>(rs.getLong(WALLET_DATA.ID.getName()), statWallet);
     }

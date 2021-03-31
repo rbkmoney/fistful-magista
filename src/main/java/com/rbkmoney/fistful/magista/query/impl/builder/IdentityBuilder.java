@@ -19,7 +19,8 @@ public class IdentityBuilder extends AbstractQueryBuilder {
     private IdentityValidator validator = new IdentityValidator();
 
     @Override
-    public Query buildQuery(List<QueryPart> queryParts, String continuationToken, QueryPart parentQueryPart, QueryBuilder baseBuilder) throws QueryBuilderException {
+    public Query buildQuery(List<QueryPart> queryParts, String continuationToken, QueryPart parentQueryPart,
+                            QueryBuilder baseBuilder) throws QueryBuilderException {
         Query resultQuery = buildSingleQuery(
                 IdentityFunction.getMainDescriptor(),
                 queryParts,
@@ -42,7 +43,8 @@ public class IdentityBuilder extends AbstractQueryBuilder {
                 getParameters(queryPart.getParent()),
                 queries
         );
-        return IdentityFunction.createFunction(queryPart.getDescriptor(), queryPart.getParameters(), continuationToken, compositeQuery);
+        return IdentityFunction.createFunction(queryPart.getDescriptor(), queryPart.getParameters(), continuationToken,
+                compositeQuery);
     }
 
     @Override

@@ -37,7 +37,8 @@ public class WithdrawalCreatedEventHandler implements WithdrawalEventHandler {
     public void handle(TimestampedChange change, MachineEvent event) {
         try {
             Withdrawal withdrawal = change.getChange().getCreated().getWithdrawal();
-            log.info("Trying to handle WithdrawalCreated: eventId={}, withdrawalId={}", event.getEventId(), event.getSourceId());
+            log.info("Trying to handle WithdrawalCreated: eventId={}, withdrawalId={}", event.getEventId(),
+                    event.getSourceId());
 
             WalletData walletData = getWalletData(withdrawal);
 
@@ -59,7 +60,8 @@ public class WithdrawalCreatedEventHandler implements WithdrawalEventHandler {
             withdrawalData.setWithdrawalStatus(WithdrawalStatus.pending);
 
             withdrawalDao.save(withdrawalData);
-            log.info("WithdrawalCreated has been saved: eventId={}, withdrawalId={}", event.getEventId(), event.getSourceId());
+            log.info("WithdrawalCreated has been saved: eventId={}, withdrawalId={}", event.getEventId(),
+                    event.getSourceId());
         } catch (DaoException ex) {
             throw new StorageException(ex);
         }
@@ -69,7 +71,8 @@ public class WithdrawalCreatedEventHandler implements WithdrawalEventHandler {
         WalletData walletData = walletDao.get(withdrawal.getWalletId());
 
         if (walletData == null) {
-            throw new NotFoundException(String.format("WalletData with walletId='%s' not found", withdrawal.getWalletId()));
+            throw new NotFoundException(
+                    String.format("WalletData with walletId='%s' not found", withdrawal.getWalletId()));
         }
 
         if (walletData.getPartyId() == null) {

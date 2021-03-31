@@ -33,7 +33,8 @@ public class IdentityChallengeCreatedEventHandler implements IdentityEventHandle
     @Override
     public void handle(TimestampedChange change, MachineEvent event) {
         try {
-            log.info("Trying to handle IdentityChallengeCreated: eventId={}, identityId={}", event.getEventId(), event.getSourceId());
+            log.info("Trying to handle IdentityChallengeCreated: eventId={}, identityId={}", event.getEventId(),
+                    event.getSourceId());
             ChallengeChange challengeChange = change.getChange().getIdentityChallenge();
             Challenge challenge = challengeChange.getPayload().getCreated();
             LocalDateTime eventOccurredAt = TypeUtil.stringToLocalDateTime(change.getOccuredAt());
@@ -51,7 +52,8 @@ public class IdentityChallengeCreatedEventHandler implements IdentityEventHandle
 
             identityDao.save(challengeData);
 
-            log.info("IdentityChallengeCreated has been saved: eventId={}, identityId={}", event.getEventId(), event.getSourceId());
+            log.info("IdentityChallengeCreated has been saved: eventId={}, identityId={}", event.getEventId(),
+                    event.getSourceId());
         } catch (DaoException ex) {
             throw new StorageException(ex);
         }

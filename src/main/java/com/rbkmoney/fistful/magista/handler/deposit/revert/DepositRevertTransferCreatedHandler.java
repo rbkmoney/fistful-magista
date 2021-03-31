@@ -40,7 +40,6 @@ public class DepositRevertTransferCreatedHandler implements DepositEventHandler 
             Transfer transfer = change.getChange().getRevert()
                     .getPayload().getTransfer()
                     .getPayload().getCreated().getTransfer();
-            List<FinalCashFlowPosting> postings = transfer.getCashflow().getPostings();
 
             long eventId = event.getEventId();
             String depositId = event.getSourceId();
@@ -52,14 +51,15 @@ public class DepositRevertTransferCreatedHandler implements DepositEventHandler 
             log.info("Start deposit revert transfer created handling, eventId={}, depositId={}, revertId={}",
                     eventId, depositId, revertId);
 
+            List<FinalCashFlowPosting> postings = transfer.getCashflow().getPostings();
             DepositRevertData depositRevertData = depositRevertDao.get(depositId, revertId);
             initEventFields(depositRevertData, eventId, eventCreatedAt, eventOccuredAt, eventType);
             depositRevertData.setTransferStatus(DepositTransferStatus.created);
             depositRevertData.setFee(CashFlowUtil.getFistfulFee(postings));
             depositRevertData.setProviderFee(CashFlowUtil.getFistfulProviderFee(postings));
 
-            depositRevertDao.save(depositRevertData).
-                    ifPresentOrElse(
+            depositRevertDao.save(depositRevertData)
+                    .ifPresentOrElse(
                             dbContractId -> log.info("Deposit revert transfer created has been saved, " +
                                     "eventId={}, depositId={}, revertId={}", eventId, depositId, revertId),
                             () -> log.info("Deposit revert transfer created has NOT been saved, " +

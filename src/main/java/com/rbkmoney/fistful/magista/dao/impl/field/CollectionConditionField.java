@@ -36,13 +36,21 @@ public class CollectionConditionField<T> implements ConditionField<T, Collection
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         CollectionConditionField<?> that = (CollectionConditionField<?>) o;
 
-        if (field != null ? !field.equals(that.field) : that.field != null) return false;
-        if (value != null ? !value.equals(that.value) : that.value != null) return false;
+        if (field != null ? !field.equals(that.field) : that.field != null) {
+            return false;
+        }
+        if (value != null ? !value.equals(that.value) : that.value != null) {
+            return false;
+        }
         return comparator == that.comparator;
     }
 

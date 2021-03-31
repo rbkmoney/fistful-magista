@@ -42,6 +42,18 @@ public class IdentityDaoImpl extends AbstractGenericDao implements IdentityDao {
     }
 
     @Override
+    public ChallengeData get(String identityId, String challengeId) throws DaoException {
+        Query query = getDslContext()
+                .selectFrom(CHALLENGE_DATA)
+                .where(
+                        CHALLENGE_DATA.IDENTITY_ID.eq(identityId)
+                                .and(CHALLENGE_DATA.CHALLENGE_ID.eq(challengeId))
+                );
+
+        return fetchOne(query, challengeRecordRowMapper);
+    }
+
+    @Override
     public long save(IdentityData identity) throws DaoException {
         IdentityDataRecord identityRecord = getDslContext().newRecord(IDENTITY_DATA, identity);
 
@@ -74,22 +86,11 @@ public class IdentityDaoImpl extends AbstractGenericDao implements IdentityDao {
     }
 
     @Override
-    public ChallengeData get(String identityId, String challengeId) throws DaoException {
-        Query query = getDslContext()
-                .selectFrom(CHALLENGE_DATA)
-                .where(
-                        CHALLENGE_DATA.IDENTITY_ID.eq(identityId)
-                                .and(CHALLENGE_DATA.CHALLENGE_ID.eq(challengeId))
-                );
-
-        return fetchOne(query, challengeRecordRowMapper);
-    }
-
-    @Override
     public Optional<Long> getLastEventId() throws DaoException {
         Query query = getDslContext().select(DSL.max(DSL.field("event_id"))).from(
                 getDslContext().select(DSL.max(IDENTITY_DATA.EVENT_ID).as("event_id")).from(IDENTITY_DATA)
-                        .unionAll(getDslContext().select(DSL.max(CHALLENGE_DATA.EVENT_ID).as("event_id")).from(CHALLENGE_DATA))
+                        .unionAll(getDslContext().select(DSL.max(CHALLENGE_DATA.EVENT_ID).as("event_id"))
+                                .from(CHALLENGE_DATA))
         );
         return Optional.ofNullable(fetchOne(query, Long.class));
     }

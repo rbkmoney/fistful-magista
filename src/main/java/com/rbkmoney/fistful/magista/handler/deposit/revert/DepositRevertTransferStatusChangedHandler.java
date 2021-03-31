@@ -53,8 +53,8 @@ public class DepositRevertTransferStatusChangedHandler implements DepositEventHa
             initEventFields(depositRevertData, eventId, eventCreatedAt, eventOccuredAt, eventType);
             depositRevertData.setTransferStatus(TBaseUtil.unionFieldToEnum(status, DepositTransferStatus.class));
 
-            depositRevertDao.save(depositRevertData).
-                    ifPresentOrElse(
+            depositRevertDao.save(depositRevertData)
+                    .ifPresentOrElse(
                             dbContractId -> log.info("Deposit revert transfer status has been changed, " +
                                     "eventId={}, depositId={}, revertId={}", eventId, depositId, revertId),
                             () -> log.info("Deposit revert transfer status has NOT been changed, " +

@@ -22,13 +22,16 @@ public class StatDepositAdjustmentMapper implements RowMapper<Map.Entry<Long, St
     @Override
     public Map.Entry<Long, StatDepositAdjustment> mapRow(ResultSet rs, int i) throws SQLException {
         String adjustmentId = rs.getString(DEPOSIT_ADJUSTMENT_DATA.ADJUSTMENT_ID.getName());
-        DepositAdjustmentDataStatus status = TypeUtil.toEnumField(rs.getString(DEPOSIT_ADJUSTMENT_DATA.STATUS.getName()),
-                DepositAdjustmentDataStatus.class);
-        String createdAt = TypeUtil.temporalToString(rs.getObject(DEPOSIT_ADJUSTMENT_DATA.CREATED_AT.getName(), LocalDateTime.class));
+        DepositAdjustmentDataStatus status =
+                TypeUtil.toEnumField(rs.getString(DEPOSIT_ADJUSTMENT_DATA.STATUS.getName()),
+                        DepositAdjustmentDataStatus.class);
+        String createdAt = TypeUtil.temporalToString(
+                rs.getObject(DEPOSIT_ADJUSTMENT_DATA.CREATED_AT.getName(), LocalDateTime.class));
         long domainRevision = rs.getLong(DEPOSIT_ADJUSTMENT_DATA.DOMAIN_REVISION.getName());
         long partyRevision = rs.getLong(DEPOSIT_ADJUSTMENT_DATA.PARTY_REVISION.getName());
         String externalId = rs.getString(DEPOSIT_ADJUSTMENT_DATA.EXTERNAL_ID.getName());
-        String operationTimestamp = TypeUtil.temporalToString(rs.getObject(DEPOSIT_ADJUSTMENT_DATA.OPERATION_TIMESTAMP.getName(), LocalDateTime.class));
+        String operationTimestamp = TypeUtil.temporalToString(
+                rs.getObject(DEPOSIT_ADJUSTMENT_DATA.OPERATION_TIMESTAMP.getName(), LocalDateTime.class));
         String depositId = rs.getString(DEPOSIT_ADJUSTMENT_DATA.DEPOSIT_ID.getName());
 
         StatDepositAdjustment statDepositAdjustment = new StatDepositAdjustment()
@@ -52,7 +55,23 @@ public class StatDepositAdjustmentMapper implements RowMapper<Map.Entry<Long, St
             case succeeded:
                 return DepositAdjustmentStatus.succeeded(new DepositAdjustmentSucceeded());
             default:
-                throw new NotFoundException(String.format("Deposit adjustment status '%s' not found", status.getLiteral()));
+                throw new NotFoundException(
+                        String.format("Deposit adjustment status '%s' not found", status.getLiteral()));
+        }
+    }
+
+    private DepositAdjustmentStatusChangePlanStatus getStatus(DepositStatus status) {
+        switch (status) {
+            case pending:
+                return DepositAdjustmentStatusChangePlanStatus.pending(new DepositAdjustmentStatusChangePlanPending());
+            case succeeded:
+                return DepositAdjustmentStatusChangePlanStatus
+                        .succeeded(new DepositAdjustmentStatusChangePlanSucceeded());
+            case failed:
+                return DepositAdjustmentStatusChangePlanStatus
+                        .failed(new DepositAdjustmentStatusChangePlanFailed(new Failure()));
+            default:
+                throw new NotFoundException(String.format("Deposit status '%s' not found", status.getLiteral()));
         }
     }
 
@@ -63,8 +82,9 @@ public class StatDepositAdjustmentMapper implements RowMapper<Map.Entry<Long, St
     }
 
     private DepositAdjustmentStatusChangePlan getDepositAdjustmentStatusChangePlan(ResultSet rs) throws SQLException {
-        DepositStatus depositStatus = TypeUtil.toEnumField(rs.getString(DEPOSIT_ADJUSTMENT_DATA.DEPOSIT_STATUS.getName()),
-                DepositStatus.class);
+        DepositStatus depositStatus =
+                TypeUtil.toEnumField(rs.getString(DEPOSIT_ADJUSTMENT_DATA.DEPOSIT_STATUS.getName()),
+                        DepositStatus.class);
 
         if (depositStatus != null) {
             return new DepositAdjustmentStatusChangePlan()
@@ -88,18 +108,5 @@ public class StatDepositAdjustmentMapper implements RowMapper<Map.Entry<Long, St
         }
 
         return null;
-    }
-
-    private DepositAdjustmentStatusChangePlanStatus getStatus(DepositStatus status) {
-        switch (status) {
-            case pending:
-                return DepositAdjustmentStatusChangePlanStatus.pending(new DepositAdjustmentStatusChangePlanPending());
-            case succeeded:
-                return DepositAdjustmentStatusChangePlanStatus.succeeded(new DepositAdjustmentStatusChangePlanSucceeded());
-            case failed:
-                return DepositAdjustmentStatusChangePlanStatus.failed(new DepositAdjustmentStatusChangePlanFailed(new Failure()));
-            default:
-                throw new NotFoundException(String.format("Deposit status '%s' not found", status.getLiteral()));
-        }
     }
 }

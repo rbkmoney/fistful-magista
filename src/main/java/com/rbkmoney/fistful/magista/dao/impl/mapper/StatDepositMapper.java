@@ -20,14 +20,16 @@ public class StatDepositMapper implements RowMapper<Map.Entry<Long, StatDeposit>
     public Map.Entry<Long, StatDeposit> mapRow(ResultSet rs, int i) throws SQLException {
         StatDeposit deposit = new StatDeposit();
         deposit.setId(rs.getString(DEPOSIT_DATA.DEPOSIT_ID.getName()));
-        deposit.setCreatedAt(TypeUtil.temporalToString(rs.getObject(DEPOSIT_DATA.CREATED_AT.getName(), LocalDateTime.class)));
+        deposit.setCreatedAt(
+                TypeUtil.temporalToString(rs.getObject(DEPOSIT_DATA.CREATED_AT.getName(), LocalDateTime.class)));
         deposit.setIdentityId(rs.getString(DEPOSIT_DATA.IDENTITY_ID.getName()));
         deposit.setDestinationId(rs.getString(DEPOSIT_DATA.WALLET_ID.getName()));
         deposit.setSourceId(rs.getString(DEPOSIT_DATA.SOURCE_ID.getName()));
         deposit.setAmount(rs.getLong(DEPOSIT_DATA.AMOUNT.getName()));
         deposit.setFee(rs.getLong(DEPOSIT_DATA.FEE.getName()));
         deposit.setCurrencySymbolicCode(rs.getString(DEPOSIT_DATA.CURRENCY_CODE.getName()));
-        DepositStatus depositStatus = TypeUtil.toEnumField(rs.getString(DEPOSIT_DATA.DEPOSIT_STATUS.getName()), DepositStatus.class);
+        DepositStatus depositStatus =
+                TypeUtil.toEnumField(rs.getString(DEPOSIT_DATA.DEPOSIT_STATUS.getName()), DepositStatus.class);
         switch (depositStatus) {
             case succeeded:
                 deposit.setStatus(com.rbkmoney.fistful.fistful_stat.DepositStatus.succeeded(new DepositSucceeded()));
@@ -36,7 +38,8 @@ public class StatDepositMapper implements RowMapper<Map.Entry<Long, StatDeposit>
                 deposit.setStatus(com.rbkmoney.fistful.fistful_stat.DepositStatus.pending(new DepositPending()));
                 break;
             case failed:
-                deposit.setStatus(com.rbkmoney.fistful.fistful_stat.DepositStatus.failed(new DepositFailed(new Failure())));
+                deposit.setStatus(
+                        com.rbkmoney.fistful.fistful_stat.DepositStatus.failed(new DepositFailed(new Failure())));
                 break;
             default:
                 throw new NotFoundException(String.format("Deposit status '%s' not found", depositStatus.getLiteral()));

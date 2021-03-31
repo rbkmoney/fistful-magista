@@ -50,8 +50,8 @@ public class DepositAdjustmentStatusChangedHandler implements DepositEventHandle
             initEventFields(depositAdjustmentData, eventId, eventCreatedAt, eventOccuredAt, eventType);
             depositAdjustmentData.setStatus(TBaseUtil.unionFieldToEnum(status, DepositAdjustmentDataStatus.class));
 
-            depositAdjustmentDao.save(depositAdjustmentData).
-                    ifPresentOrElse(
+            depositAdjustmentDao.save(depositAdjustmentData)
+                    .ifPresentOrElse(
                             dbContractId -> log.info("Deposit adjustment status has been changed, " +
                                     "eventId={}, depositId={}, adjustmentId={}", eventId, depositId, adjustmentId),
                             () -> log.info("Deposit adjustment status has NOT been changed, " +

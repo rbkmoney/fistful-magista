@@ -10,13 +10,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class IdentityFunction extends PagedBaseFunction<Map.Entry<Long, StatIdentity>, StatResponse> implements CompositeQuery<Map.Entry<Long, StatIdentity>, StatResponse> {
+public class IdentityFunction extends PagedBaseFunction<Map.Entry<Long, StatIdentity>, StatResponse>
+        implements CompositeQuery<Map.Entry<Long, StatIdentity>, StatResponse> {
 
     private static final String FUNC_NAME = "identities";
 
     private final CompositeQuery<QueryResult, List<QueryResult>> subquery;
 
-    public static IdentityFunction createFunction(Object descriptor, QueryParameters queryParameters, String continuationToken, CompositeQuery<QueryResult, List<QueryResult>> subquery) {
+    public static IdentityFunction createFunction(Object descriptor, QueryParameters queryParameters,
+                                                  String continuationToken,
+                                                  CompositeQuery<QueryResult, List<QueryResult>> subquery) {
         IdentityFunction func = new IdentityFunction(descriptor, queryParameters, continuationToken, subquery);
         subquery.setParentQuery(func);
         return func;
@@ -26,21 +29,27 @@ public class IdentityFunction extends PagedBaseFunction<Map.Entry<Long, StatIden
         return FUNC_NAME;
     }
 
-    private IdentityFunction(Object descriptor, QueryParameters params, String continuationToken, CompositeQuery<QueryResult, List<QueryResult>> subquery) {
+    private IdentityFunction(Object descriptor, QueryParameters params, String continuationToken,
+                             CompositeQuery<QueryResult, List<QueryResult>> subquery) {
         super(descriptor, params, getMainDescriptor(), continuationToken);
         this.subquery = subquery;
     }
 
     @Override
-    public QueryResult<Map.Entry<Long, StatIdentity>, StatResponse> execute(QueryContext context) throws QueryExecutionException {
+    public QueryResult<Map.Entry<Long, StatIdentity>, StatResponse> execute(QueryContext context)
+            throws QueryExecutionException {
         QueryResult<QueryResult, List<QueryResult>> collectedResults = subquery.execute(context);
 
         return execute(context, collectedResults.getCollectedStream());
     }
 
     @Override
-    public QueryResult<Map.Entry<Long, StatIdentity>, StatResponse> execute(QueryContext context, List<QueryResult> collectedResults) throws QueryExecutionException {
-        QueryResult<Map.Entry<Long, StatIdentity>, List<Map.Entry<Long, StatIdentity>>> queryResult = (QueryResult<Map.Entry<Long, StatIdentity>, List<Map.Entry<Long, StatIdentity>>>) collectedResults.get(0);
+    public QueryResult<Map.Entry<Long, StatIdentity>, StatResponse> execute(QueryContext context,
+                                                                            List<QueryResult> collectedResults)
+            throws QueryExecutionException {
+        QueryResult<Map.Entry<Long, StatIdentity>, List<Map.Entry<Long, StatIdentity>>> queryResult =
+                (QueryResult<Map.Entry<Long, StatIdentity>, List<Map.Entry<Long, StatIdentity>>>) collectedResults
+                        .get(0);
 
         return new BaseQueryResult<>(
                 queryResult::getDataStream,

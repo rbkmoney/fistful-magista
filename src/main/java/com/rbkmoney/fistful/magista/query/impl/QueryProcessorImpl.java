@@ -14,7 +14,8 @@ public class QueryProcessorImpl implements QueryProcessor<StatRequest, StatRespo
     private QueryBuilder queryBuilder;
     private QueryContextFactory queryContextFactory;
 
-    public QueryProcessorImpl(QueryParser<String> sourceParser, QueryBuilder queryBuilder, QueryContextFactory queryContextFactory) {
+    public QueryProcessorImpl(QueryParser<String> sourceParser, QueryBuilder queryBuilder,
+                              QueryContextFactory queryContextFactory) {
         this.sourceParser = sourceParser;
         this.queryBuilder = queryBuilder;
         this.queryContextFactory = queryContextFactory;

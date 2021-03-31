@@ -42,14 +42,16 @@ public class WithdrawalTransferCreatedEventHandler implements WithdrawalEventHan
                     .getTransfer()
                     .getCashflow()
                     .getPostings();
-            log.info("Trying to handle WithdrawalTransferCreated: eventId={}, withdrawalId={}", event.getEventId(), event.getSourceId());
+            log.info("Trying to handle WithdrawalTransferCreated: eventId={}, withdrawalId={}", event.getEventId(),
+                    event.getSourceId());
 
             WithdrawalData withdrawalData = getWithdrawalData(event);
             withdrawalData.setFee(CashFlowUtil.getFistfulFee(postings));
 
             withdrawalDao.save(withdrawalData);
 
-            log.info("WithdrawalTransferCreated has been saved: eventId={}, withdrawalId={}", event.getEventId(), event.getSourceId());
+            log.info("WithdrawalTransferCreated has been saved: eventId={}, withdrawalId={}", event.getEventId(),
+                    event.getSourceId());
         } catch (DaoException ex) {
             throw new StorageException(ex);
         }
@@ -59,7 +61,8 @@ public class WithdrawalTransferCreatedEventHandler implements WithdrawalEventHan
         WithdrawalData withdrawalData = withdrawalDao.get(event.getSourceId());
 
         if (withdrawalData == null) {
-            throw new NotFoundException(String.format("Withdrawal with withdrawalId='%s' not found", event.getSourceId()));
+            throw new NotFoundException(
+                    String.format("Withdrawal with withdrawalId='%s' not found", event.getSourceId()));
         }
 
         return withdrawalData;
