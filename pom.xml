@@ -18,9 +18,6 @@
     <description>Fistful-magista</description>
 
     <properties>
-        <lombok.version>1.18.4</lombok.version>
-        <hikari.version>3.1.0</hikari.version>
-        <!---->
         <server.port>8022</server.port>
         <management.port>8023</management.port>
         <exposed.ports>${server.port} ${management.port}</exposed.ports>
@@ -29,7 +26,6 @@
         <dockerfile.registry>${env.REGISTRY}</dockerfile.registry>
         <fistful-proto.version>1.114-7b3f125</fistful-proto.version>
         <eventstock.version>1.2.6</eventstock.version>
-        <kafka.common.lib.version>0.0.9</kafka.common.lib.version>
         <machinegun-proto.version>1.12-ebae56f</machinegun-proto.version>
         <sink-common-lib.version>0.0.4</sink-common-lib.version>
         <testcontainers.version>1.14.3</testcontainers.version>
