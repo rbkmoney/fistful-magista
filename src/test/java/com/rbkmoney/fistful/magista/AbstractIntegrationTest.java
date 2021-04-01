@@ -31,7 +31,9 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 @TestPropertySource(properties = {"fistful.polling.enabled=false"})
-@ContextConfiguration(classes = FistfulMagistaApplication.class, initializers = AbstractIntegrationTest.Initializer.class)
+@ContextConfiguration(
+        classes = FistfulMagistaApplication.class,
+        initializers = AbstractIntegrationTest.Initializer.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public abstract class AbstractIntegrationTest {
 

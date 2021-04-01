@@ -1,15 +1,15 @@
 info:
-  version: @project.version@
+  version: '@project.version@'
   stage: dev
 
 server:
-  port: @server.port@
+  port: '@server.port@'
 
 management:
   security:
     flag: false
   server:
-    port: @management.port@
+    port: '@management.port@'
   metrics:
     export:
       statsd:
@@ -31,19 +31,19 @@ management:
 
 spring:
   application:
-    name: @project.name@
+    name: '@project.name@'
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
     driver-class-name: org.postgresql.Driver
-    url: @db.url@
-    username: @db.user@
-    password: @db.password@
+    url: '@db.url@'
+    username: '@db.user@'
+    password: '@db.password@'
     hikari:
       idle-timeout: 30000
       maximum-pool-size: 3
   flyway:
     table: schema_version
-    schemas: @db.schema@
+    schemas: '@db.schema@'
   output:
     ansi:
       enabled: always

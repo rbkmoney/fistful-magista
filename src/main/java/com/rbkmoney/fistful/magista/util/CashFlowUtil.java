@@ -51,7 +51,7 @@ public class CashFlowUtil {
     }
 
     private static boolean isMerchantSettlement(com.rbkmoney.fistful.cashflow.CashFlowAccount cashFlowAccount) {
-        return cashFlowAccount.isSetMerchant() &&
-                cashFlowAccount.getMerchant() == MerchantCashFlowAccount.settlement;
+        return cashFlowAccount.isSetMerchant()
+                && cashFlowAccount.getMerchant() == MerchantCashFlowAccount.settlement;
     }
 }

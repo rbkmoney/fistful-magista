@@ -51,12 +51,12 @@ public class DepositAdjustmentCreatedHandler implements DepositEventHandler {
             LocalDateTime eventOccuredAt = TypeUtil.stringToLocalDateTime(change.getOccuredAt());
             DepositAdjustmentDataEventType eventType = DepositAdjustmentDataEventType.DEPOSIT_ADJUSTMENT_CREATED;
             LocalDateTime createdAt = TypeUtil.stringToLocalDateTime(adjustment.getCreatedAt());
-            LocalDateTime operationTimestamp = TypeUtil.stringToLocalDateTime(adjustment.getOperationTimestamp());
+
+
+            log.info("Start deposit adjustment created handling, eventId={}, depositId={}, adjustmentId={}", eventId,
+                    depositId, adjustmentId);
 
             DepositData depositData = depositDao.get(depositId);
-
-            log.info("Start deposit adjustment created handling, eventId={}, depositId={}, adjustmentId={}", eventId, depositId, adjustmentId);
-
             DepositAdjustmentData depositAdjustmentData = new DepositAdjustmentData();
             initEventFields(depositAdjustmentData, eventId, eventCreatedAt, eventOccuredAt, eventType);
             depositAdjustmentData.setCreatedAt(createdAt);
@@ -72,6 +72,7 @@ public class DepositAdjustmentCreatedHandler implements DepositEventHandler {
             depositAdjustmentData.setIdentityId(depositData.getIdentityId());
             depositAdjustmentData.setPartyRevision(adjustment.getPartyRevision());
             depositAdjustmentData.setDomainRevision(adjustment.getDomainRevision());
+            LocalDateTime operationTimestamp = TypeUtil.stringToLocalDateTime(adjustment.getOperationTimestamp());
             depositAdjustmentData.setOperationTimestamp(operationTimestamp);
 
             depositAdjustmentDao.save(depositAdjustmentData)
@@ -84,7 +85,8 @@ public class DepositAdjustmentCreatedHandler implements DepositEventHandler {
             if (adjustment.getChangesPlan().isSetNewStatus()) {
                 Status status = adjustment.getChangesPlan().getNewStatus().getNewStatus();
 
-                initEventFields(depositData, eventId, eventCreatedAt, eventOccuredAt, DepositEventType.DEPOSIT_STATUS_CHANGED);
+                initEventFields(depositData, eventId, eventCreatedAt, eventOccuredAt,
+                        DepositEventType.DEPOSIT_STATUS_CHANGED);
                 depositData.setDepositStatus(TBaseUtil.unionFieldToEnum(status, DepositStatus.class));
 
                 depositDao.save(depositData);
@@ -105,7 +107,8 @@ public class DepositAdjustmentCreatedHandler implements DepositEventHandler {
 
             depositAdjustmentData.setAmount(amount);
             depositAdjustmentData.setFee(CashFlowUtil.getFistfulFee(cashFlow.getNewCashFlow().getPostings()));
-            depositAdjustmentData.setProviderFee(CashFlowUtil.getFistfulProviderFee(cashFlow.getNewCashFlow().getPostings()));
+            depositAdjustmentData
+                    .setProviderFee(CashFlowUtil.getFistfulProviderFee(cashFlow.getNewCashFlow().getPostings()));
             depositAdjustmentData.setCurrencyCode(currCode);
         }
     }

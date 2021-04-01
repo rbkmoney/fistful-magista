@@ -1,1 +1,1 @@
-# wallets-magista
+# fistful-magista

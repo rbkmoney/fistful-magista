@@ -136,7 +136,8 @@ public class DepositRevertFunctionTest extends AbstractIntegrationTest {
 
     @Test
     public void testIfNotPresentDepositReverts() {
-        String json = "{'query': {'deposit_reverts': {'party_id': '6954b4d1-f39f-4cc1-8843-eae834e6f849','identity_id': 'nuda'}}}";
+        String json = "{'query': {'deposit_reverts': {'party_id': " +
+                "'6954b4d1-f39f-4cc1-8843-eae834e6f849','identity_id': 'nuda'}}}";
         StatResponse statResponse = queryProcessor.processQuery(new StatRequest(json));
         assertEquals(0, statResponse.getData().getDepositReverts().size());
     }

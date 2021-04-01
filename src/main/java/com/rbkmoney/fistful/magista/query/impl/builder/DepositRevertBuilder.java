@@ -16,10 +16,14 @@ import java.util.List;
 
 public class DepositRevertBuilder extends AbstractQueryBuilder {
 
-    private DepositRevertValidator validator = new DepositRevertValidator();
+    private final DepositRevertValidator validator = new DepositRevertValidator();
 
     @Override
-    public Query buildQuery(List<QueryPart> queryParts, String continuationToken, QueryPart parentQueryPart, QueryBuilder baseBuilder) throws QueryBuilderException {
+    public Query buildQuery(
+            List<QueryPart> queryParts,
+            String continuationToken,
+            QueryPart parentQueryPart,
+            QueryBuilder baseBuilder) throws QueryBuilderException {
         Query resultQuery = buildSingleQuery(
                 DepositRevertFunction.getMainDescriptor(),
                 queryParts,
@@ -42,7 +46,9 @@ public class DepositRevertBuilder extends AbstractQueryBuilder {
                 getParameters(queryPart.getParent()),
                 queries
         );
-        return DepositRevertFunction.createFunction(queryPart.getDescriptor(), queryPart.getParameters(), continuationToken, compositeQuery);
+        return DepositRevertFunction
+                .createFunction(queryPart.getDescriptor(), queryPart.getParameters(), continuationToken,
+                        compositeQuery);
     }
 
     @Override

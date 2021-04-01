@@ -43,7 +43,8 @@ public class DepositStatusChangedHandler implements DepositEventHandler {
                     eventId, depositId, status);
 
             DepositData depositData = depositDao.get(depositId);
-            initEventFields(depositData, eventId, eventCreatedAt, eventOccuredAt, DepositEventType.DEPOSIT_STATUS_CHANGED);
+            initEventFields(depositData, eventId, eventCreatedAt, eventOccuredAt,
+                    DepositEventType.DEPOSIT_STATUS_CHANGED);
             depositData.setDepositStatus(TBaseUtil.unionFieldToEnum(status, DepositStatus.class));
 
             depositDao.save(depositData);

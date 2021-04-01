@@ -6,19 +6,16 @@ import com.rbkmoney.magista.dsl.*;
 import com.rbkmoney.magista.dsl.builder.QueryBuilder;
 import com.rbkmoney.magista.dsl.parser.QueryParser;
 import com.rbkmoney.magista.dsl.parser.QueryPart;
+import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
+@RequiredArgsConstructor
 public class QueryProcessorImpl implements QueryProcessor<StatRequest, StatResponse> {
-    private QueryParser<String> sourceParser;
-    private QueryBuilder queryBuilder;
-    private QueryContextFactory queryContextFactory;
 
-    public QueryProcessorImpl(QueryParser<String> sourceParser, QueryBuilder queryBuilder, QueryContextFactory queryContextFactory) {
-        this.sourceParser = sourceParser;
-        this.queryBuilder = queryBuilder;
-        this.queryContextFactory = queryContextFactory;
-    }
+    private final QueryParser<String> sourceParser;
+    private final QueryBuilder queryBuilder;
+    private final QueryContextFactory queryContextFactory;
 
     @Override
     public StatResponse processQuery(StatRequest source) throws BadTokenException, QueryProcessingException {
@@ -27,6 +24,7 @@ public class QueryProcessorImpl implements QueryProcessor<StatRequest, StatRespo
         QueryContext queryContext = queryContextFactory.getContext();
         QueryResult queryResult = query.execute(queryContext);
         Object result = queryResult.getCollectedStream();
+
         if (result instanceof StatResponse) {
             return (StatResponse) result;
         } else {

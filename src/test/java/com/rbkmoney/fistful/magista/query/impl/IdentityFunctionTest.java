@@ -309,7 +309,8 @@ public class IdentityFunctionTest extends AbstractIntegrationTest {
 
     @Test
     public void testIfNotPresent() {
-        String json = "{'query': {'identities': {'party_id': '6954b4d1-f39f-4cc1-8843-eae834e6f849','identity_id': 'kekislav'}}}";
+        String json = "{'query': {'identities': {'party_id': " +
+                "'6954b4d1-f39f-4cc1-8843-eae834e6f849','identity_id': 'kekislav'}}}";
         StatResponse statResponse = queryProcessor.processQuery(new StatRequest(json));
         assertEquals(0, statResponse.getData().getIdentities().size());
     }

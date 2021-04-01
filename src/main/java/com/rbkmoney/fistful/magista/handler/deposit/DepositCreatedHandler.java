@@ -42,11 +42,9 @@ public class DepositCreatedHandler implements DepositEventHandler {
             String depositId = event.getSourceId();
             LocalDateTime eventCreatedAt = TypeUtil.stringToLocalDateTime(event.getCreatedAt());
             LocalDateTime eventOccuredAt = TypeUtil.stringToLocalDateTime(change.getOccuredAt());
-            Cash cash = deposit.getBody();
 
             log.info("Start deposit created handling: eventId={}, depositId={}", eventId, depositId);
 
-            WalletData walletData = getWallet(deposit);
 
             DepositData depositData = new DepositData();
             initEventFields(depositData, eventId, eventCreatedAt, eventOccuredAt, DepositEventType.DEPOSIT_CREATED);
@@ -54,6 +52,8 @@ public class DepositCreatedHandler implements DepositEventHandler {
             depositData.setWalletId(deposit.getWalletId());
             depositData.setDepositId(depositId);
             depositData.setDepositStatus(DepositStatus.pending);
+            WalletData walletData = getWallet(deposit);
+            Cash cash = deposit.getBody();
             depositData.setAmount(cash.getAmount());
             depositData.setCurrencyCode(cash.getCurrency().getSymbolicCode());
             depositData.setIdentityId(walletData.getIdentityId());

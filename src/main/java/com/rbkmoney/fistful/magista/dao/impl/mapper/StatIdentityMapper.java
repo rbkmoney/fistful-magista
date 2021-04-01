@@ -19,7 +19,8 @@ public class StatIdentityMapper implements RowMapper<Map.Entry<Long, StatIdentit
         StatIdentity identity = new StatIdentity();
         identity.setId(rs.getString(IDENTITY_DATA.IDENTITY_ID.getName()));
         identity.setName(rs.getString(IDENTITY_DATA.NAME.getName()));
-        identity.setCreatedAt(TypeUtil.temporalToString(rs.getObject(IDENTITY_DATA.CREATED_AT.getName(), LocalDateTime.class)));
+        identity.setCreatedAt(
+                TypeUtil.temporalToString(rs.getObject(IDENTITY_DATA.CREATED_AT.getName(), LocalDateTime.class)));
         identity.setProvider(rs.getString(IDENTITY_DATA.IDENTITY_PROVIDER_ID.getName()));
         identity.setIdentityClass(rs.getString(IDENTITY_DATA.IDENTITY_CLASS_ID.getName()));
         identity.setIdentityLevel(rs.getString(IDENTITY_DATA.IDENTITY_LEVEL_ID.getName()));

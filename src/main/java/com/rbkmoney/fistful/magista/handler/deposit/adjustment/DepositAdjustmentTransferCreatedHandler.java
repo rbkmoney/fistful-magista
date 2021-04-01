@@ -40,26 +40,27 @@ public class DepositAdjustmentTransferCreatedHandler implements DepositEventHand
             Transfer transfer = change.getChange().getAdjustment()
                     .getPayload().getTransfer()
                     .getPayload().getCreated().getTransfer();
-            List<FinalCashFlowPosting> postings = transfer.getCashflow().getPostings();
 
             long eventId = event.getEventId();
             String depositId = event.getSourceId();
             String adjustmentId = change.getChange().getAdjustment().getId();
             LocalDateTime eventCreatedAt = TypeUtil.stringToLocalDateTime(event.getCreatedAt());
             LocalDateTime eventOccuredAt = TypeUtil.stringToLocalDateTime(change.getOccuredAt());
-            DepositAdjustmentDataEventType eventType = DepositAdjustmentDataEventType.DEPOSIT_ADJUSTMENT_TRANSFER_CREATED;
+            DepositAdjustmentDataEventType eventType =
+                    DepositAdjustmentDataEventType.DEPOSIT_ADJUSTMENT_TRANSFER_CREATED;
 
             log.info("Start deposit adjustment transfer created handling, eventId={}, depositId={}, adjustmentId={}",
                     eventId, depositId, adjustmentId);
 
+            List<FinalCashFlowPosting> postings = transfer.getCashflow().getPostings();
             DepositAdjustmentData depositAdjustmentData = depositAdjustmentDao.get(depositId, adjustmentId);
             initEventFields(depositAdjustmentData, eventId, eventCreatedAt, eventOccuredAt, eventType);
             depositAdjustmentData.setTransferStatus(DepositTransferStatus.created);
             depositAdjustmentData.setFee(CashFlowUtil.getFistfulFee(postings));
             depositAdjustmentData.setProviderFee(CashFlowUtil.getFistfulProviderFee(postings));
 
-            depositAdjustmentDao.save(depositAdjustmentData).
-                    ifPresentOrElse(
+            depositAdjustmentDao.save(depositAdjustmentData)
+                    .ifPresentOrElse(
                             dbContractId -> log.info("Deposit adjustment transfer created has been saved, " +
                                     "eventId={}, depositId={}, adjustmentId={}", eventId, depositId, adjustmentId),
                             () -> log.info("Deposit adjustment transfer created has NOT been saved, " +

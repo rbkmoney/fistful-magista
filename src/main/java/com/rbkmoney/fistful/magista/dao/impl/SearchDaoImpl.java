@@ -94,18 +94,25 @@ public class SearchDaoImpl extends AbstractGenericDao implements SearchDao {
                         appendDateTimeRangeConditions(
                                 appendConditions(DSL.trueCondition(), Operator.AND,
                                         new ConditionParameterSource()
-                                                .addValue(WITHDRAWAL_DATA.PARTY_ID, Optional.ofNullable(parameters.getPartyId())
-                                                        .map(UUID::fromString)
-                                                        .orElse(null), EQUALS)
+                                                .addValue(WITHDRAWAL_DATA.PARTY_ID,
+                                                        Optional.ofNullable(parameters.getPartyId())
+                                                                .map(UUID::fromString)
+                                                                .orElse(null), EQUALS)
                                                 .addValue(WITHDRAWAL_DATA.WALLET_ID, parameters.getWalletId(), EQUALS)
-                                                .addValue(WITHDRAWAL_DATA.WITHDRAWAL_ID, parameters.getWithdrawalId(), EQUALS)
-                                                .addValue(WITHDRAWAL_DATA.IDENTITY_ID, parameters.getIdentityId(), EQUALS)
-                                                .addValue(WITHDRAWAL_DATA.DESTINATION_ID, parameters.getDestinationId(), EQUALS)
+                                                .addValue(WITHDRAWAL_DATA.WITHDRAWAL_ID, parameters.getWithdrawalId(),
+                                                        EQUALS)
+                                                .addValue(WITHDRAWAL_DATA.IDENTITY_ID, parameters.getIdentityId(),
+                                                        EQUALS)
+                                                .addValue(WITHDRAWAL_DATA.DESTINATION_ID, parameters.getDestinationId(),
+                                                        EQUALS)
                                                 .addValue(WITHDRAWAL_DATA.AMOUNT, parameters.getAmountFrom(), GREATER)
                                                 .addValue(WITHDRAWAL_DATA.AMOUNT, parameters.getAmountTo(), LESS)
-                                                .addValue(WITHDRAWAL_DATA.CURRENCY_CODE, parameters.getCurrencyCode(), EQUALS)
-                                                .addValue(WITHDRAWAL_DATA.WITHDRAWAL_STATUS, parameters.getStatus(), EQUALS)
-                                                .addValue(WITHDRAWAL_DATA.EXTERNAL_ID, parameters.getExternalId(), EQUALS)
+                                                .addValue(WITHDRAWAL_DATA.CURRENCY_CODE, parameters.getCurrencyCode(),
+                                                        EQUALS)
+                                                .addValue(WITHDRAWAL_DATA.WITHDRAWAL_STATUS, parameters.getStatus(),
+                                                        EQUALS)
+                                                .addValue(WITHDRAWAL_DATA.EXTERNAL_ID, parameters.getExternalId(),
+                                                        EQUALS)
                                                 .addValue(WITHDRAWAL_DATA.ID, fromId, LESS)),
                                 WITHDRAWAL_DATA.CREATED_AT,
                                 fromTime,
@@ -135,14 +142,22 @@ public class SearchDaoImpl extends AbstractGenericDao implements SearchDao {
                                 appendConditions(DSL.trueCondition(), Operator.AND,
                                         new ConditionParameterSource()
                                                 .addValue(DEPOSIT_DATA.PARTY_ID, parameters.getPartyId(), EQUALS)
-                                                .addValue(DEPOSIT_DATA.DEPOSIT_ID, parameters.getDepositId().orElse(null), EQUALS)
-                                                .addValue(DEPOSIT_DATA.IDENTITY_ID, parameters.getIdentityId().orElse(null), EQUALS)
-                                                .addValue(DEPOSIT_DATA.WALLET_ID, parameters.getWalletId().orElse(null), EQUALS)
-                                                .addValue(DEPOSIT_DATA.SOURCE_ID, parameters.getSourceId().orElse(null), EQUALS)
-                                                .addValue(DEPOSIT_DATA.AMOUNT, parameters.getAmountFrom().orElse(null), GREATER_OR_EQUAL)
-                                                .addValue(DEPOSIT_DATA.AMOUNT, parameters.getAmountTo().orElse(null), LESS_OR_EQUAL)
-                                                .addValue(DEPOSIT_DATA.CURRENCY_CODE, parameters.getCurrencyCode().orElse(null), EQUALS)
-                                                .addValue(DEPOSIT_DATA.DEPOSIT_STATUS, parameters.getStatus().orElse(null), EQUALS)
+                                                .addValue(DEPOSIT_DATA.DEPOSIT_ID,
+                                                        parameters.getDepositId().orElse(null), EQUALS)
+                                                .addValue(DEPOSIT_DATA.IDENTITY_ID,
+                                                        parameters.getIdentityId().orElse(null), EQUALS)
+                                                .addValue(DEPOSIT_DATA.WALLET_ID, parameters.getWalletId().orElse(null),
+                                                        EQUALS)
+                                                .addValue(DEPOSIT_DATA.SOURCE_ID, parameters.getSourceId().orElse(null),
+                                                        EQUALS)
+                                                .addValue(DEPOSIT_DATA.AMOUNT, parameters.getAmountFrom().orElse(null),
+                                                        GREATER_OR_EQUAL)
+                                                .addValue(DEPOSIT_DATA.AMOUNT, parameters.getAmountTo().orElse(null),
+                                                        LESS_OR_EQUAL)
+                                                .addValue(DEPOSIT_DATA.CURRENCY_CODE,
+                                                        parameters.getCurrencyCode().orElse(null), EQUALS)
+                                                .addValue(DEPOSIT_DATA.DEPOSIT_STATUS,
+                                                        parameters.getStatus().orElse(null), EQUALS)
                                                 .addValue(DEPOSIT_DATA.ID, fromId, LESS)
                                 ),
                                 DEPOSIT_DATA.CREATED_AT,
@@ -157,27 +172,43 @@ public class SearchDaoImpl extends AbstractGenericDao implements SearchDao {
     }
 
     @Override
-    public Collection<Map.Entry<Long, StatIdentity>> getIdentities(IdentityParameters parameters, LocalDateTime fromTime, LocalDateTime toTime, Long fromId, int limit) throws DaoException {
+    public Collection<Map.Entry<Long, StatIdentity>> getIdentities(IdentityParameters parameters,
+                                                                   LocalDateTime fromTime, LocalDateTime toTime,
+                                                                   Long fromId, int limit) throws DaoException {
         Query query = getDslContext()
                 .select()
-                .from(IDENTITY_DATA.leftJoin(CHALLENGE_DATA).on(IDENTITY_DATA.IDENTITY_ID.eq(CHALLENGE_DATA.IDENTITY_ID)))
+                .from(IDENTITY_DATA.leftJoin(CHALLENGE_DATA)
+                        .on(IDENTITY_DATA.IDENTITY_ID.eq(CHALLENGE_DATA.IDENTITY_ID)))
                 .where(
                         appendDateTimeRangeConditions(
                                 appendConditions(DSL.trueCondition(), Operator.AND,
                                         new ConditionParameterSource()
                                                 .addValue(IDENTITY_DATA.PARTY_ID, parameters.getPartyId(), EQUALS)
-                                                .addValue(IDENTITY_DATA.PARTY_CONTRACT_ID, parameters.getPartyContractId().orElse(null), EQUALS)
-                                                .addValue(IDENTITY_DATA.IDENTITY_ID, parameters.getIdentityId().orElse(null), EQUALS)
-                                                .addValue(IDENTITY_DATA.IDENTITY_PROVIDER_ID, parameters.getIdentityProviderId().orElse(null), EQUALS)
-                                                .addValue(IDENTITY_DATA.IDENTITY_CLASS_ID, parameters.getIdentityClassId().orElse(null), EQUALS)
-                                                .addValue(IDENTITY_DATA.IDENTITY_EFFECTIVE_CHALLENGE_ID, parameters.getIdentityEffectiveChallengeId().orElse(null), EQUALS)
-                                                .addValue(IDENTITY_DATA.IDENTITY_LEVEL_ID, parameters.getIdentityLevelId().orElse(null), EQUALS)
+                                                .addValue(IDENTITY_DATA.PARTY_CONTRACT_ID,
+                                                        parameters.getPartyContractId().orElse(null), EQUALS)
+                                                .addValue(IDENTITY_DATA.IDENTITY_ID,
+                                                        parameters.getIdentityId().orElse(null), EQUALS)
+                                                .addValue(IDENTITY_DATA.IDENTITY_PROVIDER_ID,
+                                                        parameters.getIdentityProviderId().orElse(null), EQUALS)
+                                                .addValue(IDENTITY_DATA.IDENTITY_CLASS_ID,
+                                                        parameters.getIdentityClassId().orElse(null), EQUALS)
+                                                .addValue(IDENTITY_DATA.IDENTITY_EFFECTIVE_CHALLENGE_ID,
+                                                        parameters.getIdentityEffectiveChallengeId().orElse(null),
+                                                        EQUALS)
+                                                .addValue(IDENTITY_DATA.IDENTITY_LEVEL_ID,
+                                                        parameters.getIdentityLevelId().orElse(null), EQUALS)
                                                 .addValue(IDENTITY_DATA.ID, fromId, LESS)
-                                                .addValue(CHALLENGE_DATA.CHALLENGE_ID, parameters.getChallengeId().orElse(null), EQUALS)
-                                                .addValue(CHALLENGE_DATA.CHALLENGE_CLASS_ID, parameters.getChallengeClassId().orElse(null), EQUALS)
-                                                .addValue(CHALLENGE_DATA.CHALLENGE_STATUS, parameters.getChallengeStatus().orElse(null), EQUALS)
-                                                .addValue(CHALLENGE_DATA.CHALLENGE_RESOLUTION, parameters.getChallengeResolution().orElse(null), EQUALS)
-                                                .addValue(CHALLENGE_DATA.CHALLENGE_VALID_UNTIL, TypeUtil.toLocalDateTime(parameters.getChallengeValidUntil()), GREATER_OR_EQUAL)
+                                                .addValue(CHALLENGE_DATA.CHALLENGE_ID,
+                                                        parameters.getChallengeId().orElse(null), EQUALS)
+                                                .addValue(CHALLENGE_DATA.CHALLENGE_CLASS_ID,
+                                                        parameters.getChallengeClassId().orElse(null), EQUALS)
+                                                .addValue(CHALLENGE_DATA.CHALLENGE_STATUS,
+                                                        parameters.getChallengeStatus().orElse(null), EQUALS)
+                                                .addValue(CHALLENGE_DATA.CHALLENGE_RESOLUTION,
+                                                        parameters.getChallengeResolution().orElse(null), EQUALS)
+                                                .addValue(CHALLENGE_DATA.CHALLENGE_VALID_UNTIL,
+                                                        TypeUtil.toLocalDateTime(parameters.getChallengeValidUntil()),
+                                                        GREATER_OR_EQUAL)
 
                                 ),
                                 IDENTITY_DATA.CREATED_AT,
@@ -192,7 +223,10 @@ public class SearchDaoImpl extends AbstractGenericDao implements SearchDao {
     }
 
     @Override
-    public Collection<Map.Entry<Long, StatDepositRevert>> getDepositReverts(DepositRevertParameters parameters, LocalDateTime fromTime, LocalDateTime toTime, Long fromId, int limit) throws DaoException {
+    public Collection<Map.Entry<Long, StatDepositRevert>> getDepositReverts(DepositRevertParameters parameters,
+                                                                            LocalDateTime fromTime,
+                                                                            LocalDateTime toTime, Long fromId,
+                                                                            int limit) throws DaoException {
         Query query = getDslContext()
                 .select()
                 .from(DEPOSIT_REVERT_DATA)
@@ -201,15 +235,24 @@ public class SearchDaoImpl extends AbstractGenericDao implements SearchDao {
                                 appendConditions(DSL.trueCondition(), Operator.AND,
                                         new ConditionParameterSource()
                                                 .addValue(DEPOSIT_REVERT_DATA.PARTY_ID, parameters.getPartyId(), EQUALS)
-                                                .addValue(DEPOSIT_REVERT_DATA.IDENTITY_ID, parameters.getIdentityId().orElse(null), EQUALS)
-                                                .addValue(DEPOSIT_REVERT_DATA.SOURCE_ID, parameters.getSourceId().orElse(null), EQUALS)
-                                                .addValue(DEPOSIT_REVERT_DATA.WALLET_ID, parameters.getWalletId().orElse(null), EQUALS)
-                                                .addValue(DEPOSIT_REVERT_DATA.DEPOSIT_ID, parameters.getDepositId().orElse(null), EQUALS)
-                                                .addValue(DEPOSIT_REVERT_DATA.REVERT_ID, parameters.getRevertId().orElse(null), EQUALS)
-                                                .addValue(DEPOSIT_REVERT_DATA.AMOUNT, parameters.getAmountFrom().orElse(null), GREATER_OR_EQUAL)
-                                                .addValue(DEPOSIT_REVERT_DATA.AMOUNT, parameters.getAmountTo().orElse(null), LESS_OR_EQUAL)
-                                                .addValue(DEPOSIT_REVERT_DATA.CURRENCY_CODE, parameters.getCurrencyCode().orElse(null), EQUALS)
-                                                .addValue(DEPOSIT_REVERT_DATA.STATUS, parameters.getStatus().orElse(null), EQUALS)
+                                                .addValue(DEPOSIT_REVERT_DATA.IDENTITY_ID,
+                                                        parameters.getIdentityId().orElse(null), EQUALS)
+                                                .addValue(DEPOSIT_REVERT_DATA.SOURCE_ID,
+                                                        parameters.getSourceId().orElse(null), EQUALS)
+                                                .addValue(DEPOSIT_REVERT_DATA.WALLET_ID,
+                                                        parameters.getWalletId().orElse(null), EQUALS)
+                                                .addValue(DEPOSIT_REVERT_DATA.DEPOSIT_ID,
+                                                        parameters.getDepositId().orElse(null), EQUALS)
+                                                .addValue(DEPOSIT_REVERT_DATA.REVERT_ID,
+                                                        parameters.getRevertId().orElse(null), EQUALS)
+                                                .addValue(DEPOSIT_REVERT_DATA.AMOUNT,
+                                                        parameters.getAmountFrom().orElse(null), GREATER_OR_EQUAL)
+                                                .addValue(DEPOSIT_REVERT_DATA.AMOUNT,
+                                                        parameters.getAmountTo().orElse(null), LESS_OR_EQUAL)
+                                                .addValue(DEPOSIT_REVERT_DATA.CURRENCY_CODE,
+                                                        parameters.getCurrencyCode().orElse(null), EQUALS)
+                                                .addValue(DEPOSIT_REVERT_DATA.STATUS,
+                                                        parameters.getStatus().orElse(null), EQUALS)
                                                 .addValue(DEPOSIT_REVERT_DATA.ID, fromId, LESS)
                                 ),
                                 DEPOSIT_REVERT_DATA.CREATED_AT,
@@ -224,7 +267,9 @@ public class SearchDaoImpl extends AbstractGenericDao implements SearchDao {
     }
 
     @Override
-    public Collection<Map.Entry<Long, StatDepositAdjustment>> getDepositAdjustments(DepositAdjustmentParameters parameters, LocalDateTime fromTime, LocalDateTime toTime, Long fromId, int limit) throws DaoException {
+    public Collection<Map.Entry<Long, StatDepositAdjustment>> getDepositAdjustments(
+            DepositAdjustmentParameters parameters, LocalDateTime fromTime, LocalDateTime toTime, Long fromId,
+            int limit) throws DaoException {
         Query query = getDslContext()
                 .select()
                 .from(DEPOSIT_ADJUSTMENT_DATA)
@@ -232,17 +277,28 @@ public class SearchDaoImpl extends AbstractGenericDao implements SearchDao {
                         appendDateTimeRangeConditions(
                                 appendConditions(DSL.trueCondition(), Operator.AND,
                                         new ConditionParameterSource()
-                                                .addValue(DEPOSIT_ADJUSTMENT_DATA.PARTY_ID, parameters.getPartyId(), EQUALS)
-                                                .addValue(DEPOSIT_ADJUSTMENT_DATA.IDENTITY_ID, parameters.getIdentityId().orElse(null), EQUALS)
-                                                .addValue(DEPOSIT_ADJUSTMENT_DATA.SOURCE_ID, parameters.getSourceId().orElse(null), EQUALS)
-                                                .addValue(DEPOSIT_ADJUSTMENT_DATA.WALLET_ID, parameters.getWalletId().orElse(null), EQUALS)
-                                                .addValue(DEPOSIT_ADJUSTMENT_DATA.DEPOSIT_ID, parameters.getDepositId().orElse(null), EQUALS)
-                                                .addValue(DEPOSIT_ADJUSTMENT_DATA.ADJUSTMENT_ID, parameters.getAdjustmentId().orElse(null), EQUALS)
-                                                .addValue(DEPOSIT_ADJUSTMENT_DATA.AMOUNT, parameters.getAmountFrom().orElse(null), GREATER_OR_EQUAL)
-                                                .addValue(DEPOSIT_ADJUSTMENT_DATA.AMOUNT, parameters.getAmountTo().orElse(null), LESS_OR_EQUAL)
-                                                .addValue(DEPOSIT_ADJUSTMENT_DATA.CURRENCY_CODE, parameters.getCurrencyCode().orElse(null), EQUALS)
-                                                .addValue(DEPOSIT_ADJUSTMENT_DATA.STATUS, parameters.getDepositAdjustmentStatus().orElse(null), EQUALS)
-                                                .addValue(DEPOSIT_ADJUSTMENT_DATA.DEPOSIT_STATUS, parameters.getDepositStatus().orElse(null), EQUALS)
+                                                .addValue(DEPOSIT_ADJUSTMENT_DATA.PARTY_ID, parameters.getPartyId(),
+                                                        EQUALS)
+                                                .addValue(DEPOSIT_ADJUSTMENT_DATA.IDENTITY_ID,
+                                                        parameters.getIdentityId().orElse(null), EQUALS)
+                                                .addValue(DEPOSIT_ADJUSTMENT_DATA.SOURCE_ID,
+                                                        parameters.getSourceId().orElse(null), EQUALS)
+                                                .addValue(DEPOSIT_ADJUSTMENT_DATA.WALLET_ID,
+                                                        parameters.getWalletId().orElse(null), EQUALS)
+                                                .addValue(DEPOSIT_ADJUSTMENT_DATA.DEPOSIT_ID,
+                                                        parameters.getDepositId().orElse(null), EQUALS)
+                                                .addValue(DEPOSIT_ADJUSTMENT_DATA.ADJUSTMENT_ID,
+                                                        parameters.getAdjustmentId().orElse(null), EQUALS)
+                                                .addValue(DEPOSIT_ADJUSTMENT_DATA.AMOUNT,
+                                                        parameters.getAmountFrom().orElse(null), GREATER_OR_EQUAL)
+                                                .addValue(DEPOSIT_ADJUSTMENT_DATA.AMOUNT,
+                                                        parameters.getAmountTo().orElse(null), LESS_OR_EQUAL)
+                                                .addValue(DEPOSIT_ADJUSTMENT_DATA.CURRENCY_CODE,
+                                                        parameters.getCurrencyCode().orElse(null), EQUALS)
+                                                .addValue(DEPOSIT_ADJUSTMENT_DATA.STATUS,
+                                                        parameters.getDepositAdjustmentStatus().orElse(null), EQUALS)
+                                                .addValue(DEPOSIT_ADJUSTMENT_DATA.DEPOSIT_STATUS,
+                                                        parameters.getDepositStatus().orElse(null), EQUALS)
                                                 .addValue(DEPOSIT_ADJUSTMENT_DATA.ID, fromId, LESS)
                                 ),
                                 DEPOSIT_ADJUSTMENT_DATA.CREATED_AT,

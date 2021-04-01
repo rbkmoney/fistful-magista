@@ -11,7 +11,8 @@ import com.rbkmoney.magista.dsl.*;
 import java.util.Collection;
 import java.util.Map;
 
-public class DepositDataFunction extends PagedBaseFunction<Map.Entry<Long, StatDeposit>, Collection<Map.Entry<Long, StatDeposit>>> {
+public class DepositDataFunction
+        extends PagedBaseFunction<Map.Entry<Long, StatDeposit>, Collection<Map.Entry<Long, StatDeposit>>> {
 
     private static final String FUNC_NAME = DepositFunction.getMainDescriptor() + "_data";
 
@@ -24,9 +25,13 @@ public class DepositDataFunction extends PagedBaseFunction<Map.Entry<Long, StatD
     }
 
     @Override
-    public QueryResult<Map.Entry<Long, StatDeposit>, Collection<Map.Entry<Long, StatDeposit>>> execute(QueryContext context) throws QueryExecutionException {
+    public QueryResult<Map.Entry<Long, StatDeposit>, Collection<Map.Entry<Long, StatDeposit>>> execute(
+            QueryContext context) throws QueryExecutionException {
         FunctionQueryContext functionContext = getContext(context);
-        DepositParameters parameters = new DepositParameters(getQueryParameters(), getQueryParameters().getDerivedParameters());
+        DepositParameters parameters = new DepositParameters(
+                getQueryParameters(),
+                getQueryParameters().getDerivedParameters());
+
         try {
             Collection<Map.Entry<Long, StatDeposit>> result = functionContext.getSearchDao().getDeposits(
                     parameters,

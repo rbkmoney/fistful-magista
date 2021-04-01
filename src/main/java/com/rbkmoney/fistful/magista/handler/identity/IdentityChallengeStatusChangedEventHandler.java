@@ -33,34 +33,40 @@ public class IdentityChallengeStatusChangedEventHandler implements IdentityEvent
     @Override
     public void handle(TimestampedChange change, MachineEvent event) {
         try {
-            var challengeStatus = change.getChange().getIdentityChallenge().getPayload().getStatusChanged();
 
-            log.info("Trying to handle IdentityChallengeStatusChanged: eventId={}, identityId={}", event.getEventId(), event.getSourceId());
+            log.info("Trying to handle IdentityChallengeStatusChanged: eventId={}, identityId={}", event.getEventId(),
+                    event.getSourceId());
 
             ChallengeData challengeData = getChallengeData(change, event);
             challengeData.setEventId(event.getEventId());
             challengeData.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
             challengeData.setEventOccurredAt(TypeUtil.stringToLocalDateTime(change.getOccuredAt()));
             challengeData.setEventType(ChallengeEventType.CHALLENGE_STATUS_CHANGED);
+            var challengeStatus = change.getChange().getIdentityChallenge().getPayload().getStatusChanged();
             challengeData.setChallengeStatus(TBaseUtil.unionFieldToEnum(challengeStatus, ChallengeStatus.class));
+
             if (challengeStatus.isSetCompleted()) {
                 ChallengeCompleted challengeCompleted = challengeStatus.getCompleted();
-                challengeData.setChallengeResolution(TypeUtil.toEnumField(challengeCompleted.getResolution().toString(), ChallengeResolution.class));
+                challengeData.setChallengeResolution(
+                        TypeUtil.toEnumField(challengeCompleted.getResolution().toString(), ChallengeResolution.class));
                 if (challengeCompleted.isSetValidUntil()) {
-                    challengeData.setChallengeValidUntil(TypeUtil.stringToLocalDateTime(challengeCompleted.getValidUntil()));
+                    challengeData
+                            .setChallengeValidUntil(TypeUtil.stringToLocalDateTime(challengeCompleted.getValidUntil()));
                 }
             }
 
             identityDao.save(challengeData);
 
-            log.info("IdentityChallengeStatusChanged has been saved, eventId={}, identityId={}", event.getEventId(), event.getSourceId());
+            log.info("IdentityChallengeStatusChanged has been saved, eventId={}, identityId={}", event.getEventId(),
+                    event.getSourceId());
         } catch (DaoException ex) {
             throw new StorageException(ex);
         }
     }
 
     private ChallengeData getChallengeData(TimestampedChange change, MachineEvent event) throws DaoException {
-        ChallengeData challengeData = identityDao.get(event.getSourceId(), change.getChange().getIdentityChallenge().getId());
+        ChallengeData challengeData =
+                identityDao.get(event.getSourceId(), change.getChange().getIdentityChallenge().getId());
         if (challengeData == null) {
             throw new NotFoundException(String.format("ChallengeData with identityId='%s', challengeId='%s' not found",
                     event.getSourceId(), change.getChange().getIdentityChallenge().getId()));

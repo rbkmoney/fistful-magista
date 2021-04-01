@@ -37,8 +37,6 @@ public class DepositTransferCreatedHandler implements DepositEventHandler {
     @Override
     public void handle(TimestampedChange change, MachineEvent event) {
         try {
-            List<FinalCashFlowPosting> postings = change.getChange().getTransfer()
-                    .getPayload().getCreated().getTransfer().getCashflow().getPostings();
 
             long eventId = event.getEventId();
             String depositId = event.getSourceId();
@@ -48,8 +46,15 @@ public class DepositTransferCreatedHandler implements DepositEventHandler {
             log.info("Start deposit transfer created handling: eventId={}, depositId={}, transferChange={}",
                     eventId, depositId, change.getChange().getTransfer());
 
+            List<FinalCashFlowPosting> postings = change.getChange().getTransfer()
+                    .getPayload().getCreated().getTransfer().getCashflow().getPostings();
             DepositData depositData = depositDao.get(event.getSourceId());
-            initEventFields(depositData, eventId, eventCreatedAt, eventOccuredAt, DepositEventType.DEPOSIT_TRANSFER_CREATED);
+            initEventFields(
+                    depositData,
+                    eventId,
+                    eventCreatedAt,
+                    eventOccuredAt,
+                    DepositEventType.DEPOSIT_TRANSFER_CREATED);
             depositData.setDepositTransferStatus(DepositTransferStatus.created);
             depositData.setFee(CashFlowUtil.getFistfulFee(postings));
             depositData.setProviderFee(CashFlowUtil.getFistfulProviderFee(postings));

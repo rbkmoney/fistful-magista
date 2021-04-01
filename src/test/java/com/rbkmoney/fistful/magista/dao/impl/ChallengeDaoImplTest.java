@@ -27,7 +27,9 @@ public class ChallengeDaoImplTest extends AbstractIntegrationTest {
 
     @Test
     public void testGetChallengeData() throws DaoException {
-        ChallengeData challengeDataGet = identityDao.get(this.challengeData.getIdentityId(), this.challengeData.getChallengeId());
+        ChallengeData challengeDataGet = identityDao.get(
+                this.challengeData.getIdentityId(),
+                this.challengeData.getChallengeId());
         assertEquals(challengeData.getChallengeClassId(), challengeDataGet.getChallengeClassId());
     }
 

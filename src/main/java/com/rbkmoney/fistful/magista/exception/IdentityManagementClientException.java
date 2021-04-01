@@ -16,7 +16,8 @@ public class IdentityManagementClientException extends RuntimeException {
         super(cause);
     }
 
-    public IdentityManagementClientException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+    public IdentityManagementClientException(String message, Throwable cause, boolean enableSuppression,
+                                             boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
     }
 }

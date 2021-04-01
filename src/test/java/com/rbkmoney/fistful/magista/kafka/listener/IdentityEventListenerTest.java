@@ -117,7 +117,7 @@ public class IdentityEventListenerTest extends AbstractListenerTest {
         String expected = "cls";
         TimestampedChange change = new TimestampedChange()
                 .setOccuredAt("2016-03-22T06:12:27Z")
-                .setChange(Change.identity_challenge(new ChallengeChange("id", ChallengeChangePayload.created(new Challenge(expected)))));
+                .setChange(getIdentityChallenge(expected));
 
         SinkEvent sinkEvent = sinkEvent(machineEvent(new ThriftSerializer<>(), change));
 
@@ -137,7 +137,7 @@ public class IdentityEventListenerTest extends AbstractListenerTest {
         // Given
         TimestampedChange change = new TimestampedChange()
                 .setOccuredAt("2016-03-22T06:12:27Z")
-                .setChange(Change.identity_challenge(new ChallengeChange("id", ChallengeChangePayload.status_changed(ChallengeStatus.completed(new ChallengeCompleted(ChallengeResolution.approved))))));
+                .setChange(Change.identity_challenge(new ChallengeChange("id", getApprovedStatus())));
 
         SinkEvent sinkEvent = sinkEvent(machineEvent(new ThriftSerializer<>(), change));
 
@@ -153,5 +153,15 @@ public class IdentityEventListenerTest extends AbstractListenerTest {
                 .save(challengeCaptor.capture());
         assertThat(challengeCaptor.getValue().getChallengeStatus())
                 .isEqualTo(com.rbkmoney.fistful.magista.domain.enums.ChallengeStatus.completed);
+    }
+
+    private Change getIdentityChallenge(String expected) {
+        return Change.identity_challenge(
+                new ChallengeChange("id", ChallengeChangePayload.created(new Challenge(expected))));
+    }
+
+    private ChallengeChangePayload getApprovedStatus() {
+        return ChallengeChangePayload
+                .status_changed(ChallengeStatus.completed(new ChallengeCompleted(ChallengeResolution.approved)));
     }
 }

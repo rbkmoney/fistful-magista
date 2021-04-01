@@ -28,7 +28,8 @@ public class IdentityEffectiveChallengeChangedEventHandler implements IdentityEv
     @Override
     public void handle(TimestampedChange change, MachineEvent event) {
         try {
-            log.info("Trying to handle IdentityEffectiveChallengeChanged: eventId={}, identityId={}", event.getEventId(), event.getSourceId());
+            log.info("Trying to handle IdentityEffectiveChallengeChanged: eventId={}, identityId={}",
+                    event.getEventId(), event.getSourceId());
 
             IdentityData identityData = getIdentityData(event);
             identityData.setEventId(event.getEventId());
@@ -39,7 +40,8 @@ public class IdentityEffectiveChallengeChangedEventHandler implements IdentityEv
 
             identityDao.save(identityData);
 
-            log.info("IdentityEffectiveChallengeChanged has been saved: eventId={}, identityId={}", event.getEventId(), event.getSourceId());
+            log.info("IdentityEffectiveChallengeChanged has been saved: eventId={}, identityId={}", event.getEventId(),
+                    event.getSourceId());
         } catch (DaoException ex) {
             throw new StorageException(ex);
         }

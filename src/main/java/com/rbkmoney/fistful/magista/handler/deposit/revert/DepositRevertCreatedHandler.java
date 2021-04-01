@@ -44,14 +44,13 @@ public class DepositRevertCreatedHandler implements DepositEventHandler {
             LocalDateTime eventCreatedAt = TypeUtil.stringToLocalDateTime(event.getCreatedAt());
             LocalDateTime eventOccuredAt = TypeUtil.stringToLocalDateTime(change.getOccuredAt());
             DepositRevertDataEventType eventType = DepositRevertDataEventType.DEPOSIT_REVERT_CREATED;
-            Cash cash = revert.getBody();
             LocalDateTime createdAt = TypeUtil.stringToLocalDateTime(revert.getCreatedAt());
 
-            DepositData depositData = depositDao.get(depositId);
 
             log.info("Start deposit revert created handling, eventId={}, depositId={}, revertId={}",
                     eventId, depositId, revertId);
 
+            DepositData depositData = depositDao.get(depositId);
             DepositRevertData depositRevertData = new DepositRevertData();
             initEventFields(depositRevertData, eventId, eventCreatedAt, eventOccuredAt, eventType);
             depositRevertData.setCreatedAt(createdAt);
@@ -59,6 +58,7 @@ public class DepositRevertCreatedHandler implements DepositEventHandler {
             depositRevertData.setWalletId(depositData.getWalletId());
             depositRevertData.setDepositId(depositId);
             depositRevertData.setRevertId(revertId);
+            Cash cash = revert.getBody();
             depositRevertData.setAmount(cash.getAmount());
             depositRevertData.setCurrencyCode(cash.getCurrency().getSymbolicCode());
             depositRevertData.setStatus(DepositRevertDataStatus.pending);
@@ -71,8 +71,9 @@ public class DepositRevertCreatedHandler implements DepositEventHandler {
             depositRevertData.setDomainRevision(revert.getDomainRevision());
 
             depositRevertDao.save(depositRevertData).ifPresentOrElse(
-                    dbContractId -> log.info("Deposit revert created has been saved, eventId={}, depositId={}, revertId={}",
-                            eventId, depositId, revertId),
+                    dbContractId -> log
+                            .info("Deposit revert created has been saved, eventId={}, depositId={}, revertId={}",
+                                    eventId, depositId, revertId),
                     () -> log.info("Deposit revert created has NOT been saved, eventId={}, depositId={}, revertId={}",
                             eventId, depositId, revertId));
         } catch (DaoException e) {
