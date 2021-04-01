@@ -28,8 +28,10 @@ public class DepositRevertDataFunction
     public QueryResult<Map.Entry<Long, StatDepositRevert>, Collection<Map.Entry<Long, StatDepositRevert>>> execute(
             QueryContext context) throws QueryExecutionException {
         FunctionQueryContext functionContext = getContext(context);
-        DepositRevertParameters parameters =
-                new DepositRevertParameters(getQueryParameters(), getQueryParameters().getDerivedParameters());
+        DepositRevertParameters parameters = new DepositRevertParameters(
+                getQueryParameters(),
+                getQueryParameters().getDerivedParameters());
+
         try {
             Collection<Map.Entry<Long, StatDepositRevert>> result = functionContext.getSearchDao().getDepositReverts(
                     parameters,

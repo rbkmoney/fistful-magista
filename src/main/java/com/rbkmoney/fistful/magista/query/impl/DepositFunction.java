@@ -17,9 +17,12 @@ public class DepositFunction extends PagedBaseFunction<Map.Entry<Long, StatDepos
 
     private final CompositeQuery<QueryResult, List<QueryResult>> subquery;
 
-    public static DepositFunction createFunction(Object descriptor, QueryParameters queryParameters,
-                                                 String continuationToken,
-                                                 CompositeQuery<QueryResult, List<QueryResult>> subquery) {
+    public static DepositFunction createFunction(
+            Object descriptor,
+            QueryParameters queryParameters,
+            String continuationToken,
+            CompositeQuery<QueryResult,
+                    List<QueryResult>> subquery) {
         DepositFunction func = new DepositFunction(descriptor, queryParameters, continuationToken, subquery);
         subquery.setParentQuery(func);
         return func;
@@ -29,8 +32,11 @@ public class DepositFunction extends PagedBaseFunction<Map.Entry<Long, StatDepos
         return FUNC_NAME;
     }
 
-    private DepositFunction(Object descriptor, QueryParameters params, String continuationToken,
-                            CompositeQuery<QueryResult, List<QueryResult>> subquery) {
+    private DepositFunction(
+            Object descriptor,
+            QueryParameters params,
+            String continuationToken,
+            CompositeQuery<QueryResult, List<QueryResult>> subquery) {
         super(descriptor, params, getMainDescriptor(), continuationToken);
         this.subquery = subquery;
     }
@@ -44,9 +50,9 @@ public class DepositFunction extends PagedBaseFunction<Map.Entry<Long, StatDepos
     }
 
     @Override
-    public QueryResult<Map.Entry<Long, StatDeposit>, StatResponse> execute(QueryContext context,
-                                                                           List<QueryResult> collectedResults)
-            throws QueryExecutionException {
+    public QueryResult<Map.Entry<Long, StatDeposit>, StatResponse> execute(
+            QueryContext context,
+            List<QueryResult> collectedResults) throws QueryExecutionException {
         QueryResult<Map.Entry<Long, StatDeposit>, List<Map.Entry<Long, StatDeposit>>> queryResult =
                 (QueryResult<Map.Entry<Long, StatDeposit>, List<Map.Entry<Long, StatDeposit>>>) collectedResults.get(0);
 

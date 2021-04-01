@@ -14,8 +14,12 @@ import java.time.LocalDateTime;
 
 public interface DepositEventHandler extends EventHandler<TimestampedChange, MachineEvent> {
 
-    default void initEventFields(DepositData depositData, long eventId, LocalDateTime eventCreatedAt,
-                                 LocalDateTime eventOccuredAt, DepositEventType eventType) {
+    default void initEventFields(
+            DepositData depositData,
+            long eventId,
+            LocalDateTime eventCreatedAt,
+            LocalDateTime eventOccuredAt,
+            DepositEventType eventType) {
         depositData.setId(null);
         depositData.setWtime(null);
         depositData.setEventId(eventId);
@@ -24,9 +28,12 @@ public interface DepositEventHandler extends EventHandler<TimestampedChange, Mac
         depositData.setEventType(eventType);
     }
 
-    default void initEventFields(DepositAdjustmentData depositAdjustmentData, long eventId,
-                                 LocalDateTime eventCreatedAt, LocalDateTime eventOccuredAt,
-                                 DepositAdjustmentDataEventType eventType) {
+    default void initEventFields(
+            DepositAdjustmentData depositAdjustmentData,
+            long eventId,
+            LocalDateTime eventCreatedAt,
+            LocalDateTime eventOccuredAt,
+            DepositAdjustmentDataEventType eventType) {
         depositAdjustmentData.setId(null);
         depositAdjustmentData.setWtime(null);
         depositAdjustmentData.setEventId(eventId);
@@ -35,8 +42,12 @@ public interface DepositEventHandler extends EventHandler<TimestampedChange, Mac
         depositAdjustmentData.setEventType(eventType);
     }
 
-    default void initEventFields(DepositRevertData depositRevertData, long eventId, LocalDateTime eventCreatedAt,
-                                 LocalDateTime eventOccuredAt, DepositRevertDataEventType eventType) {
+    default void initEventFields(
+            DepositRevertData depositRevertData,
+            long eventId,
+            LocalDateTime eventCreatedAt,
+            LocalDateTime eventOccuredAt,
+            DepositRevertDataEventType eventType) {
         depositRevertData.setId(null);
         depositRevertData.setWtime(null);
         depositRevertData.setEventId(eventId);

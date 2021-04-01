@@ -17,11 +17,15 @@ public class DepositAdjustmentFunction extends PagedBaseFunction<Map.Entry<Long,
 
     private final CompositeQuery<QueryResult, List<QueryResult>> subquery;
 
-    public static DepositAdjustmentFunction createFunction(Object descriptor, QueryParameters queryParameters,
-                                                           String continuationToken,
-                                                           CompositeQuery<QueryResult, List<QueryResult>> subquery) {
-        DepositAdjustmentFunction func =
-                new DepositAdjustmentFunction(descriptor, queryParameters, continuationToken, subquery);
+    public static DepositAdjustmentFunction createFunction(
+            Object descriptor, QueryParameters queryParameters,
+            String continuationToken,
+            CompositeQuery<QueryResult, List<QueryResult>> subquery) {
+        DepositAdjustmentFunction func = new DepositAdjustmentFunction(
+                descriptor,
+                queryParameters,
+                continuationToken,
+                subquery);
         subquery.setParentQuery(func);
         return func;
     }
@@ -30,8 +34,11 @@ public class DepositAdjustmentFunction extends PagedBaseFunction<Map.Entry<Long,
         return FUNC_NAME;
     }
 
-    private DepositAdjustmentFunction(Object descriptor, QueryParameters params, String continuationToken,
-                                      CompositeQuery<QueryResult, List<QueryResult>> subquery) {
+    private DepositAdjustmentFunction(
+            Object descriptor,
+            QueryParameters params,
+            String continuationToken,
+            CompositeQuery<QueryResult, List<QueryResult>> subquery) {
         super(descriptor, params, getMainDescriptor(), continuationToken);
         this.subquery = subquery;
     }
@@ -45,12 +52,11 @@ public class DepositAdjustmentFunction extends PagedBaseFunction<Map.Entry<Long,
     }
 
     @Override
-    public QueryResult<Map.Entry<Long, StatDepositAdjustment>, StatResponse> execute(QueryContext context,
-                                                                                     List<QueryResult> collectedResults)
-            throws QueryExecutionException {
+    public QueryResult<Map.Entry<Long, StatDepositAdjustment>, StatResponse> execute(
+            QueryContext context,
+            List<QueryResult> collectedResults) throws QueryExecutionException {
         var queryResult = (QueryResult<Map.Entry<Long, StatDepositAdjustment>,
                 List<Map.Entry<Long, StatDepositAdjustment>>>) collectedResults.get(0);
-
 
         return new BaseQueryResult<>(
                 queryResult::getDataStream,

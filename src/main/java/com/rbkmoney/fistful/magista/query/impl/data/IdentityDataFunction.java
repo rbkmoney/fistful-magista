@@ -28,8 +28,10 @@ public class IdentityDataFunction
     public QueryResult<Map.Entry<Long, StatIdentity>, Collection<Map.Entry<Long, StatIdentity>>> execute(
             QueryContext context) throws QueryExecutionException {
         FunctionQueryContext functionContext = getContext(context);
-        IdentityParameters parameters =
-                new IdentityParameters(getQueryParameters(), getQueryParameters().getDerivedParameters());
+        IdentityParameters parameters = new IdentityParameters(
+                getQueryParameters(),
+                getQueryParameters().getDerivedParameters());
+
         try {
             Collection<Map.Entry<Long, StatIdentity>> result = functionContext.getSearchDao().getIdentities(
                     parameters,

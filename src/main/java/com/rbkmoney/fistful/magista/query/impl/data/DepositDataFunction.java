@@ -28,8 +28,10 @@ public class DepositDataFunction
     public QueryResult<Map.Entry<Long, StatDeposit>, Collection<Map.Entry<Long, StatDeposit>>> execute(
             QueryContext context) throws QueryExecutionException {
         FunctionQueryContext functionContext = getContext(context);
-        DepositParameters parameters =
-                new DepositParameters(getQueryParameters(), getQueryParameters().getDerivedParameters());
+        DepositParameters parameters = new DepositParameters(
+                getQueryParameters(),
+                getQueryParameters().getDerivedParameters());
+
         try {
             Collection<Map.Entry<Long, StatDeposit>> result = functionContext.getSearchDao().getDeposits(
                     parameters,

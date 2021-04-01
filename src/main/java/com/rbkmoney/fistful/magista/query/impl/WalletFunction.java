@@ -29,8 +29,11 @@ public class WalletFunction extends PagedBaseFunction<Map.Entry<Long, StatWallet
 
     private final CompositeQuery<QueryResult, List<QueryResult>> subquery;
 
-    private WalletFunction(Object descriptor, QueryParameters params, String continuationToken,
-                           CompositeQuery<QueryResult, List<QueryResult>> subquery) {
+    private WalletFunction(
+            Object descriptor,
+            QueryParameters params,
+            String continuationToken,
+            CompositeQuery<QueryResult, List<QueryResult>> subquery) {
         super(descriptor, params, FUNC_NAME, continuationToken);
         this.subquery = subquery;
     }
@@ -44,17 +47,18 @@ public class WalletFunction extends PagedBaseFunction<Map.Entry<Long, StatWallet
     }
 
     @Override
-    public QueryResult<Map.Entry<Long, StatWallet>, StatResponse> execute(QueryContext context,
-                                                                          List<QueryResult> collectedResults)
+    public QueryResult<Map.Entry<Long, StatWallet>, StatResponse> execute(
+            QueryContext context,
+            List<QueryResult> collectedResults)
             throws QueryExecutionException {
         QueryResult<Map.Entry<Long, StatWallet>, List<Map.Entry<Long, StatWallet>>> walletsResult =
                 (QueryResult<Map.Entry<Long, StatWallet>, List<Map.Entry<Long, StatWallet>>>) collectedResults.get(0);
 
         return new BaseQueryResult<>(
-                () -> walletsResult.getDataStream(),
+                walletsResult::getDataStream,
                 () -> {
                     StatResponseData statResponseData = StatResponseData.wallets(walletsResult.getDataStream()
-                            .map(walletResponse -> walletResponse.getValue()).collect(Collectors.toList()));
+                            .map(Map.Entry::getValue).collect(Collectors.toList()));
                     StatResponse statResponse = new StatResponse(statResponseData);
                     List<Map.Entry<Long, StatWallet>> walletStats = walletsResult.getCollectedStream();
                     if (!walletsResult.getCollectedStream().isEmpty()
@@ -150,7 +154,7 @@ public class WalletFunction extends PagedBaseFunction<Map.Entry<Long, StatWallet
     }
 
     public static class WalletBuilder extends AbstractQueryBuilder {
-        private WalletValidator validator = new WalletValidator();
+        private final WalletValidator validator = new WalletValidator();
 
         @Override
         public Query buildQuery(List<QueryPart> queryParts, String continuationToken, QueryPart parentQueryPart,
@@ -181,9 +185,11 @@ public class WalletFunction extends PagedBaseFunction<Map.Entry<Long, StatWallet
         }
     }
 
-    private static WalletFunction createWalletFunction(Object descriptor, QueryParameters queryParameters,
-                                                       String continuationToken,
-                                                       CompositeQuery<QueryResult, List<QueryResult>> subquery) {
+    private static WalletFunction createWalletFunction(
+            Object descriptor,
+            QueryParameters queryParameters,
+            String continuationToken,
+            CompositeQuery<QueryResult, List<QueryResult>> subquery) {
         WalletFunction walletFunction = new WalletFunction(descriptor, queryParameters, continuationToken, subquery);
         subquery.setParentQuery(walletFunction);
         return walletFunction;
@@ -205,8 +211,10 @@ public class WalletFunction extends PagedBaseFunction<Map.Entry<Long, StatWallet
         public QueryResult<Map.Entry<Long, StatWallet>, Collection<Map.Entry<Long, StatWallet>>> execute(
                 QueryContext context) throws QueryExecutionException {
             FunctionQueryContext functionContext = getContext(context);
-            WalletParameters parameters =
-                    new WalletParameters(getQueryParameters(), getQueryParameters().getDerivedParameters());
+            WalletParameters parameters = new WalletParameters(
+                    getQueryParameters(),
+                    getQueryParameters().getDerivedParameters());
+
             try {
                 Collection<Map.Entry<Long, StatWallet>> result = functionContext.getSearchDao().getWallets(
                         parameters,

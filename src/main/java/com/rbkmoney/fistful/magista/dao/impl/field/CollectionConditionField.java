@@ -1,23 +1,18 @@
 package com.rbkmoney.fistful.magista.dao.impl.field;
 
+import lombok.RequiredArgsConstructor;
 import org.jooq.Comparator;
 import org.jooq.Field;
 
 import java.util.Collection;
+import java.util.Objects;
 
+@RequiredArgsConstructor
 public class CollectionConditionField<T> implements ConditionField<T, Collection<T>> {
 
     private final Field<T> field;
-
     private final Collection<T> value;
-
     private final Comparator comparator;
-
-    public CollectionConditionField(Field<T> field, Collection<T> value, Comparator comparator) {
-        this.field = field;
-        this.value = value;
-        this.comparator = comparator;
-    }
 
     @Override
     public Field<T> getField() {
@@ -39,18 +34,21 @@ public class CollectionConditionField<T> implements ConditionField<T, Collection
         if (this == o) {
             return true;
         }
+
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
 
         CollectionConditionField<?> that = (CollectionConditionField<?>) o;
 
-        if (field != null ? !field.equals(that.field) : that.field != null) {
+        if (!Objects.equals(field, that.field)) {
             return false;
         }
-        if (value != null ? !value.equals(that.value) : that.value != null) {
+
+        if (!Objects.equals(value, that.value)) {
             return false;
         }
+
         return comparator == that.comparator;
     }
 

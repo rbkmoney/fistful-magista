@@ -16,11 +16,14 @@ import java.util.List;
 
 public class DepositAdjustmentBuilder extends AbstractQueryBuilder {
 
-    private DepositAdjustmentValidator validator = new DepositAdjustmentValidator();
+    private final DepositAdjustmentValidator validator = new DepositAdjustmentValidator();
 
     @Override
-    public Query buildQuery(List<QueryPart> queryParts, String continuationToken, QueryPart parentQueryPart,
-                            QueryBuilder baseBuilder) throws QueryBuilderException {
+    public Query buildQuery(
+            List<QueryPart> queryParts,
+            String continuationToken,
+            QueryPart parentQueryPart,
+            QueryBuilder baseBuilder) throws QueryBuilderException {
         Query resultQuery = buildSingleQuery(
                 DepositAdjustmentFunction.getMainDescriptor(),
                 queryParts,

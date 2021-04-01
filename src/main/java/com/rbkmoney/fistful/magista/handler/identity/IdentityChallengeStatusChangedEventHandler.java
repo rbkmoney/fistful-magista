@@ -44,6 +44,7 @@ public class IdentityChallengeStatusChangedEventHandler implements IdentityEvent
             challengeData.setEventType(ChallengeEventType.CHALLENGE_STATUS_CHANGED);
             var challengeStatus = change.getChange().getIdentityChallenge().getPayload().getStatusChanged();
             challengeData.setChallengeStatus(TBaseUtil.unionFieldToEnum(challengeStatus, ChallengeStatus.class));
+
             if (challengeStatus.isSetCompleted()) {
                 ChallengeCompleted challengeCompleted = challengeStatus.getCompleted();
                 challengeData.setChallengeResolution(

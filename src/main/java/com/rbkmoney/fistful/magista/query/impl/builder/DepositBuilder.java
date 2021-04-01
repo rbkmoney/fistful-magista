@@ -19,8 +19,11 @@ public class DepositBuilder extends AbstractQueryBuilder {
     private DepositValidator validator = new DepositValidator();
 
     @Override
-    public Query buildQuery(List<QueryPart> queryParts, String continuationToken, QueryPart parentQueryPart,
-                            QueryBuilder baseBuilder) throws QueryBuilderException {
+    public Query buildQuery(
+            List<QueryPart> queryParts,
+            String continuationToken,
+            QueryPart parentQueryPart,
+            QueryBuilder baseBuilder) throws QueryBuilderException {
         Query resultQuery = buildSingleQuery(
                 DepositFunction.getMainDescriptor(),
                 queryParts,

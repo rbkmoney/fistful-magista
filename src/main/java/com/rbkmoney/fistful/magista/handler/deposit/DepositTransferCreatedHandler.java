@@ -49,7 +49,11 @@ public class DepositTransferCreatedHandler implements DepositEventHandler {
             List<FinalCashFlowPosting> postings = change.getChange().getTransfer()
                     .getPayload().getCreated().getTransfer().getCashflow().getPostings();
             DepositData depositData = depositDao.get(event.getSourceId());
-            initEventFields(depositData, eventId, eventCreatedAt, eventOccuredAt,
+            initEventFields(
+                    depositData,
+                    eventId,
+                    eventCreatedAt,
+                    eventOccuredAt,
                     DepositEventType.DEPOSIT_TRANSFER_CREATED);
             depositData.setDepositTransferStatus(DepositTransferStatus.created);
             depositData.setFee(CashFlowUtil.getFistfulFee(postings));
