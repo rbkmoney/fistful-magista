@@ -7,7 +7,7 @@
     <parent>
         <groupId>com.rbkmoney</groupId>
         <artifactId>service-parent-pom</artifactId>
-        <version>1.2.2</version>
+        <version>1.2.7</version>
     </parent>
 
     <artifactId>fistful-magista</artifactId>
@@ -24,11 +24,11 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <dockerfile.base.service.tag>c0612d6052ac049496b72a23a04acb142035f249</dockerfile.base.service.tag>
         <dockerfile.registry>${env.REGISTRY}</dockerfile.registry>
-        <fistful-proto.version>1.114-7b3f125</fistful-proto.version>
+        <fistful-proto.version>1.128-d331fce</fistful-proto.version>
         <eventstock.version>1.2.6</eventstock.version>
         <machinegun-proto.version>1.12-ebae56f</machinegun-proto.version>
         <sink-common-lib.version>0.0.4</sink-common-lib.version>
-        <testcontainers.version>1.14.3</testcontainers.version>
+        <testcontainers.version>1.15.3</testcontainers.version>
         <!---->
         <db.name>fistfulmst</db.name>
         <db.port>5432</db.port>
