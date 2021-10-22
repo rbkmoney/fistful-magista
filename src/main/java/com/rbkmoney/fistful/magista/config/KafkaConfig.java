@@ -9,7 +9,6 @@ import org.apache.kafka.clients.CommonClientConfigs;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.config.SslConfigs;
 import org.apache.kafka.common.serialization.StringDeserializer;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -87,7 +86,6 @@ public class KafkaConfig {
         return factory;
     }
 
-    @NotNull
     private SeekToCurrentBatchErrorHandler createSeekToCurrentBatchErrorHandler() {
         SeekToCurrentBatchErrorHandler errorHandler = new SeekToCurrentBatchErrorHandler();
         errorHandler.setBackOff(new FixedBackOff(retryDelayMs, Long.MAX_VALUE));
