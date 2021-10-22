@@ -1,6 +1,5 @@
 package com.rbkmoney.fistful.magista.kafka.listener;
 
-import com.rbkmoney.fistful.magista.exception.NotFoundException;
 import com.rbkmoney.fistful.magista.service.DepositEventService;
 import com.rbkmoney.machinegun.eventsink.SinkEvent;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +12,6 @@ import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import static java.util.stream.Collectors.toList;
 
@@ -37,15 +35,7 @@ public class DepositEventListener {
             @Header(KafkaHeaders.OFFSET) int offset,
             Acknowledgment ack) throws InterruptedException {
         log.info("Listening Deposit: partition={}, offset={}, batch.size()={}", partition, offset, batch.size());
-
-        try {
-            depositEventService.handleEvents(batch.stream().map(SinkEvent::getEvent).collect(toList()));
-        } catch (NotFoundException e) {
-            log.info("Delayed retry caused by an exception", e);
-            TimeUnit.MILLISECONDS.sleep(retryDelayMs);
-            throw e;
-        }
-
+        depositEventService.handleEvents(batch.stream().map(SinkEvent::getEvent).collect(toList()));
         ack.acknowledge();
         log.info("Ack Deposit: partition={}, offset={}", partition, offset);
     }
