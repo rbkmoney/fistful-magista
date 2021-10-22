@@ -24,7 +24,6 @@ import com.rbkmoney.fistful.magista.exception.DaoException;
 import com.rbkmoney.kafka.common.serialization.ThriftSerializer;
 import com.rbkmoney.machinegun.eventsink.SinkEvent;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -211,7 +210,6 @@ public class DepositEventListenerTest extends AbstractListenerTest {
                 .isEqualTo(DepositAdjustmentDataStatus.succeeded);
     }
 
-    @NotNull
     private Change getAdjustment() {
         return Change.adjustment(
                 new AdjustmentChange(
@@ -220,7 +218,6 @@ public class DepositEventListenerTest extends AbstractListenerTest {
                                 new com.rbkmoney.fistful.deposit.adjustment.StatusChange(getAdjustmentSucceeded()))));
     }
 
-    @NotNull
     private com.rbkmoney.fistful.deposit.adjustment.Status getAdjustmentSucceeded() {
         return com.rbkmoney.fistful.deposit.adjustment.Status
                 .succeeded(new com.rbkmoney.fistful.deposit.adjustment.Succeeded());

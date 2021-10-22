@@ -17,6 +17,8 @@ import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.listener.ContainerProperties;
 import org.springframework.kafka.listener.SeekToCurrentBatchErrorHandler;
+import org.springframework.util.backoff.ExponentialBackOff;
+import org.springframework.util.backoff.FixedBackOff;
 
 import java.io.File;
 import java.util.HashMap;
@@ -43,6 +45,8 @@ public class KafkaConfig {
     private int maxPollIntervalMs;
     @Value("${kafka.max-session-timeout-ms}")
     private int maxSessionTimeoutMs;
+    @Value("${kafka.retry-delay-ms}")
+    private int retryDelayMs;
 
     private final KafkaSslProperties kafkaSslProperties;
 
@@ -66,7 +70,7 @@ public class KafkaConfig {
         return listenerContainerFactory();
     }
 
-    private <T> ConcurrentKafkaListenerContainerFactory<String, MachineEvent> listenerContainerFactory() {
+    private ConcurrentKafkaListenerContainerFactory<String, MachineEvent> listenerContainerFactory() {
         ConcurrentKafkaListenerContainerFactory<String, MachineEvent> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
 
@@ -75,11 +79,17 @@ public class KafkaConfig {
 
         factory.setConsumerFactory(consumerFactory);
         factory.setConcurrency(consumerConcurrency);
-        factory.setBatchErrorHandler(new SeekToCurrentBatchErrorHandler());
+        factory.setBatchErrorHandler(createSeekToCurrentBatchErrorHandler());
         factory.setBatchListener(true);
         factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.MANUAL);
 
         return factory;
+    }
+
+    private SeekToCurrentBatchErrorHandler createSeekToCurrentBatchErrorHandler() {
+        SeekToCurrentBatchErrorHandler errorHandler = new SeekToCurrentBatchErrorHandler();
+        errorHandler.setBackOff(new FixedBackOff(retryDelayMs, Long.MAX_VALUE));
+        return errorHandler;
     }
 
     private Map<String, Object> consumerConfig() {
