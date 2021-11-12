@@ -30,20 +30,32 @@ public class StatDepositMapper implements RowMapper<Map.Entry<Long, StatDeposit>
         deposit.setCurrencySymbolicCode(rs.getString(DEPOSIT_DATA.CURRENCY_CODE.getName()));
         DepositStatus depositStatus =
                 TypeUtil.toEnumField(rs.getString(DEPOSIT_DATA.DEPOSIT_STATUS.getName()), DepositStatus.class);
-        switch (depositStatus) {
-            case succeeded:
-                deposit.setStatus(com.rbkmoney.fistful.fistful_stat.DepositStatus.succeeded(new DepositSucceeded()));
-                break;
-            case pending:
-                deposit.setStatus(com.rbkmoney.fistful.fistful_stat.DepositStatus.pending(new DepositPending()));
-                break;
-            case failed:
-                deposit.setStatus(
-                        com.rbkmoney.fistful.fistful_stat.DepositStatus.failed(new DepositFailed(new Failure())));
-                break;
-            default:
-                throw new NotFoundException(String.format("Deposit status '%s' not found", depositStatus.getLiteral()));
-        }
+        deposit.setStatus(getDepositStatus(depositStatus));
+        deposit.setRevertStatus(getRevertStatus(rs.getLong(DEPOSIT_DATA.AMOUNT.getName()),
+                rs.getLong("REVERT_AMOUNT")));
         return new SimpleEntry<>(rs.getLong(DEPOSIT_DATA.ID.getName()), deposit);
+    }
+
+    private com.rbkmoney.fistful.fistful_stat.DepositStatus getDepositStatus(DepositStatus depositStatus) {
+        return switch (depositStatus) {
+            case succeeded -> com.rbkmoney.fistful.fistful_stat.DepositStatus.succeeded(new DepositSucceeded());
+            case pending -> com.rbkmoney.fistful.fistful_stat.DepositStatus.pending(new DepositPending());
+            case failed -> com.rbkmoney.fistful.fistful_stat.DepositStatus.failed(new DepositFailed(new Failure()));
+            default -> throw new NotFoundException(
+                    String.format("Deposit status '%s' not found", depositStatus.getLiteral()));
+        };
+    }
+
+    private RevertStatus getRevertStatus(Long amount, Long revertAmount) {
+        if (revertAmount == null || revertAmount == 0) {
+            return RevertStatus.none;
+        }
+        if (revertAmount < amount) {
+            return RevertStatus.partial;
+        }
+        if (revertAmount.equals(amount)) {
+            return RevertStatus.full;
+        }
+        throw new RuntimeException("Wrong revert amount " + revertAmount);
     }
 }
