@@ -126,7 +126,7 @@ public class SearchDaoImplTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void testRevertStatusFullDeposits() throws DaoException{
+    public void testRevertStatusFullDeposits() throws DaoException {
         DepositData depositOne = random(DepositData.class);
         depositDao.save(depositOne);
 
@@ -145,7 +145,7 @@ public class SearchDaoImplTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void testRevertStatusNoneDeposits() throws DaoException{
+    public void testRevertStatusNoneDeposits() throws DaoException {
         DepositData depositOne = random(DepositData.class);
         depositDao.save(depositOne);
 
@@ -164,7 +164,7 @@ public class SearchDaoImplTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void testRevertStatusPartialDeposits() throws DaoException{
+    public void testRevertStatusPartialDeposits() throws DaoException {
         DepositData depositOne = random(DepositData.class);
         depositOne.setAmount(100L);
         depositDao.save(depositOne);
