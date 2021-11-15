@@ -1,14 +1,14 @@
 package com.rbkmoney.fistful.magista.dao.impl;
 
+import com.rbkmoney.fistful.fistful_stat.RevertStatus;
 import com.rbkmoney.fistful.fistful_stat.StatDeposit;
 import com.rbkmoney.fistful.fistful_stat.StatWallet;
 import com.rbkmoney.fistful.fistful_stat.StatWithdrawal;
 import com.rbkmoney.fistful.magista.AbstractIntegrationTest;
-import com.rbkmoney.fistful.magista.dao.DepositDao;
-import com.rbkmoney.fistful.magista.dao.SearchDao;
-import com.rbkmoney.fistful.magista.dao.WalletDao;
-import com.rbkmoney.fistful.magista.dao.WithdrawalDao;
+import com.rbkmoney.fistful.magista.dao.*;
+import com.rbkmoney.fistful.magista.domain.enums.DepositRevertDataStatus;
 import com.rbkmoney.fistful.magista.domain.enums.DepositStatus;
+import com.rbkmoney.fistful.magista.domain.tables.pojos.DepositRevertData;
 import com.rbkmoney.fistful.magista.domain.tables.pojos.DepositData;
 import com.rbkmoney.fistful.magista.domain.tables.pojos.WalletData;
 import com.rbkmoney.fistful.magista.domain.tables.pojos.WithdrawalData;
@@ -39,6 +39,9 @@ public class SearchDaoImplTest extends AbstractIntegrationTest {
 
     @Autowired
     private DepositDao depositDao;
+
+    @Autowired
+    private DepositRevertDao depositRevertDao;
 
     @Test
     public void testGetWallets() throws DaoException {
@@ -105,29 +108,88 @@ public class SearchDaoImplTest extends AbstractIntegrationTest {
     @Test
     public void testGetDeposits() throws DaoException {
         DepositData deposit = random(DepositData.class);
-        deposit.setDepositStatus(DepositStatus.pending);
-        deposit.setPartyId(UUID.randomUUID());
         depositDao.save(deposit);
 
-        HashMap<String, Object> map = new HashMap<>();
-        map.put(IDENTITY_ID_PARAM, deposit.getIdentityId());
-        map.put(WALLET_ID_PARAM, deposit.getWalletId());
-        map.put(SOURCE_ID_PARAM, deposit.getSourceId());
-        map.put(PARTY_ID_PARAM, deposit.getPartyId());
-        map.put(AMOUNT_FROM_PARAM, deposit.getAmount() - 1);
-        map.put(AMOUNT_TO_PARAM, deposit.getAmount() + 1);
-        map.put(CURRENCY_CODE_PARAM, deposit.getCurrencyCode());
-        map.put(STATUS_PARAM, StringUtils.capitalize(deposit.getDepositStatus().getLiteral()));
+        HashMap<String, Object> map = buildDepositSearchMap(deposit);
 
         Collection<Map.Entry<Long, StatDeposit>> deposits = getDeposits(deposit, new DepositParameters(map, null));
         assertEquals(1, deposits.size());
-        assertEquals(deposits.iterator().next().getValue().getFee(), deposit.getFee().longValue());
+        StatDeposit statDeposit = deposits.iterator().next().getValue();
+        assertEquals(statDeposit.getFee(), deposit.getFee().longValue());
+        assertEquals(RevertStatus.none, statDeposit.getRevertStatus());
 
         map.clear();
         map.put(IDENTITY_ID_PARAM, "wrong_identity_id");
         map.put(PARTY_ID_PARAM, deposit.getPartyId());
         deposits = getDeposits(deposit, new DepositParameters(map, null));
         assertEquals(0, deposits.size());
+    }
+
+    @Test
+    public void testRevertStatusFullDeposits() throws DaoException {
+        DepositData depositOne = random(DepositData.class);
+        depositDao.save(depositOne);
+
+        DepositRevertData depositRevertDataOne = random(DepositRevertData.class);
+        depositRevertDataOne.setStatus(DepositRevertDataStatus.succeeded);
+        depositRevertDataOne.setPartyId(depositOne.getPartyId());
+        depositRevertDataOne.setWalletId(depositOne.getWalletId());
+        depositRevertDataOne.setDepositId(depositOne.getDepositId());
+        depositRevertDataOne.setAmount(depositOne.getAmount());
+
+        depositRevertDao.save(depositRevertDataOne);
+        HashMap<String, Object> map = buildDepositSearchMap(depositOne);
+        Collection<Map.Entry<Long, StatDeposit>> deposits = getDeposits(depositOne, new DepositParameters(map, null));
+        assertEquals(1, deposits.size());
+        assertEquals(RevertStatus.full, deposits.iterator().next().getValue().getRevertStatus());
+    }
+
+    @Test
+    public void testRevertStatusNoneDeposits() throws DaoException {
+        DepositData depositOne = random(DepositData.class);
+        depositDao.save(depositOne);
+
+        DepositRevertData depositRevertDataOne = random(DepositRevertData.class);
+        depositRevertDataOne.setStatus(DepositRevertDataStatus.pending);
+        depositRevertDataOne.setPartyId(depositOne.getPartyId());
+        depositRevertDataOne.setWalletId(depositOne.getWalletId());
+        depositRevertDataOne.setDepositId(depositOne.getDepositId());
+        depositRevertDataOne.setAmount(depositOne.getAmount());
+
+        depositRevertDao.save(depositRevertDataOne);
+        HashMap<String, Object> map = buildDepositSearchMap(depositOne);
+        Collection<Map.Entry<Long, StatDeposit>> deposits = getDeposits(depositOne, new DepositParameters(map, null));
+        assertEquals(1, deposits.size());
+        assertEquals(RevertStatus.none, deposits.iterator().next().getValue().getRevertStatus());
+    }
+
+    @Test
+    public void testRevertStatusPartialDeposits() throws DaoException {
+        DepositData depositOne = random(DepositData.class);
+        depositOne.setAmount(100L);
+        depositDao.save(depositOne);
+
+        DepositRevertData depositRevertDataOne = random(DepositRevertData.class);
+        depositRevertDataOne.setStatus(DepositRevertDataStatus.succeeded);
+        depositRevertDataOne.setPartyId(depositOne.getPartyId());
+        depositRevertDataOne.setWalletId(depositOne.getWalletId());
+        depositRevertDataOne.setDepositId(depositOne.getDepositId());
+        depositRevertDataOne.setAmount(50L);
+
+        DepositRevertData depositRevertDataTwo = random(DepositRevertData.class);
+        depositRevertDataTwo.setStatus(DepositRevertDataStatus.succeeded);
+        depositRevertDataTwo.setPartyId(depositOne.getPartyId());
+        depositRevertDataTwo.setWalletId(depositOne.getWalletId());
+        depositRevertDataTwo.setDepositId(depositOne.getDepositId());
+        depositRevertDataTwo.setAmount(40L);
+
+        depositRevertDao.save(depositRevertDataOne);
+        depositRevertDao.save(depositRevertDataTwo);
+
+        HashMap<String, Object> map = buildDepositSearchMap(depositOne);
+        Collection<Map.Entry<Long, StatDeposit>> deposits = getDeposits(depositOne, new DepositParameters(map, null));
+        assertEquals(1, deposits.size());
+        assertEquals(RevertStatus.partial, deposits.iterator().next().getValue().getRevertStatus());
     }
 
     private Collection<Map.Entry<Long, StatDeposit>> getDeposits(DepositData deposit, DepositParameters parameters)
@@ -139,5 +201,18 @@ public class SearchDaoImplTest extends AbstractIntegrationTest {
                 deposit.getId() + 1,
                 100
         );
+    }
+
+    private HashMap<String, Object> buildDepositSearchMap(DepositData deposit) {
+        HashMap<String, Object> map = new HashMap<>();
+        map.put(IDENTITY_ID_PARAM, deposit.getIdentityId());
+        map.put(WALLET_ID_PARAM, deposit.getWalletId());
+        map.put(SOURCE_ID_PARAM, deposit.getSourceId());
+        map.put(PARTY_ID_PARAM, deposit.getPartyId());
+        map.put(AMOUNT_FROM_PARAM, deposit.getAmount() - 1);
+        map.put(AMOUNT_TO_PARAM, deposit.getAmount() + 1);
+        map.put(CURRENCY_CODE_PARAM, deposit.getCurrencyCode());
+        map.put(STATUS_PARAM, StringUtils.capitalize(deposit.getDepositStatus().getLiteral()));
+        return map;
     }
 }

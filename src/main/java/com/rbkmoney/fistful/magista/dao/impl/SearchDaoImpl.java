@@ -4,6 +4,7 @@ import com.rbkmoney.fistful.fistful_stat.*;
 import com.rbkmoney.fistful.magista.dao.SearchDao;
 import com.rbkmoney.fistful.magista.dao.impl.field.ConditionParameterSource;
 import com.rbkmoney.fistful.magista.dao.impl.mapper.*;
+import com.rbkmoney.fistful.magista.domain.enums.DepositRevertDataStatus;
 import com.rbkmoney.fistful.magista.exception.DaoException;
 import com.rbkmoney.fistful.magista.query.impl.WalletFunction;
 import com.rbkmoney.fistful.magista.query.impl.WithdrawalFunction;
@@ -135,8 +136,17 @@ public class SearchDaoImpl extends AbstractGenericDao implements SearchDao {
             int limit
     ) throws DaoException {
         Query query = getDslContext()
-                .select()
-                .from(DEPOSIT_DATA)
+                .select(DEPOSIT_DATA.ID, DEPOSIT_DATA.EVENT_ID, DEPOSIT_DATA.EVENT_CREATED_AT, DEPOSIT_DATA.DEPOSIT_ID,
+                        DEPOSIT_DATA.EVENT_OCCURED_AT, DEPOSIT_DATA.EVENT_TYPE, DEPOSIT_DATA.WALLET_ID,
+                        DEPOSIT_DATA.SOURCE_ID, DEPOSIT_DATA.AMOUNT, DEPOSIT_DATA.CURRENCY_CODE,
+                        DEPOSIT_DATA.DEPOSIT_STATUS, DEPOSIT_DATA.DEPOSIT_TRANSFER_STATUS, DEPOSIT_DATA.FEE,
+                        DEPOSIT_DATA.PROVIDER_FEE, DEPOSIT_DATA.PARTY_ID, DEPOSIT_DATA.IDENTITY_ID, DEPOSIT_DATA.WTIME,
+                        DEPOSIT_DATA.CREATED_AT, DSL.sum(DEPOSIT_REVERT_DATA.AMOUNT).as("REVERT_AMOUNT"))
+                .from(DEPOSIT_DATA.leftJoin(DEPOSIT_REVERT_DATA)
+                        .on(DEPOSIT_DATA.PARTY_ID.eq(DEPOSIT_REVERT_DATA.PARTY_ID)
+                                .and(DEPOSIT_DATA.WALLET_ID.eq(DEPOSIT_REVERT_DATA.WALLET_ID)
+                                .and(DEPOSIT_DATA.DEPOSIT_ID.eq(DEPOSIT_REVERT_DATA.DEPOSIT_ID))
+                                .and(DEPOSIT_REVERT_DATA.STATUS.eq(DepositRevertDataStatus.succeeded)))))
                 .where(
                         appendDateTimeRangeConditions(
                                 appendConditions(DSL.trueCondition(), Operator.AND,
@@ -165,6 +175,12 @@ public class SearchDaoImpl extends AbstractGenericDao implements SearchDao {
                                 toTime
                         )
                 )
+                .groupBy(DEPOSIT_DATA.ID, DEPOSIT_DATA.EVENT_ID, DEPOSIT_DATA.EVENT_CREATED_AT, DEPOSIT_DATA.DEPOSIT_ID,
+                        DEPOSIT_DATA.EVENT_OCCURED_AT, DEPOSIT_DATA.EVENT_TYPE, DEPOSIT_DATA.WALLET_ID,
+                        DEPOSIT_DATA.SOURCE_ID, DEPOSIT_DATA.AMOUNT, DEPOSIT_DATA.CURRENCY_CODE,
+                        DEPOSIT_DATA.DEPOSIT_STATUS, DEPOSIT_DATA.DEPOSIT_TRANSFER_STATUS, DEPOSIT_DATA.FEE,
+                        DEPOSIT_DATA.PROVIDER_FEE, DEPOSIT_DATA.PARTY_ID, DEPOSIT_DATA.IDENTITY_ID, DEPOSIT_DATA.WTIME,
+                        DEPOSIT_DATA.CREATED_AT)
                 .orderBy(DEPOSIT_DATA.ID.desc())
                 .limit(limit);
 
