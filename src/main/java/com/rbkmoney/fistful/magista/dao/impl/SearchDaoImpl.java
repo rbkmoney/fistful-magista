@@ -206,8 +206,6 @@ public class SearchDaoImpl extends AbstractGenericDao implements SearchDao {
                                                         parameters.getIdentityId().orElse(null), EQUALS)
                                                 .addValue(IDENTITY_DATA.IDENTITY_PROVIDER_ID,
                                                         parameters.getIdentityProviderId().orElse(null), EQUALS)
-                                                .addValue(IDENTITY_DATA.IDENTITY_CLASS_ID,
-                                                        parameters.getIdentityClassId().orElse(null), EQUALS)
                                                 .addValue(IDENTITY_DATA.IDENTITY_EFFECTIVE_CHALLENGE_ID,
                                                         parameters.getIdentityEffectiveChallengeId().orElse(null),
                                                         EQUALS)

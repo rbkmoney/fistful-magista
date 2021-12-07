@@ -57,7 +57,7 @@ public abstract class AbstractListenerTest {
 
     @Before
     public void setUp() throws Exception {
-        IdentityState identityState = new IdentityState("name", UUID.randomUUID().toString(), "provider", "classid");
+        IdentityState identityState = new IdentityState("name", UUID.randomUUID().toString(), "provider");
         identityState.setBlocking(Blocking.unblocked);
         identityState.setExternalId("id");
         when(identityManagementClient.get(anyString(), any(EventRange.class))).thenReturn(identityState);

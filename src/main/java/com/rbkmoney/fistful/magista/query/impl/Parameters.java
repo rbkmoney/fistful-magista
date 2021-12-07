@@ -18,7 +18,6 @@ public class Parameters {
     public static final String STATUS_PARAM = "status";
     public static final String PARTY_CONTRACT_ID_PARAM = "party_contract_id";
     public static final String IDENTITY_PROVIDER_ID_PARAM = "identity_provider_id";
-    public static final String IDENTITY_CLASS_ID_PARAM = "identity_class_id";
     public static final String IDENTITY_EFFECTIVE_CHALLENGE_ID_PARAM = "identity_effective_challenge_id";
     public static final String IDENTITY_LEVEL_ID_PARAM = "identity_level_id";
     public static final String CHALLENGE_ID_PARAM = "challenge_id";

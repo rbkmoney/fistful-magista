@@ -57,10 +57,6 @@ public class IdentityParameters extends PagedBaseFunction.PagedBaseParameters {
         return Optional.ofNullable(getStringParameter(IDENTITY_PROVIDER_ID_PARAM, false));
     }
 
-    public Optional<String> getIdentityClassId() {
-        return Optional.ofNullable(getStringParameter(IDENTITY_CLASS_ID_PARAM, false));
-    }
-
     public Optional<String> getIdentityEffectiveChallengeId() {
         return Optional.ofNullable(getStringParameter(IDENTITY_EFFECTIVE_CHALLENGE_ID_PARAM, false));
     }

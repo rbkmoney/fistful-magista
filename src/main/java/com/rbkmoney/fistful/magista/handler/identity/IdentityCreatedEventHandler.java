@@ -60,7 +60,6 @@ public class IdentityCreatedEventHandler implements IdentityEventHandler {
             identityData.setPartyId(UUID.fromString(identity.getParty()));
             identityData.setPartyContractId(identity.getContract());
             identityData.setIdentityProviderId(identity.getProvider());
-            identityData.setIdentityClassId(identity.getCls());
             identityData.setName(""); //todo
             identityData.setBlocking(TypeUtil.toEnumField(blocking.name(), BlockingType.class));
             identityData.setExternalId(externalId);
