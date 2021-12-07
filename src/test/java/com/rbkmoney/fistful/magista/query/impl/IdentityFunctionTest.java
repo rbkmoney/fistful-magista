@@ -104,7 +104,6 @@ public class IdentityFunctionTest extends AbstractIntegrationTest {
                         "'party_contract_id': '%s', " +
                         "'identity_id':'%s', " +
                         "'identity_provider_id':'%s', " +
-                        "'identity_class_id': '%s', " +
                         "'identity_effective_challenge_id':'%s', " +
                         "'identity_level_id':'%s', " +
                         "'from_time': '%s'," +
@@ -114,7 +113,6 @@ public class IdentityFunctionTest extends AbstractIntegrationTest {
                 identityData.getPartyContractId(),
                 identityData.getIdentityId(),
                 identityData.getIdentityProviderId(),
-                identityData.getIdentityClassId(),
                 identityData.getIdentityEffectiveChallengeId(),
                 identityData.getIdentityLevelId(),
                 TypeUtil.temporalToString(identityData.getCreatedAt().minusHours(10)),
@@ -140,7 +138,6 @@ public class IdentityFunctionTest extends AbstractIntegrationTest {
                         "'party_contract_id': '%s', " +
                         "'identity_id':'%s', " +
                         "'identity_provider_id':'%s', " +
-                        "'identity_class_id': '%s', " +
                         "'identity_effective_challenge_id':'%s', " +
                         "'identity_level_id':'%s', " +
                         "'challenge_id':'%s', " +
@@ -155,7 +152,6 @@ public class IdentityFunctionTest extends AbstractIntegrationTest {
                 identityData.getPartyContractId(),
                 identityData.getIdentityId(),
                 identityData.getIdentityProviderId(),
-                identityData.getIdentityClassId(),
                 identityData.getIdentityEffectiveChallengeId(),
                 identityData.getIdentityLevelId(),
                 challengeData.getChallengeId(),

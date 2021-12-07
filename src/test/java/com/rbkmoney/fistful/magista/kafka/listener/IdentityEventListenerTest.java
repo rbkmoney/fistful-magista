@@ -48,7 +48,7 @@ public class IdentityEventListenerTest extends AbstractListenerTest {
         String expected = UUID.randomUUID().toString();
         TimestampedChange change = new TimestampedChange()
                 .setOccuredAt("2016-03-22T06:12:27Z")
-                .setChange(Change.created(new Identity(expected, "provider", "cls")));
+                .setChange(Change.created(new Identity(expected, "provider")));
 
         SinkEvent sinkEvent = sinkEvent(machineEvent(new ThriftSerializer<>(), change));
 
